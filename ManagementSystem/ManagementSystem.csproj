@@ -1,0 +1,47 @@
+﻿<Project Sdk="Microsoft.NET.Sdk.Web">
+
+  <PropertyGroup>
+    <TargetFramework>net9.0</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Compile Remove="Services\**" />
+    <Compile Remove="_publish\**" />
+    <Content Remove="Services\**" />
+    <Content Remove="_publish\**" />
+    <EmbeddedResource Remove="Services\**" />
+    <EmbeddedResource Remove="_publish\**" />
+    <None Remove="Services\**" />
+    <None Remove="_publish\**" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Compile Remove="Resources\CommonController.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <EmbeddedResource Remove="Resources\Controllers.AAAAA.id-ID.resx" />
+    <EmbeddedResource Remove="Resources\Controllers.CommonController.en-US.resx" />
+    <EmbeddedResource Remove="Resources\Controllers.CommonController.id-ID.resx" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="Resources\Controllers.AAAAA.id-ID.resx">
+      <SubType>Designer</SubType>
+    </None>
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.AspNetCore.OpenApi" Version="9.0.7" />
+    <PackageReference Include="Microsoft.Extensions.Localization.Abstractions" Version="10.0.1" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\ManagementSystem.Common\ManagementSystem.Common.csproj" />
+    <ProjectReference Include="..\ManagementSystem.DataServices\ManagementSystem.DataServices.csproj" />
+    <ProjectReference Include="..\ManagementSystem.Data\ManagementSystem.Data.csproj" />
+  </ItemGroup>
+
+</Project>

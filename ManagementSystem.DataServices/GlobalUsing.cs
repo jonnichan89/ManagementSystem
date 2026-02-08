@@ -1,0 +1,11 @@
+﻿global using ManagementSystem.Common.Models;
+global using ManagementSystem.Data.DBContext;
+global using ManagementSystem.Data.Models;
+global using ManagementSystem.DataServices.Utilities;
+global using Microsoft.EntityFrameworkCore;
+global using Microsoft.Extensions.Localization;
+global using System;
+global using System.Collections.Generic;
+global using System.Linq;
+global using System.Security.Cryptography;
+global using System.Text;

@@ -1,0 +1,40 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+	<PropertyGroup>
+		<TargetFramework>net9.0-windows</TargetFramework>
+		<ImplicitUsings>enable</ImplicitUsings>
+		<Nullable>enable</Nullable>
+		<UseWPF>true</UseWPF>
+		<UICulture>en-US</UICulture>
+	</PropertyGroup>
+
+	<ItemGroup>
+		<Compile Remove="CodeTemplates\**" />
+		<EmbeddedResource Remove="CodeTemplates\**" />
+		<None Remove="CodeTemplates\**" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<PackageReference Include="CommunityToolkit.Mvvm" Version="8.4.0" />
+		<PackageReference Include="Lepo.i18n.DependencyInjection" Version="2.0.0" />
+		<PackageReference Include="Lepo.i18n.Wpf" Version="2.0.0" />
+		<PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="10.0.0" />
+		<PackageReference Include="Microsoft.Extensions.Hosting" Version="10.0.0" />
+		<PackageReference Include="Microsoft.Extensions.Http" Version="10.0.0" />
+		<PackageReference Include="Microsoft.Extensions.Localization" Version="10.0.0" />
+		<PackageReference Include="WPF-UI" Version="4.1.0" />
+		<PackageReference Include="WPF-UI.DependencyInjection" Version="4.1.0" />
+		<PackageReference Include="WPF-UI.Tray" Version="4.1.0" />
+
+		<PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="9.0.10">
+			<IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+			<PrivateAssets>all</PrivateAssets>
+		</PackageReference>
+		
+		<PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="9.0.10" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<ProjectReference Include="..\ManagementSystem.Common\ManagementSystem.Common.csproj" />
+	</ItemGroup>
+</Project>

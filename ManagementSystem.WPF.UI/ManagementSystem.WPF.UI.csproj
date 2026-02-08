@@ -1,0 +1,113 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+	<PropertyGroup>
+		<OutputType>WinExe</OutputType>
+		<TargetFramework>net9.0-windows</TargetFramework>
+		<Nullable>enable</Nullable>
+		<ImplicitUsings>enable</ImplicitUsings>
+		<UseWPF>true</UseWPF>
+		<UICulture>en-US</UICulture>
+	</PropertyGroup>
+
+	<ItemGroup>
+		<Compile Remove="CodeTemplates\**" />
+		<EmbeddedResource Remove="CodeTemplates\**" />
+		<None Remove="CodeTemplates\**" />
+		<Page Remove="CodeTemplates\**" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<Compile Remove="Forms\DetailWindow.xaml.cs" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<Page Remove="Forms\DetailWindow.xaml" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<PackageReference Include="CommunityToolkit.Mvvm" Version="8.4.0" />
+		<PackageReference Include="Lepo.i18n.DependencyInjection" Version="2.0.0" />
+		<PackageReference Include="Lepo.i18n.Wpf" Version="2.0.0" />
+		<PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="10.0.0" />
+		<PackageReference Include="Microsoft.Extensions.Hosting" Version="10.0.0" />
+		<PackageReference Include="Microsoft.Extensions.Http" Version="10.0.0" />
+		<PackageReference Include="Microsoft.Extensions.Localization" Version="10.0.0" />
+		<PackageReference Include="WPF-UI" Version="4.1.0" />
+		<PackageReference Include="WPF-UI.DependencyInjection" Version="4.1.0" />
+		<PackageReference Include="WPF-UI.Tray" Version="4.1.0" />
+
+		<PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="9.0.10">
+			<IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+			<PrivateAssets>all</PrivateAssets>
+		</PackageReference>
+		<PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="9.0.10" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<ProjectReference Include="..\ManagementSystem.Common\ManagementSystem.Common.csproj" />
+		<ProjectReference Include="..\ManagementSystem.WPF.UI.Data\ManagementSystem.WPF.UI.Data.csproj" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<Compile Update="Pages\PurchaseOrderDetailPage.xaml.cs">
+		  <SubType>Code</SubType>
+		</Compile>
+		<Compile Update="Pages\ItemUsageDetailPage.xaml.cs">
+			<SubType>Code</SubType>
+		</Compile>
+		<Compile Update="Pages\PurchaseOrderPage.xaml.cs">
+		  <SubType>Code</SubType>
+		</Compile>
+		<Compile Update="Pages\MstSupplierDetailPage.xaml.cs">
+			<SubType>Code</SubType>
+		</Compile>
+		<Compile Update="Pages\MstItemDetailPage.xaml.cs">
+			<SubType>Code</SubType>
+		</Compile>
+		<Compile Update="Pages\ItemUsagePage.xaml.cs">
+			<SubType>Code</SubType>
+		</Compile>
+		<Compile Update="Pages\MstSupplierPage.xaml.cs">
+			<SubType>Code</SubType>
+		</Compile>
+		<Compile Update="Pages\MstItemPage.xaml.cs">
+			<SubType>Code</SubType>
+		</Compile>
+		<Compile Update="Pages\SettingPage.xaml.cs">
+			<SubType>Code</SubType>
+		</Compile>
+		<Compile Update="Properties\Settings.Designer.cs">
+			<DesignTimeSharedInput>True</DesignTimeSharedInput>
+			<AutoGen>True</AutoGen>
+			<DependentUpon>Settings.settings</DependentUpon>
+		</Compile>
+		<Compile Update="Resources\StringResource.en-US.Designer.cs">
+			<DesignTime>True</DesignTime>
+			<AutoGen>True</AutoGen>
+			<DependentUpon>StringResource.en-US.resx</DependentUpon>
+		</Compile>
+	</ItemGroup>
+
+	<ItemGroup>
+		<EmbeddedResource Update="Resources\StringResource.id-ID.resx">
+			<LastGenOutput>StringResource.id-ID.Designer.cs</LastGenOutput>
+			<Generator>PublicResXFileCodeGenerator</Generator>
+		</EmbeddedResource>
+		<EmbeddedResource Update="Resources\StringResource.en-US.resx">
+			<Generator>PublicResXFileCodeGenerator</Generator>
+			<LastGenOutput>StringResource.en-US.Designer.cs</LastGenOutput>
+		</EmbeddedResource>
+	</ItemGroup>
+
+	<ItemGroup>
+		<None Update="Properties\Settings.settings">
+			<Generator>SettingsSingleFileGenerator</Generator>
+			<LastGenOutput>Settings.Designer.cs</LastGenOutput>
+		</None>
+	</ItemGroup>
+
+	<ItemGroup>
+		<Folder Include="Forms\" />
+	</ItemGroup>
+
+</Project>

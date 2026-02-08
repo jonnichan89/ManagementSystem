@@ -1,0 +1,115 @@
+﻿<Page x:Class="ManagementSystem.WPF.UI.Pages.MstItemDetailPage"
+      xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+      xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+      xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+      xmlns:resx="clr-namespace:ManagementSystem.WPF.UI.Resources"
+      xmlns:local="clr-namespace:ManagementSystem.WPF.UI"
+      xmlns:C="clr-namespace:ManagementSystem.WPF.UI.Controls"
+      xmlns:pages="clr-namespace:ManagementSystem.WPF.UI.Pages"
+      xmlns:vm="clr-namespace:ManagementSystem.WPF.UI.ViewModels"
+      xmlns:ui="http://schemas.lepo.co/wpfui/2022/xaml"
+      mc:Ignorable="d"
+      d:DataContext="{d:DesignInstance pages:MstItemDetailPage, IsDesignTimeCreatable=False}"
+      d:DesignHeight="450"
+      d:DesignWidth="800"
+      Title="{Binding VM.Title, Mode=OneTime}"
+      Margin="10"
+      MinWidth="450">
+
+    <Grid x:Name="MainGrid">
+        <StackPanel x:Name="InputContainer">
+            <TextBlock Text="{resx:Localization propItemCode}" />
+            <ui:TextBox Text="{Binding VM.Data.ItemCode, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                        IsReadOnly="{Binding VM.CanEditItemCode}"
+                        />
+
+            <TextBlock Text="{resx:Localization propItemName}" />
+            <ui:TextBox Text="{Binding VM.Data.ItemName, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+
+            <TextBlock Text="{resx:Localization propSupplierCode}" />
+            <ui:TextBox Text="{Binding VM.Data.SupplierCode}"
+                        IsReadOnly="True"/>
+
+            <TextBlock Text="{resx:Localization propSupplierName}" />
+            <ComboBox x:Name="SupplierComboBox"
+                      ItemsSource="{Binding VM.FilteredViewSupplier}"
+                      SelectedItem="{Binding VM.SelectedSupplier, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                      IsTextSearchEnabled="False"
+                      IsTextSearchCaseSensitive="False"
+                      IsEditable="True"
+                      StaysOpenOnEdit="True"
+                      IsReadOnly="False"
+                      ScrollViewer.CanContentScroll="True"
+                      TextSearch.TextPath="SupplierName"
+                      PreviewKeyDown="SupplierComboBox_PreviewKeyDown"
+                      KeyUp="SupplierComboBox_KeyUp"
+                      SelectedIndex="{Binding VM.SupplierSelectedIndex, Mode=OneWay}">
+
+                <ComboBox.ItemContainerStyle>
+                    <Style TargetType="ComboBoxItem">
+                        <EventSetter Event="PreviewMouseMove"
+                                     Handler="SupplierComboBox_OnPreviewMouseMove" />
+                        <EventSetter Event="MouseLeave"
+                                     Handler="SupplierComboBox_OnItemHoverExit" />
+                    </Style>
+                </ComboBox.ItemContainerStyle>
+
+                <ComboBox.ItemsPanel>
+                    <ItemsPanelTemplate>
+                        <VirtualizingStackPanel VirtualizationMode="Recycling" />
+                    </ItemsPanelTemplate>
+                </ComboBox.ItemsPanel>
+                <ComboBox.ItemTemplate>
+                    <DataTemplate DataType="data:MstSupplier">
+                        <StackPanel Width="300">
+                            <WrapPanel>
+                                <ui:TextBlock Text="{Binding Askterisk}"
+                                              Width="10" />
+                                <ui:TextBlock Text="{Binding SupplierName}" />
+                            </WrapPanel>
+                            <ui:TextBlock Text="{Binding SupplierCode}"
+                                          Margin="10,0,0,0" />
+                        </StackPanel>
+                    </DataTemplate>
+                </ComboBox.ItemTemplate>
+            </ComboBox>
+
+            <TextBlock Text="{resx:Localization propItemDescription}" />
+            <ui:TextBox Text="{Binding VM.Data.ItemDescription, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+
+
+            <TextBlock Text="{resx:Localization propItemUnit}" />
+            <ui:TextBox Text="{Binding VM.Data.ItemUnit, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+
+            <TextBlock Text="{resx:Localization propImagePath}" />
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="30" />
+                </Grid.ColumnDefinitions>
+                <ui:TextBox Grid.Column="0"
+                            Text="{Binding VM.ImagePath, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                            IsReadOnly="True" />
+                <ui:Button Grid.Column="1"
+                           Content="..."
+                           Command="{Binding VM.PickImageFileCommand}"/>
+            </Grid>
+
+            <CheckBox Content="{resx:Localization propIsStockControl}"
+                      IsChecked="{Binding VM.Data.IsStockControl, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+
+            <TextBlock Text="{resx:Localization propMinimumStock}" />
+            <ui:TextBox Text="{Binding VM.Data.MinimumStock, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+
+            <CheckBox Content="{resx:Localization propIsBlacklist}"
+                      IsChecked="{Binding VM.Data.IsBlacklist, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+
+        </StackPanel>
+
+        <Viewbox x:Name="MessageBox" Stretch="None" VerticalAlignment="Top" Margin="0,10,0,0">
+            <Frame x:Name="MessageFrame"
+                   Visibility="Collapsed" />
+        </Viewbox>
+    </Grid>
+</Page>

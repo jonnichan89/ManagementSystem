@@ -1,0 +1,130 @@
+﻿<Page x:Class="ManagementSystem.WPF.UI.Pages.PromptPage"
+      xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+      xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+      xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+      xmlns:local="clr-namespace:ManagementSystem.WPF.UI.Pages"
+      xmlns:controls="http://schemas.lepo.co/wpfui/2022/xaml"
+      mc:Ignorable="d"
+      d:DesignHeight="450"
+      d:DesignWidth="800"
+      d:DataContext="{d:DesignInstance controls:ContentDialog, IsDesignTimeCreatable=false}"
+      Background="Transparent"
+      Title="">
+
+    <Border Background="{DynamicResource ContentDialogSmokeFill}"
+            CornerRadius="10"
+            Padding="1"
+            Focusable="False">
+        <Border Margin="0"
+                Background="{DynamicResource ContentDialogBackground}"
+                BorderBrush="{DynamicResource ContentDialogBorderBrush}"
+                BorderThickness="1"
+                CornerRadius="10"
+                Focusable="False"
+                Opacity="1">
+            <Border.Effect>
+                <DropShadowEffect BlurRadius="0"
+                                  Direction="0"
+                                  Opacity="0.2"
+                                  ShadowDepth="0"
+                                  Color="Black" />
+            </Border.Effect>
+
+            <Grid Focusable="False">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="*" />
+                    <RowDefinition Height="Auto" />
+                </Grid.RowDefinitions>
+
+                <!-- top overlay -->
+                <Border Background="{DynamicResource ContentDialogTopOverlay}"
+                        CornerRadius="10,10,0,0" />
+
+                <!-- content area -->
+                <Grid Grid.Row="0"
+                      Margin="24,10"
+                      Focusable="False">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="*" />
+                    </Grid.RowDefinitions>
+
+                    <!-- Title -->
+                    <TextBlock Grid.Row="0"
+                               Margin="0,12,0,0"
+                               Text="{Binding Title, Mode=OneWay}"
+                               FontSize="14"
+                               TextWrapping="Wrap" />
+
+                    <!-- Message / scrolling content -->
+                    <controls:PassiveScrollViewer x:Name="PART_ContentScroll"
+                                                  Grid.Row="1"
+                                                  Margin="0,20"
+                                                  Padding="0,0,12,0"
+                                                  CanContentScroll="True"
+                                                  HorizontalScrollBarVisibility="Disabled"
+                                                  VerticalScrollBarVisibility="Auto">
+                        <TextBlock Text="{Binding Content, Mode=OneWay}"
+                                   TextWrapping="WrapWithOverflow"
+                                   TextAlignment="Justify"
+                                   FontSize="14" />
+                    </controls:PassiveScrollViewer>
+                </Grid>
+
+                <!-- footer -->
+                <Border Grid.Row="1"
+                        Padding="12"
+                        HorizontalAlignment="Stretch"
+                        VerticalAlignment="Bottom"
+                        BorderBrush="{DynamicResource ContentDialogSeparatorBorderBrush}"
+                        BorderThickness="0,1,0,0"
+                        CornerRadius="0,0,10,10"
+                        Focusable="False"
+                        Visibility="Visible">
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition x:Name="PrimaryColumn"
+                                              Width="*" />
+                            <ColumnDefinition x:Name="FirstSpacer"
+                                              Width="8" />
+                            <ColumnDefinition x:Name="SecondaryColumn"
+                                              Width="*" />
+                            <ColumnDefinition x:Name="SecondSpacer"
+                                              Width="8" />
+                            <ColumnDefinition x:Name="CloseColumn"
+                                              Width="*" />
+                        </Grid.ColumnDefinitions>
+
+                        <controls:Button Grid.Column="0"
+                                         HorizontalAlignment="Stretch"
+                                         Appearance="Primary"
+                                         Command="{Binding TemplateButtonCommand, Mode=OneTime}"
+                                         CommandParameter="{x:Static controls:ContentDialogButton.Primary}"
+                                         Content="{Binding PrimaryButtonText, Mode=OneWay}"
+                                         IsDefault="True"
+                                         IsEnabled="{Binding IsPrimaryButtonEnabled}"
+                                         Visibility="{Binding IsPrimaryButtonEnabled, Converter={StaticResource BoolToVisibilityConverter}}" />
+
+                        <controls:Button Grid.Column="2"
+                                         HorizontalAlignment="Stretch"
+                                         Appearance="Secondary"
+                                         Command="{Binding TemplateButtonCommand, Mode=OneTime}"
+                                         CommandParameter="{x:Static controls:ContentDialogButton.Secondary}"
+                                         Content="{Binding SecondaryButtonText, Mode=OneWay}"
+                                         IsEnabled="{Binding IsSecondaryButtonEnabled, Mode=OneWay}"
+                                         Visibility="{Binding IsSecondaryButtonEnabled, Converter={StaticResource BoolToVisibilityConverter}}" />
+
+                        <controls:Button Grid.Column="4"
+                                         HorizontalAlignment="Stretch"
+                                         Appearance="Dark"
+                                         Command="{Binding TemplateButtonCommand, Mode=OneTime}"
+                                         CommandParameter="{x:Static controls:ContentDialogButton.Close}"
+                                         Content="{Binding CloseButtonText, Mode=OneWay}"
+                                         IsCancel="True" />
+                    </Grid>
+                </Border>
+            </Grid>
+        </Border>
+    </Border>
+</Page>

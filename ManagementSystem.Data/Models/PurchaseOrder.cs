@@ -1,0 +1,90 @@
+﻿using System;
+
+namespace ManagementSystem.Data.Models;
+
+[Table("PurchaseOrder")]
+public partial class PurchaseOrder
+{
+    [Key]
+    public int POId { get; set; }
+
+    [StringLength(50)]
+    [Unicode(false)]
+    public string POCode { get; set; }
+
+    [Column(TypeName = "smalldatetime")]
+    public DateTime PODate { get; set; }
+
+    [StringLength(50)]
+    [Unicode(false)]
+    public string SupplierCode { get; set; }
+
+    [StringLength(50)]
+    [Unicode(false)]
+    public string SupplierName { get; set; }
+
+    [StringLength(20)]
+    [Unicode(false)]
+    public string CurrencyId { get; set; }
+
+    [Column(TypeName = "money")]
+    public decimal CurrencyRate { get; set; }
+
+    [Column(TypeName = "decimal(5, 2)")]
+    public decimal PPNPercentage { get; set; }
+
+    [Column(TypeName = "decimal(5, 2)")]
+    public decimal PPHPercentage { get; set; }
+
+    [Column(TypeName = "money")]
+    public decimal DPP { get; set; }
+
+    [Column(TypeName = "money")]
+    public decimal DPPDiscount { get; set; }
+
+    [Column(TypeName = "money")]
+    public decimal PPN { get; set; }
+
+    [Column(TypeName = "money")]
+    public decimal PPH { get; set; }
+
+    [Column(TypeName = "money")]
+    public decimal TotalAmount { get; set; }
+
+    public bool IsPaid { get; set; }
+
+    [Column(TypeName = "smalldatetime")]
+    public DateTime PaidAt { get; set; }
+
+    [StringLength(20)]
+    [Unicode(false)]
+    public string PaidCurrencyId { get; set; }
+
+    [Column(TypeName = "money")]
+    public decimal PaidCurrencyRate { get; set; }
+
+    [Column(TypeName = "money")]
+    public decimal PaidAmount { get; set; }
+
+    [StringLength(500)]
+    [Unicode(false)]
+    public string PaidNote { get; set; }
+
+    public bool IsCancelled { get; set; }
+
+    [Column(TypeName = "smalldatetime")]
+    public DateTime CreatedAt { get; set; }
+
+    [StringLength(20)]
+    [Unicode(false)]
+    public string CreatedBy { get; set; }
+
+    [Column(TypeName = "smalldatetime")]
+    public DateTime ModifiedAt { get; set; }
+
+    [StringLength(20)]
+    [Unicode(false)]
+    public string ModifiedBy { get; set; }
+
+    public virtual ObservableCollection<PurchaseOrderDetail> PurchaseOrderDetails { get; set; } = new ObservableCollection<PurchaseOrderDetail>();
+}

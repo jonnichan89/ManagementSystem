@@ -1,0 +1,16 @@
+﻿<ui:ContentDialog x:Class="ManagementSystem.WPF.UI.Forms.DetailWindow"
+                  xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                  xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                  xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+                  xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+                  mc:Ignorable="d"
+                  xmlns:resx="clr-namespace:ManagementSystem.WPF.UI.Resources"
+                  xmlns:local="clr-namespace:ManagementSystem.WPF.UI.Forms"
+                  xmlns:pages="clr-namespace:ManagementSystem.WPF.UI.Pages"
+                  xmlns:ui="http://schemas.lepo.co/wpfui/2022/xaml"
+                  Title="Detail Window"
+                  CloseButtonText="">
+    <Grid>
+        <ContentPresenter x:Name="ContentPresenter1" />
+    </Grid>
+</ui:ContentDialog>

@@ -1,0 +1,323 @@
+<#@ template hostSpecific="true" #>
+<#@ assembly name="Microsoft.EntityFrameworkCore" #>
+<#@ assembly name="Microsoft.EntityFrameworkCore.Design" #>
+<#@ assembly name="Microsoft.EntityFrameworkCore.Relational" #>
+<#@ assembly name="Microsoft.Extensions.DependencyInjection.Abstractions" #>
+<#@ parameter name="EntityType" type="Microsoft.EntityFrameworkCore.Metadata.IEntityType" #>
+<#@ parameter name="Options" type="Microsoft.EntityFrameworkCore.Scaffolding.ModelCodeGenerationOptions" #>
+<#@ parameter name="NamespaceHint" type="System.String" #>
+<#@ import namespace="System.Collections.Generic" #>
+<#@ import namespace="System.ComponentModel.DataAnnotations" #>
+<#@ import namespace="System.Linq" #>
+<#@ import namespace="System.Text" #>
+
+<#@ assembly name="EnvDTE" #>
+<#@ assembly name="System.Core" #>
+<#@ assembly name="System.Data" #>
+<#@ assembly name="Humanizer" #>
+
+<#@ import namespace="Microsoft.EntityFrameworkCore" #>
+<#@ import namespace="Microsoft.EntityFrameworkCore.Design" #>
+<#@ import namespace="Microsoft.Extensions.DependencyInjection" #>
+<#
+    if (EntityType == null)
+    {
+        return "";
+    }
+    
+    if (EntityType.IsSimpleManyToManyJoinEntityType())
+    {
+        // Don't scaffold these
+        return "";
+    }
+
+    var services = (IServiceProvider)Host;
+
+    //var annotationCodeGenerator = services.GetRequiredService<IAnnotationCodeGenerator>();
+    //var code = services.GetRequiredService<ICSharpHelper>();
+    
+    IAnnotationCodeGenerator annotationCodeGenerator = null;
+    ICSharpHelper code = null;
+
+    // Check if Host is available
+    if (Host != null)
+    {
+        var services = (IServiceProvider)Host;
+        annotationCodeGenerator = services.GetRequiredService<IAnnotationCodeGenerator>();
+        code = services.GetRequiredService<ICSharpHelper>();
+    }
+    else
+    {
+        // Fallback: Create default implementations
+        code = new CSharpHelper();
+        // annotationCodeGenerator can remain null if not critical
+    }
+
+    var usings = new List<string>();
+/*
+    {
+        "System",
+        "System.Collections.Generic",
+        "System.Collections.ObjectModel",
+        "System.ComponentModel",
+        "System.Runtime.CompilerServices"
+    };
+
+    if (Options.UseDataAnnotations)
+    {
+        usings.Add("System.ComponentModel.DataAnnotations");
+        usings.Add("System.ComponentModel.DataAnnotations.Schema");
+        usings.Add("Microsoft.EntityFrameworkCore");
+    }
+*/
+
+    if (!string.IsNullOrEmpty(NamespaceHint))
+    {
+#>
+namespace <#= NamespaceHint #>;
+
+<#
+    }
+
+    var entityComment = EntityType.GetComment();
+    if (!string.IsNullOrEmpty(entityComment))
+    {
+#>
+/// <summary>
+/// <#= code.XmlComment(entityComment) #>
+/// </summary>
+<#
+    }
+
+    if (Options != null && Options.UseDataAnnotations)
+    {
+        var dataAnnotations = EntityType.GetDataAnnotations(annotationCodeGenerator);
+        if (dataAnnotations != null)
+        {
+            foreach (var dataAnnotation in dataAnnotations)
+            {
+                if (dataAnnotation != null)
+                {
+#>
+<#= code.Fragment(dataAnnotation) #>
+<#
+                }
+            }
+        }
+    }
+    
+    var tableName = EntityType.GetTableName();
+    if (string.IsNullOrEmpty(tableName))
+    {
+        tableName = EntityType.Name;
+    }
+#>
+public partial class <#= tableName #> : INotifyPropertyChanged 
+{
+    #region INotifyPropertyChanged
+
+    public event PropertyChangedEventHandler? PropertyChanged;
+
+    // Helper method to trigger the event
+    public void OnPropertyChanged([CallerMemberName] string? propertyName = null)
+    {
+        PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+    }
+
+    #endregion
+
+<#
+    var columnName = "";
+    var targetTableName = "";
+    var prularizedTargetTableName = "";
+    var firstProperty = true;
+    var properties = EntityType.GetProperties();
+    if (properties != null)
+    {
+        foreach (var property in properties.OrderBy(p => p.GetColumnOrder() ?? -1))
+        {
+            if (property == null) continue;
+            
+            columnName = "";
+            targetTableName = "";
+            prularizedTargetTableName = "";
+
+            if (!firstProperty)
+            {
+                WriteLine("");
+            }
+
+            var propertyComment = property.GetComment();
+            if (!string.IsNullOrEmpty(propertyComment))
+            {
+#>
+    /// <summary>
+    /// <#= code.XmlComment(propertyComment, indent: 1) #>
+    /// </summary>
+<#
+            }
+
+            if (Options != null && Options.UseDataAnnotations)
+            {
+                var dataAnnotations = property.GetDataAnnotations(annotationCodeGenerator);
+                if (dataAnnotations != null)
+                {
+                    var filteredAnnotations = dataAnnotations
+                        .Where(a => a != null && !(a.Type == typeof(RequiredAttribute) && Options.UseNullableReferenceTypes && !property.ClrType.IsValueType));
+                    foreach (var dataAnnotation in filteredAnnotations)
+                    {
+#>
+    <#= code.Fragment(dataAnnotation) #>
+<#
+                    }
+                }
+            }
+
+            var requiredUsings = code.GetRequiredUsings(property.ClrType);
+            if (requiredUsings != null)
+            {
+                usings.AddRange(requiredUsings);
+            }
+            
+            var needsNullable = Options != null && Options.UseNullableReferenceTypes && property.IsNullable && !property.ClrType.IsValueType;
+            var needsInitializer = Options != null && Options.UseNullableReferenceTypes && !property.IsNullable && !property.ClrType.IsValueType;
+
+            columnName = property.GetColumnName();
+            if (string.IsNullOrEmpty(columnName))
+            {
+                columnName = property.Name;
+            }
+#>
+    private <#= code.Reference(property.ClrType) #><#= needsNullable ? "?" : "" #> _<#= columnName #><#= needsInitializer ? " = null!;" : ";" #>
+    
+    public <#= code.Reference(property.ClrType) #><#= needsNullable ? "?" : "" #> <#= columnName #> {
+        get {
+            return _<#= columnName #>;
+        }
+        set {
+            _<#= columnName #> = value;
+            OnPropertyChanged("<#= columnName #>");
+        }
+    }
+<#
+            firstProperty = false;
+        }
+    }
+
+    var navigations = EntityType.GetNavigations();
+    if (navigations != null)
+    {
+        foreach (var navigation in navigations)
+        {
+            if (navigation == null) continue;
+            
+            WriteLine("");
+
+            if (Options != null && Options.UseDataAnnotations)
+            {
+                var dataAnnotations = navigation.GetDataAnnotations(annotationCodeGenerator);
+                if (dataAnnotations != null)
+                {
+                    foreach (var dataAnnotation in dataAnnotations)
+                    {
+                        if (dataAnnotation != null)
+                        {
+#>
+    <#= code.Fragment(dataAnnotation) #>
+<#
+                        }
+                    }
+                }
+            }
+
+            targetTableName = navigation.TargetEntityType.GetTableName();
+            if (string.IsNullOrEmpty(targetTableName))
+            {
+                targetTableName = navigation.TargetEntityType.Name;
+            }
+            
+            prularizedTargetTableName = targetTableName.Pluralize();
+
+            if (navigation.IsCollection)
+            {
+#>
+    public virtual ObservableCollection<<#= targetTableName #>> <#= prularizedTargetTableName #> { get; set; } = new ObservableCollection<<#= targetTableName #>>();
+<#
+            }
+            else
+            {
+                var needsNullable = Options != null && Options.UseNullableReferenceTypes && !(navigation.ForeignKey.IsRequired && navigation.IsOnDependent);
+                var needsInitializer = Options != null && Options.UseNullableReferenceTypes && navigation.ForeignKey.IsRequired && navigation.IsOnDependent;
+#>
+    private <#= targetTableName #><#= needsNullable ? "?" : "" #> _<#= targetTableName #><#= needsInitializer ? " = null!;" : ";" #>
+    
+    public virtual <#= targetTableName #><#= needsNullable ? "?" : "" #> <#= targetTableName #> {
+        get {
+            return _<#= targetTableName #>;
+        }
+        set {
+            _<#= targetTableName #> = value;
+            OnPropertyChanged("<#= targetTableName #>");
+        }
+    }
+<#
+            }
+        }
+    }
+
+    var skipNavigations = EntityType.GetSkipNavigations();
+    if (skipNavigations != null)
+    {
+        foreach (var skipNavigation in skipNavigations)
+        {
+            if (skipNavigation == null) continue;
+            
+            WriteLine("");
+            
+            targetTableName = skipNavigation.TargetEntityType.GetTableName();
+            if (string.IsNullOrEmpty(targetTableName))
+            {
+                targetTableName = skipNavigation.TargetEntityType.Name;
+            }
+            
+            prularizedTargetTableName = targetTableName.Pluralize();
+
+            if (Options != null && Options.UseDataAnnotations)
+            {
+                var dataAnnotations = skipNavigation.GetDataAnnotations(annotationCodeGenerator);
+                if (dataAnnotations != null)
+                {
+                    foreach (var dataAnnotation in dataAnnotations)
+                    {
+                        if (dataAnnotation != null)
+                        {
+#>
+    <#= code.Fragment(dataAnnotation) #>
+<#
+                        }
+                    }
+                }
+            }
+#>
+    public virtual ObservableCollection<<#= targetTableName #>> <#= prularizedTargetTableName #> { get; set; } = new ObservableCollection<<#= targetTableName #>>();
+<#
+        }
+    }
+#>
+}
+<#
+    var previousOutput = GenerationEnvironment;
+    GenerationEnvironment = new StringBuilder();
+
+    var distinctUsings = usings.Where(u => !string.IsNullOrEmpty(u)).Distinct().OrderBy(x => x, new NamespaceComparer());
+    foreach (var ns in distinctUsings)
+    {
+#>
+using <#= ns #>;
+<#
+    }
+
+    WriteLine("");
+
+    GenerationEnvironment.Append(previousOutput);
+#>

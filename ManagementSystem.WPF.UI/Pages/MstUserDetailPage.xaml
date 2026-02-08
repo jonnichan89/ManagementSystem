@@ -1,0 +1,123 @@
+﻿<Page x:Class="ManagementSystem.WPF.UI.Pages.MstUserDetailPage"
+      xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+      xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+      xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+      xmlns:resx="clr-namespace:ManagementSystem.WPF.UI.Resources"
+      xmlns:local="clr-namespace:ManagementSystem.WPF.UI"
+      xmlns:C="clr-namespace:ManagementSystem.WPF.UI.Controls"
+      xmlns:pages="clr-namespace:ManagementSystem.WPF.UI.Pages"
+      xmlns:vm="clr-namespace:ManagementSystem.WPF.UI.ViewModels"
+      xmlns:ui="http://schemas.lepo.co/wpfui/2022/xaml"
+      mc:Ignorable="d"
+      d:DataContext="{d:DesignInstance pages:MstUserDetailPage, IsDesignTimeCreatable=False}"
+      d:DesignHeight="450"
+      d:DesignWidth="800"
+      Title="{Binding VM.Title, Mode=OneTime}"
+      Margin="10"
+      MinWidth="450">
+
+    <Grid x:Name="MainGrid">
+        <StackPanel x:Name="InputContainer">
+            <TextBlock Text="{resx:Localization propUserId}" />
+            <ui:TextBox Text="{Binding VM.Data.UserId, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                        IsReadOnly="{Binding VM.UserIdIsReadOnly}"
+                        />
+
+            <TextBlock Text="{resx:Localization propUserName}" />
+            <ui:TextBox Text="{Binding VM.Data.UserName, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+
+            <CheckBox Content="{resx:Localization propIsBlacklist}"
+                      IsChecked="{Binding VM.Data.IsBlacklist, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+            
+            <TextBlock Text="{resx:Localization propAccessRight}" />
+            <DataGrid ItemsSource="{Binding VM.UserModules, Mode=OneWay}"
+                      AutoGenerateColumns="False"
+                      CanUserAddRows="False"
+                      CanUserDeleteRows="False">
+                <DataGrid.Columns>
+                    <DataGridTextColumn Header="{resx:Localization propModuleName}"
+                                        Binding="{Binding ModuleName, Mode=OneWay}"
+                                        IsReadOnly="True" />
+
+                    <DataGridTemplateColumn Header="{resx:Localization propCanAll}">
+                        <DataGridTemplateColumn.CellTemplate>
+                            <DataTemplate>
+                                <CheckBox IsChecked="{Binding CanAll, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                          HorizontalAlignment="Center"
+                                          VerticalAlignment="Center"
+                                          Margin="0" />
+                            </DataTemplate>
+                        </DataGridTemplateColumn.CellTemplate>
+                    </DataGridTemplateColumn>
+
+                    <DataGridTemplateColumn Header="{resx:Localization propCanViewList}">
+                        <DataGridTemplateColumn.CellTemplate>
+                            <DataTemplate>
+                                <CheckBox IsChecked="{Binding CanViewList, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                          IsEnabled="{Binding EnableViewList, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                          HorizontalAlignment="Center"
+                                          VerticalAlignment="Center"
+                                          Margin="0" />
+                            </DataTemplate>
+                        </DataGridTemplateColumn.CellTemplate>
+                    </DataGridTemplateColumn>
+
+                    <DataGridTemplateColumn Header="{resx:Localization propCanViewDetail}">
+                        <DataGridTemplateColumn.CellTemplate>
+                            <DataTemplate>
+                                <CheckBox IsChecked="{Binding CanViewDetail, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                          IsEnabled="{Binding EnableViewDetail, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                          HorizontalAlignment="Center"
+                                          VerticalAlignment="Center"
+                                          Margin="0" />
+                            </DataTemplate>
+                        </DataGridTemplateColumn.CellTemplate>
+                    </DataGridTemplateColumn>
+
+                    <DataGridTemplateColumn Header="{resx:Localization propCanAdd}">
+                        <DataGridTemplateColumn.CellTemplate>
+                            <DataTemplate>
+                                <CheckBox IsChecked="{Binding CanAdd, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                          IsEnabled="{Binding EnableAdd, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                          HorizontalAlignment="Center"
+                                          VerticalAlignment="Center"
+                                          Margin="0" />
+                            </DataTemplate>
+                        </DataGridTemplateColumn.CellTemplate>
+                    </DataGridTemplateColumn>
+
+                    <DataGridTemplateColumn Header="{resx:Localization propCanEdit}">
+                        <DataGridTemplateColumn.CellTemplate>
+                            <DataTemplate>
+                                <CheckBox IsChecked="{Binding CanEdit, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                          IsEnabled="{Binding EnableEdit, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                          HorizontalAlignment="Center"
+                                          VerticalAlignment="Center"
+                                          Margin="0" />
+                            </DataTemplate>
+                        </DataGridTemplateColumn.CellTemplate>
+                    </DataGridTemplateColumn>
+
+                    <DataGridTemplateColumn Header="{resx:Localization propCanDelete}">
+                        <DataGridTemplateColumn.CellTemplate>
+                            <DataTemplate>
+                                <CheckBox IsChecked="{Binding CanDelete, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                          IsEnabled="{Binding EnableDelete, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                          HorizontalAlignment="Center"
+                                          VerticalAlignment="Center"
+                                          Margin="0" />
+                            </DataTemplate>
+                        </DataGridTemplateColumn.CellTemplate>
+                    </DataGridTemplateColumn>
+
+                </DataGrid.Columns>
+            </DataGrid>
+        </StackPanel>
+
+        <Viewbox x:Name="MessageBox" Stretch="None" VerticalAlignment="Top" Margin="0,10,0,0">
+            <Frame x:Name="MessageFrame"
+                   Visibility="Collapsed" />
+        </Viewbox>
+    </Grid>
+</Page>

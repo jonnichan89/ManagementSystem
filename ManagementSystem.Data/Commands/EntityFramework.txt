@@ -1,0 +1,12 @@
+﻿
+dotnet add ManagementSystem.Data\ManagementSystem.Data.csproj package Microsoft.EntityFrameworkCore.Design
+
+dotnet add ManagementSystem.Data\ManagementSystem.Data.csproj package Microsoft.EntityFrameworkCore.SqlServer
+
+
+-- Generate Models
+ManagementSystem.Data
+dotnet ef dbcontext scaffold "Data Source=.\SQLDEV2022;Initial Catalog=ManagementSystem;Integrated Security=True;Encrypt=False;" Microsoft.EntityFrameworkCore.SqlServer --project ManagementSystem.Data --data-annotations --context-dir DBContext --output-dir Models --use-database-names --force --no-onconfiguring
+
+ManagementSystem.WPF.UI.Data
+dotnet ef dbcontext scaffold "Data Source=.\SQLDEV2022;Initial Catalog=ManagementSystem;Integrated Security=True;Encrypt=False;" Microsoft.EntityFrameworkCore.SqlServer --project ManagementSystem.WPF.UI.Data --output-dir DBModels --force

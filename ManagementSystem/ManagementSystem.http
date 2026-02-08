@@ -1,0 +1,10 @@
+@ManagementSystem_HostAddress = http://localhost/ManagementSystem/
+
+GET {{ManagementSystem_HostAddress}}weatherforecast/
+Accept: application/json
+###
+
+GET {{ManagementSystem_HostAddress}}user/
+Accept: application/json
+
+###

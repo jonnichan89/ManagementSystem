@@ -1,0 +1,396 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <!-- 
+    Microsoft ResX Schema 
+    
+    Version 2.0
+    
+    The primary goals of this format is to allow a simple XML format 
+    that is mostly human readable. The generation and parsing of the 
+    various data types are done through the TypeConverter classes 
+    associated with the data types.
+    
+    Example:
+    
+    ... ado.net/XML headers & schema ...
+    <resheader name="resmimetype">text/microsoft-resx</resheader>
+    <resheader name="version">2.0</resheader>
+    <resheader name="reader">System.Resources.ResXResourceReader, System.Windows.Forms, ...</resheader>
+    <resheader name="writer">System.Resources.ResXResourceWriter, System.Windows.Forms, ...</resheader>
+    <data name="Name1"><value>this is my long string</value><comment>this is a comment</comment></data>
+    <data name="Color1" type="System.Drawing.Color, System.Drawing">Blue</data>
+    <data name="Bitmap1" mimetype="application/x-microsoft.net.object.binary.base64">
+        <value>[base64 mime encoded serialized .NET Framework object]</value>
+    </data>
+    <data name="Icon1" type="System.Drawing.Icon, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+        <value>[base64 mime encoded string representing a byte array form of the .NET Framework object]</value>
+        <comment>This is a comment</comment>
+    </data>
+                
+    There are any number of "resheader" rows that contain simple 
+    name/value pairs.
+    
+    Each data row contains a name, and value. The row also contains a 
+    type or mimetype. Type corresponds to a .NET class that support 
+    text/value conversion through the TypeConverter architecture. 
+    Classes that don't support this are serialized and stored with the 
+    mimetype set.
+    
+    The mimetype is used for serialized objects, and tells the 
+    ResXResourceReader how to depersist the object. This is currently not 
+    extensible. For a given mimetype the value must be set accordingly:
+    
+    Note - application/x-microsoft.net.object.binary.base64 is the format 
+    that the ResXResourceWriter will generate, however the reader can 
+    read any of the formats listed below.
+    
+    mimetype: application/x-microsoft.net.object.binary.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Binary.BinaryFormatter
+            : and then encoded with base64 encoding.
+    
+    mimetype: application/x-microsoft.net.object.soap.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Soap.SoapFormatter
+            : and then encoded with base64 encoding.
+
+    mimetype: application/x-microsoft.net.object.bytearray.base64
+    value   : The object must be serialized into a byte array 
+            : using a System.ComponentModel.TypeConverter
+            : and then encoded with base64 encoding.
+    -->
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="metadata">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" />
+              </xsd:sequence>
+              <xsd:attribute name="name" use="required" type="xsd:string" />
+              <xsd:attribute name="type" type="xsd:string" />
+              <xsd:attribute name="mimetype" type="xsd:string" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="assembly">
+            <xsd:complexType>
+              <xsd:attribute name="alias" type="xsd:string" />
+              <xsd:attribute name="name" type="xsd:string" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="resheader">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" />
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <data name="mwTitle" xml:space="preserve">
+    <value>ERP</value>
+  </data>
+  <data name="mwDashboard" xml:space="preserve">
+    <value>Beranda</value>
+  </data>
+  <data name="mwMaster" xml:space="preserve">
+    <value>Master</value>
+  </data>
+  <data name="mwMstUser" xml:space="preserve">
+    <value>Pengguna</value>
+  </data>
+  <data name="mwProjectTemplate" xml:space="preserve">
+    <value>Templat Proyek</value>
+  </data>
+  <data name="mwTransaction" xml:space="preserve">
+    <value>Transaksi</value>
+  </data>
+  <data name="mwMstItem" xml:space="preserve">
+    <value>Barang</value>
+  </data>
+  <data name="mwProject" xml:space="preserve">
+    <value>Proyek</value>
+  </data>
+  <data name="mwSales" xml:space="preserve">
+    <value>Penjualan</value>
+  </data>
+  <data name="mwFinancial" xml:space="preserve">
+    <value>Keuangan</value>
+  </data>
+  <data name="mwReport" xml:space="preserve">
+    <value>Laporan</value>
+  </data>
+  <data name="mwSetting" xml:space="preserve">
+    <value>Pengaturan</value>
+  </data>
+  <data name="mwProduct" xml:space="preserve">
+    <value>Produk</value>
+  </data>
+  <data name="mwBusinessPartner" xml:space="preserve">
+    <value>Mitra Bisnis</value>
+  </data>
+  <data name="mwMstSupplier" xml:space="preserve">
+    <value>Supplier</value>
+  </data>
+  <data name="ApplicationTitle" xml:space="preserve">
+    <value>ERP</value>
+  </data>
+  <data name="spLanguage" xml:space="preserve">
+    <value>Bahasa</value>
+  </data>
+  <data name="spEnglish" xml:space="preserve">
+    <value>Inggris</value>
+  </data>
+  <data name="spBahasa" xml:space="preserve">
+    <value>Indonesia</value>
+  </data>
+  <data name="btnAdd" xml:space="preserve">
+    <value>Tambah</value>
+  </data>
+  <data name="btnEdit" xml:space="preserve">
+    <value>Ubah</value>
+  </data>
+  <data name="btnDelete" xml:space="preserve">
+    <value>Hapus</value>
+  </data>
+  <data name="btnViewDetail" xml:space="preserve">
+    <value>Lihat Detil</value>
+  </data>
+  <data name="dialogButtonSave" xml:space="preserve">
+    <value>Simpan</value>
+  </data>
+  <data name="dialogButtonCancel" xml:space="preserve">
+    <value>Batalkan</value>
+  </data>
+  <data name="dialogButtonOK" xml:space="preserve">
+    <value>OK</value>
+  </data>
+  <data name="messageFieldIsRequired" xml:space="preserve">
+    <value>{0} tidak boleh kosong.</value>
+  </data>
+  <data name="messageTitleQuestionBeforeSaveDetail" xml:space="preserve">
+    <value>Konfirmasi Penyimpanan Data {0}</value>
+  </data>
+  <data name="messageQuestionBeforeSaveDetail" xml:space="preserve">
+    <value>Apakah anda yakin untuk menyimpan data {0}?</value>
+  </data>
+  <data name="messageTitleCouldNotSave" xml:space="preserve">
+    <value>Tidak Bisa Menyimpan Data {0}</value>
+  </data>
+  <data name="detailTitleAdd" xml:space="preserve">
+    <value>{0} Baru</value>
+  </data>
+  <data name="detailTitleEdit" xml:space="preserve">
+    <value>Ubah Data {0}</value>
+  </data>
+  <data name="detailTitleView" xml:space="preserve">
+    <value>Lihat Data {0}</value>
+  </data>
+  <data name="Filter" xml:space="preserve">
+    <value>Filter</value>
+  </data>
+  <data name="labelModifiedAt" xml:space="preserve">
+    <value>Modified at</value>
+  </data>
+  <data name="messageSaveDetailFailed" xml:space="preserve">
+    <value>Gagal menyimpan data {0}. {1}</value>
+  </data>
+  <data name="messageSaveDetailSucceed" xml:space="preserve">
+    <value>Data {0} berhasil disimpan.</value>
+  </data>
+  <data name="messageTitleSaveSucceed" xml:space="preserve">
+    <value>Menyimpan Data {0}</value>
+  </data>
+  <data name="messageTitleSaveFailed" xml:space="preserve">
+    <value>Menyimpan Data {0}</value>
+  </data>
+  <data name="HttpClientFailedToReadResponse" xml:space="preserve">
+    <value>Gagal mengubah respons ke objek.{0}</value>
+  </data>
+  <data name="messagePKAlreadyExists" xml:space="preserve">
+    <value>Data {0} sudah terdaftar.</value>
+  </data>
+  <data name="messageTechnicalError" xml:space="preserve">
+    <value>Terjadi kesalahan teknis, lihat pesan dibawah.{0}</value>
+  </data>
+  <data name="messageTitleLoadListData" xml:space="preserve">
+    <value>Memuat Data {0}</value>
+  </data>
+  <data name="messageTitleSeletedDataNullWhenEdit" xml:space="preserve">
+    <value>Tidak Ada Data {0} Terpilih</value>
+  </data>
+  <data name="messageSeletedDataNullWhenEdit" xml:space="preserve">
+    <value>Mohon pilih data {0} sebelum diubah.</value>
+  </data>
+  <data name="messageSeletedDataNullWhenDelete" xml:space="preserve">
+    <value>Mohon pilih data {0} sebelum dihapus.</value>
+  </data>
+  <data name="messageTitleQuestionBeforeDelete" xml:space="preserve">
+    <value>Konfirmasi Penghapusan Data {0}</value>
+  </data>
+  <data name="messageQuestionBeforeDelete" xml:space="preserve">
+    <value>Apakah anda yakin untuk menghapus data {0}?</value>
+  </data>
+  <data name="dialogButtonYes" xml:space="preserve">
+    <value>Ya</value>
+  </data>
+  <data name="dialogButtonNo" xml:space="preserve">
+    <value>Tidak</value>
+  </data>
+  <data name="messageTitleDeleteSucceed" xml:space="preserve">
+    <value>Menghapus Data {0}</value>
+  </data>
+  <data name="messageDeleteSucceed" xml:space="preserve">
+    <value>Data {0} berhasil dihapus.</value>
+  </data>
+  <data name="messageDeleteFailed" xml:space="preserve">
+    <value>Data {0} gagal dihapus.</value>
+  </data>
+  <data name="propUserId" xml:space="preserve">
+    <value>ID Pengguna</value>
+  </data>
+  <data name="propUserName" xml:space="preserve">
+    <value>Nama Pengguna</value>
+  </data>
+  <data name="propIsBlacklist" xml:space="preserve">
+    <value>Daftar Hitam</value>
+  </data>
+  <data name="propAccessRight" xml:space="preserve">
+    <value>Hak Akses</value>
+  </data>
+  <data name="propModuleName" xml:space="preserve">
+    <value>Nama Modul</value>
+  </data>
+  <data name="propCanAll" xml:space="preserve">
+    <value>Beri Semua</value>
+  </data>
+  <data name="propCanViewList" xml:space="preserve">
+    <value>Lihat List</value>
+  </data>
+  <data name="propCanViewDetail" xml:space="preserve">
+    <value>Lihat Detil</value>
+  </data>
+  <data name="propCanAdd" xml:space="preserve">
+    <value>Tambah</value>
+  </data>
+  <data name="propCanEdit" xml:space="preserve">
+    <value>Ubah</value>
+  </data>
+  <data name="propCanDelete" xml:space="preserve">
+    <value>Hapus</value>
+  </data>
+  <data name="propCreatedAt" xml:space="preserve">
+    <value>Dibuat pada</value>
+  </data>
+  <data name="propCreatedBy" xml:space="preserve">
+    <value>Dibuat oleh</value>
+  </data>
+  <data name="propModifiedBy" xml:space="preserve">
+    <value>Diubah oleh</value>
+  </data>
+  <data name="propModifiedAt" xml:space="preserve">
+    <value>Diubah pada</value>
+  </data>
+  <data name="propSupplierCode" xml:space="preserve">
+    <value>Kode Supplier</value>
+  </data>
+  <data name="propSupplierName" xml:space="preserve">
+    <value>Nama Supplier</value>
+  </data>
+  <data name="propItemCode" xml:space="preserve">
+    <value>Kode Barang</value>
+  </data>
+  <data name="propItemName" xml:space="preserve">
+    <value>Nama Barang</value>
+  </data>
+  <data name="propItemDescription" xml:space="preserve">
+    <value>Deskripsi Barang</value>
+  </data>
+  <data name="propItemUnit" xml:space="preserve">
+    <value>Satuan</value>
+  </data>
+  <data name="propIsStockControl" xml:space="preserve">
+    <value>Kontrol Stok</value>
+  </data>
+  <data name="propImagePath" xml:space="preserve">
+    <value>Upload Gambar</value>
+  </data>
+  <data name="messageUnsupportedFileType" xml:space="preserve">
+    <value>Tipe file tidak mendukung {0}</value>
+  </data>
+  <data name="messageFileNotExists" xml:space="preserve">
+    <value>Lokasi file pada {0} tidak ketemu.{1}</value>
+  </data>
+  <data name="mwItemUsage" xml:space="preserve">
+    <value>Pemakaian Barang</value>
+  </data>
+  <data name="propItemUsageDate" xml:space="preserve">
+    <value>Tanggal Pemakaian</value>
+  </data>
+  <data name="propItemUsageQty" xml:space="preserve">
+    <value>Jumlah Pemakaian</value>
+  </data>
+  <data name="propItemDetail" xml:space="preserve">
+    <value>Daftar Barang</value>
+  </data>
+  <data name="mwPurchase" xml:space="preserve">
+    <value>Pembelian</value>
+  </data>
+  <data name="propPOCode" xml:space="preserve">
+    <value>Nomor Pembelian</value>
+  </data>
+  <data name="propPODate" xml:space="preserve">
+    <value>Tanggal Pembelian</value>
+  </data>
+  <data name="propPODetail" xml:space="preserve">
+    <value>Daftar Pembelian</value>
+  </data>
+  <data name="propUnitPrice" xml:space="preserve">
+    <value>Harga Barang</value>
+  </data>
+  <data name="propUnitPriceDiscount" xml:space="preserve">
+    <value>Diskon Harga Barang</value>
+  </data>
+  <data name="propDPP" xml:space="preserve">
+    <value>DPP</value>
+  </data>
+  <data name="propTotalAmount" xml:space="preserve">
+    <value>Jumlah</value>
+  </data>
+  <data name="propQty" xml:space="preserve">
+    <value>Jumlah</value>
+  </data>
+  <data name="propMinimumStock" xml:space="preserve">
+    <value>Stok Minimum</value>
+  </data>
+</root>
