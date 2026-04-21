@@ -9,15 +9,25 @@ public partial class ManagementSystemContext : DbContext
     {
     }
 
+    public virtual DbSet<Finance> Finances { get; set; }
+
+    public virtual DbSet<FinanceDetail> FinanceDetails { get; set; }
+
     public virtual DbSet<ItemUsage> ItemUsages { get; set; }
 
     public virtual DbSet<ItemUsageDetail> ItemUsageDetails { get; set; }
+
+    public virtual DbSet<MstAccount> MstAccounts { get; set; }
 
     public virtual DbSet<MstItem> MstItems { get; set; }
 
     public virtual DbSet<MstSupplier> MstSuppliers { get; set; }
 
     public virtual DbSet<MstUser> MstUsers { get; set; }
+
+    public virtual DbSet<PSOrder> PSOrders { get; set; }
+
+    public virtual DbSet<PSOrderDetail> PSOrderDetails { get; set; }
 
     public virtual DbSet<PurchaseOrder> PurchaseOrders { get; set; }
 
@@ -29,6 +39,11 @@ public partial class ManagementSystemContext : DbContext
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
+        modelBuilder.Entity<FinanceDetail>(entity =>
+        {
+            entity.HasOne(d => d.Finance).WithMany(p => p.FinanceDetails).HasConstraintName("FK_FinanceDetail_Finance");
+        });
+
         modelBuilder.Entity<ItemUsageDetail>(entity =>
         {
             entity.Property(e => e.ItemUsageDetailId).ValueGeneratedOnAdd();
@@ -39,6 +54,11 @@ public partial class ManagementSystemContext : DbContext
         modelBuilder.Entity<MstItem>(entity =>
         {
             entity.Property(e => e.SupplierCode).HasDefaultValue("");
+        });
+
+        modelBuilder.Entity<PSOrderDetail>(entity =>
+        {
+            entity.HasOne(d => d.PSOrder).WithMany(p => p.PSOrderDetails).HasConstraintName("FK_PSOrderDetail_PSOrder");
         });
 
         modelBuilder.Entity<PurchaseOrderDetail>(entity =>

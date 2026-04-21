@@ -12,7 +12,10 @@ public partial class MstSupplier : INotifyPropertyChanged
     public void OnPropertyChanged([CallerMemberName] string? propertyName = null)
     {
         PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+        AfterPropertyChanged(propertyName);
     }
+
+    partial void AfterPropertyChanged(string propertyName);
 
     #endregion
 
@@ -28,7 +31,7 @@ public partial class MstSupplier : INotifyPropertyChanged
         }
     }
 
-    private string _SupplierCode = null!;
+    private string _SupplierCode = string.Empty;
     
     public string SupplierCode {
         get {
@@ -40,7 +43,7 @@ public partial class MstSupplier : INotifyPropertyChanged
         }
     }
 
-    private string _SupplierName = null!;
+    private string _SupplierName = string.Empty;
     
     public string SupplierName {
         get {
@@ -49,6 +52,18 @@ public partial class MstSupplier : INotifyPropertyChanged
         set {
             _SupplierName = value;
             OnPropertyChanged("SupplierName");
+        }
+    }
+
+    private byte _SupplierType;
+    
+    public byte SupplierType {
+        get {
+            return _SupplierType;
+        }
+        set {
+            _SupplierType = value;
+            OnPropertyChanged("SupplierType");
         }
     }
 
@@ -76,7 +91,7 @@ public partial class MstSupplier : INotifyPropertyChanged
         }
     }
 
-    private string _CreatedBy = null!;
+    private string _CreatedBy = string.Empty;
     
     public string CreatedBy {
         get {
@@ -100,7 +115,7 @@ public partial class MstSupplier : INotifyPropertyChanged
         }
     }
 
-    private string _ModifiedBy = null!;
+    private string _ModifiedBy = string.Empty;
     
     public string ModifiedBy {
         get {

@@ -12,7 +12,10 @@ public partial class StockSummary : INotifyPropertyChanged
     public void OnPropertyChanged([CallerMemberName] string? propertyName = null)
     {
         PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+        AfterPropertyChanged(propertyName);
     }
+
+    partial void AfterPropertyChanged(string propertyName);
 
     #endregion
 
@@ -28,7 +31,7 @@ public partial class StockSummary : INotifyPropertyChanged
         }
     }
 
-    private string _ItemCode = null!;
+    private string _ItemCode = string.Empty;
     
     public string ItemCode {
         get {

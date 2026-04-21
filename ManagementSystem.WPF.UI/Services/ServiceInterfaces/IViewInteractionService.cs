@@ -1,5 +1,4 @@
-﻿
-namespace ManagementSystem.WPF.UI.Services
+﻿namespace ManagementSystem.WPF.UI.Services.ServiceInterfaces
 {
     public interface IViewInteractionService
     {

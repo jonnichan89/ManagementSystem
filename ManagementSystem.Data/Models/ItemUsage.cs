@@ -16,14 +16,14 @@ public partial class ItemUsage
 
     [StringLength(20)]
     [Unicode(false)]
-    public string CreatedBy { get; set; }
+    public string CreatedBy { get; set; } = string.Empty;
 
     [Column(TypeName = "smalldatetime")]
     public DateTime ModifiedAt { get; set; }
 
     [StringLength(20)]
     [Unicode(false)]
-    public string ModifiedBy { get; set; }
+    public string ModifiedBy { get; set; } = string.Empty;
 
     public virtual ObservableCollection<ItemUsageDetail> ItemUsageDetails { get; set; } = new ObservableCollection<ItemUsageDetail>();
 }

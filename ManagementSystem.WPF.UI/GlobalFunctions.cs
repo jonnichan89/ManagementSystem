@@ -1,4 +1,7 @@
 ﻿
+using ManagementSystem.Common.OtherModels;
+using ManagementSystem.WPF.UI.Services.ServiceInterfaces;
+
 namespace ManagementSystem.WPF;
 
 public class GlobalFunctions
@@ -39,6 +42,7 @@ public class GlobalFunctions
         var actionResult = await _apiClient.GetMstItemsAsync();
         if (actionResult.ActionIsSuccess)
         {
+            Items.Clear(); // Clear 1x lagi karena Async bisa jadi form lain juga sedang call ini.
             Items.AddRange((IEnumerable<MstItem>)actionResult.ActionResult);
         }
         else
@@ -61,6 +65,7 @@ public class GlobalFunctions
         var actionResult = await _apiClient.GetMstSuppliersAsync();
         if (actionResult.ActionIsSuccess)
         {
+            Suppliers.Clear(); // Clear 1x lagi karena Async bisa jadi form lain juga sedang call ini.
             Suppliers.AddRange((IEnumerable<MstSupplier>)actionResult.ActionResult);
         }
         else
@@ -69,6 +74,38 @@ public class GlobalFunctions
                 string.Format(
                     TranslationSource.Instance["messageTitleLoadListData"] ?? string.Empty,
                     TranslationSource.Instance["mwMstSupplier"] ?? string.Empty));
+        }
+    }
+
+    public async Task<IEnumerable<SearchOptionResultPSOrder>> SearchPurchaseOrderAsync(string poCode)
+    {
+        var actionResult = await _apiClient.SearchPurchaseOrdersAsync(poCode);
+        if (actionResult.ActionIsSuccess)
+        {
+            return (IEnumerable<SearchOptionResultPSOrder>)actionResult.ActionResult;
+        }
+        else
+        {
+            throw new Exception(
+                string.Format(
+                    TranslationSource.Instance["messageTitleLoadListData"] ?? string.Empty,
+                    TranslationSource.Instance["mwPurchaseOrder"] ?? string.Empty));
+        }
+    }
+
+    public async Task<IEnumerable<SearchOptionResultPSOrder>> SearchSalesOrderAsync(string poCode)
+    {
+        var actionResult = await _apiClient.SearchSalesOrdersAsync(poCode);
+        if (actionResult.ActionIsSuccess)
+        {
+            return (IEnumerable<SearchOptionResultPSOrder>)actionResult.ActionResult;
+        }
+        else
+        {
+            throw new Exception(
+                string.Format(
+                    TranslationSource.Instance["messageTitleLoadListData"] ?? string.Empty,
+                    TranslationSource.Instance["mwSalesOrder"] ?? string.Empty));
         }
     }
 

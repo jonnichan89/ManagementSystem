@@ -14,8 +14,10 @@ namespace ManagementSystem.DataServices.Service
             if (string.IsNullOrWhiteSpace(model.UserId))
                 validations.Add(ModelValidation.FieldIsRequired(nameof(MstUser), nameof(model.UserId), model.UserId));
 
-            // Validasi taro dibawah karena Delete cuma terisi PK nya saja
-            if (action != ServiceAction.Delete)
+            if (action == ServiceAction.Delete)
+            {
+            }
+            else
             {
                 if (string.IsNullOrWhiteSpace(model.UserName))
                     validations.Add(ModelValidation.FieldIsRequired(nameof(MstUser), nameof(model.UserName), model.UserName));

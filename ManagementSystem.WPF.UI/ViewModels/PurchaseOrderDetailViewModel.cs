@@ -1,4 +1,8 @@
 ﻿
+using ManagementSystem.WPF.UI.Data;
+using ManagementSystem.WPF.UI.Services.ServiceInterfaces;
+using ManagementSystem.WPF.UI.ViewModels.ToInherit;
+
 namespace ManagementSystem.WPF.UI.ViewModels;
 
 public partial class PurchaseOrderDetailViewModel : DetailViewModel
@@ -7,7 +11,7 @@ public partial class PurchaseOrderDetailViewModel : DetailViewModel
     public string Title { get; private set; }
 
     [ObservableProperty]
-    public bool CanEditPODate
+    public bool CanEditPSDate
     {
         get
         {
@@ -15,31 +19,82 @@ public partial class PurchaseOrderDetailViewModel : DetailViewModel
         }
     }
 
-    private PurchaseOrderDetail? _selectedPOD;
+    private PSOrderDetail? _selectedItemDetail;
 
-    public PurchaseOrderDetail? SelectedPOD
+    public PSOrderDetail? SelectedItemDetail
     {
-        get { return _selectedPOD; }
+        get { return _selectedItemDetail; }
         set
         {
             ResetCommandChecked();
 
-            _selectedPOD = value;
-            if (_selectedPOD != null && !string.IsNullOrEmpty(_selectedPOD.ItemName))
+            _selectedItemDetail = value;
+            if (_selectedItemDetail != null && !string.IsNullOrEmpty(_selectedItemDetail.ItemName))
             {
-                FilterText = _selectedPOD.ItemName;
+                FilterText = _selectedItemDetail.ItemName;
             }
             else
             {
                 FilterText = "";
             }
 
-            OnPropertyChanged(nameof(SelectedPOD));
+            OnPropertyChanged(nameof(SelectedItemDetail));
         }
     }
 
     [ObservableProperty]
-    private PurchaseOrder _data;
+    private PSOrder _data;
+
+    #region Initialize Supplier Combo Box
+
+    private InstantSupplierComboBoxVM _supplierCBVM;
+    public InstantSupplierComboBoxVM SupplierCBVM
+    {
+        get
+        {
+            return _supplierCBVM;
+        }
+    }
+
+    private void InitializeSupplierCBVM()
+    {
+        _supplierCBVM = new InstantSupplierComboBoxVM(_gFunctions);
+        _supplierCBVM.SupplierChanged = _supplierCBVM_SupplierChanged;
+        _supplierCBVM.GetSupplierCode = _supplierCBVM_GetSupplierCode;
+        _supplierCBVM.SetSupplierName = _supplierCBVM_SetSupplierName;
+    }
+
+    private void _supplierCBVM_SupplierChanged(MstSupplier? selectedSupplier)
+    {
+        if (_data == null) return;
+
+        if (selectedSupplier != null)
+        {
+            _data.SupplierCode = selectedSupplier.SupplierCode;
+            _data.SupplierName = selectedSupplier.SupplierName;
+        }
+        else
+        {
+            _data.SupplierCode = string.Empty;
+            _data.SupplierName = string.Empty;
+        }
+    }
+
+    private string _supplierCBVM_GetSupplierCode()
+    {
+        if (_data == null) return "";
+
+        return _data.SupplierCode;
+    }
+
+    private void _supplierCBVM_SetSupplierName(string supplierName)
+    {
+        if (_data == null) return;
+
+        _data.SupplierName = supplierName;
+    }
+
+    #endregion
 
     #region Search Item
 
@@ -70,12 +125,12 @@ public partial class PurchaseOrderDetailViewModel : DetailViewModel
                 FilterText = _selectedItem.ItemName;
                 PreviewImagePath = _selectedItem.ImagePath;
 
-                if (SelectedPOD != null)
+                if (SelectedItemDetail != null)
                 {
-                    SelectedPOD.ItemCode = _selectedItem.ItemCode;
-                    SelectedPOD.ItemName = _selectedItem.ItemName;
-                    OnPropertyChanged(nameof(SelectedPOD));
-                    Data.OnPropertyChanged(nameof(Data.PurchaseOrderDetails));
+                    SelectedItemDetail.ItemCode = _selectedItem.ItemCode;
+                    SelectedItemDetail.ItemName = _selectedItem.ItemName;
+                    OnPropertyChanged(nameof(SelectedItemDetail));
+                    Data.OnPropertyChanged(nameof(Data.PSOrderDetails));
                 }
             }
 
@@ -100,11 +155,11 @@ public partial class PurchaseOrderDetailViewModel : DetailViewModel
                 {
                     PreviewImagePath = null;
 
-                    if (SelectedPOD != null)
+                    if (SelectedItemDetail != null)
                     {
-                        SelectedPOD.ItemCode = string.Empty;
-                        SelectedPOD.ItemName = string.Empty;
-                        OnPropertyChanged(nameof(SelectedPOD));
+                        SelectedItemDetail.ItemCode = string.Empty;
+                        SelectedItemDetail.ItemName = string.Empty;
+                        OnPropertyChanged(nameof(SelectedItemDetail));
                     }
 
                     using (FilteredView.DeferRefresh())
@@ -121,16 +176,16 @@ public partial class PurchaseOrderDetailViewModel : DetailViewModel
                 {
                     PreviewImagePath = foundItem.ImagePath;
 
-                    if (SelectedPOD != null)
+                    if (SelectedItemDetail != null)
                     {
-                        SelectedPOD.ItemCode = foundItem.ItemCode;
-                        SelectedPOD.ItemName = foundItem.ItemName;
-                        OnPropertyChanged(nameof(SelectedPOD));
-                        Data.OnPropertyChanged(nameof(Data.PurchaseOrderDetails));
+                        SelectedItemDetail.ItemCode = foundItem.ItemCode;
+                        SelectedItemDetail.ItemName = foundItem.ItemName;
+                        OnPropertyChanged(nameof(SelectedItemDetail));
+                        Data.OnPropertyChanged(nameof(Data.PSOrderDetails));
                     }
 
                     ItemSelectedIndex = FilteredView.IndexOf(foundItem);
-                    _filterText = foundItem.ItemName;
+                    _filterText = foundItem.ItemName; 
                 }
                 OnPropertyChanged(nameof(Data));
             }
@@ -143,9 +198,11 @@ public partial class PurchaseOrderDetailViewModel : DetailViewModel
         _items.Clear();
         _items.AddRange(_gFunctions.Items.ToArray());
 
-        foreach (var PurchaseOrderDetail in Data.PurchaseOrderDetails)
+        if (_data == null) return;
+
+        foreach (var PSOrderDetail in Data.PSOrderDetails)
         {
-            PurchaseOrderDetail.ItemName = _items.FirstOrDefault(i => i.ItemCode == PurchaseOrderDetail.ItemCode)?.ItemName ?? string.Empty;
+            PSOrderDetail.ItemName = _items.FirstOrDefault(i => i.ItemCode == PSOrderDetail.ItemCode)?.ItemName ?? string.Empty;
         }
 
         _filterPredicate = item =>
@@ -179,17 +236,19 @@ public partial class PurchaseOrderDetailViewModel : DetailViewModel
         _viewInteractionService = viewInteractionService;
         _viewInteractionService.PromptFeedback += _viewInteractionService_PromptFeedback;
         _jsonOptions = jsonOptions;
+        _gFunctions = gFunctions;
 
         ChangeLanguage();
-        _gFunctions = gFunctions;
+        InitializeSupplierCBVM();
     }
 
     public override async Task InitializeAsync(DetailAction action, object pk)
     {
-        int PurchaseOrderId = (int)pk;
+        int PSOrderId = (int)pk;
 
         base._action = action;
 
+        bool loadSearchSuppliers = false;
         bool loadSearchItems = false;
 
         switch (action)
@@ -204,16 +263,21 @@ public partial class PurchaseOrderDetailViewModel : DetailViewModel
                 Title = string.Format(
                     TranslationSource.Instance["detailTitleAdd"] ?? string.Empty,
                     TranslationSource.Instance["mwPurchaseOrder"]);
-                Data = new PurchaseOrder()
+                Data = new PSOrder()
                 {
-                    PODate = DateTime.Today,
+                    PSDate = DateTime.Today,
+                    CurrencyId = "IDR",
+                    CurrencyRate = 1,
+                    PaidCurrencyId = "IDR",
+                    PaidCurrencyRate = 1,
                     CreatedAt = DateTime.Now,
                     CreatedBy = "",
                     ModifiedAt = DateTime.Now,
                     ModifiedBy = ""
                 };
-                Data.AddPurchaseOrderDetail();
+                Data.AddPSOrderDetail();
 
+                loadSearchSuppliers = true;
                 loadSearchItems = true;
 
                 break;
@@ -223,12 +287,13 @@ public partial class PurchaseOrderDetailViewModel : DetailViewModel
                     TranslationSource.Instance["detailTitleEdit"] ?? string.Empty,
                     TranslationSource.Instance["mwPurchaseOrder"]);
 
-                ServiceActionResult sar = await _apiClient.GetPurchaseOrderByIdAsync(PurchaseOrderId);
+                ServiceActionResult sar = await _apiClient.GetPurchaseOrderByIdAsync(PSOrderId);
                 if (sar.ActionIsSuccess)
                 {
-                    Data = (PurchaseOrder)sar.ActionResult;
+                    Data = (PSOrder)sar.ActionResult;
                 }
 
+                loadSearchSuppliers = true;
                 loadSearchItems = true;
 
                 break;
@@ -237,20 +302,30 @@ public partial class PurchaseOrderDetailViewModel : DetailViewModel
                 break;
         }
 
+        if (loadSearchSuppliers)
+        {
+            await _supplierCBVM.LoadSearchSupplierAsync();
+        }
+
+        if (!string.IsNullOrWhiteSpace(Data?.SupplierCode))
+        {
+            Data.SupplierName = (_supplierCBVM._suppliers.First(s => s.SupplierCode == Data.SupplierCode))?.SupplierName ?? string.Empty;
+        }
+
         if (loadSearchItems)
         {
             await LoadSearchItemAsync();
         }
 
-        if (Data?.PurchaseOrderDetails.Count > 0)
+        if (Data?.PSOrderDetails.Count > 0)
         {
-            foreach (var detail in Data.PurchaseOrderDetails)
+            foreach (var detail in Data.PSOrderDetails)
             {
                 if (detail.ItemName != "")
                     detail.ItemName = (_items.First(i => i.ItemCode == detail.ItemCode))?.ItemName ?? string.Empty;
             }
 
-            SelectedPOD = Data.PurchaseOrderDetails[0];
+            SelectedItemDetail = Data.PSOrderDetails[0];
         }
     }
 
@@ -308,7 +383,7 @@ public partial class PurchaseOrderDetailViewModel : DetailViewModel
         string message = "";
 
         int i = 0;
-        foreach (var detail in Data.PurchaseOrderDetails)
+        foreach (var detail in Data.PSOrderDetails)
         {
             if (string.IsNullOrWhiteSpace(detail.ItemCode))
             {
@@ -326,7 +401,7 @@ public partial class PurchaseOrderDetailViewModel : DetailViewModel
                 message += $@"[{i}] " +
                     string.Format(
                         TranslationSource.Instance["messageFieldIsRequired"] ?? string.Empty,
-                        TranslationSource.Instance["propPurchaseOrderQty"] + " (" + detail.ItemCode + ")") +
+                        TranslationSource.Instance["propQty"] + " (" + detail.ItemCode + ")") +
                     Environment.NewLine;
                 absoluteCannotSave = true;
             }
@@ -388,14 +463,14 @@ public partial class PurchaseOrderDetailViewModel : DetailViewModel
                             message += Environment.NewLine +
                                 string.Format(
                                     TranslationSource.Instance["messagePKAlreadyExists"] ?? string.Empty,
-                                    _data.POCode);
+                                    _data.PSCode);
                             break;
 
                         case ModelValidationType.DuplicateRecord:
                             message += Environment.NewLine +
                                 string.Format(
                                     TranslationSource.Instance["messageDuplicateRecord"] ?? string.Empty,
-                                    _data.POCode);
+                                    _data.PSCode);
                             break;
                     }
                 }
@@ -453,7 +528,7 @@ public partial class PurchaseOrderDetailViewModel : DetailViewModel
 
     #region Detail
 
-    private DetailAction _PurchaseOrderDetailAction;
+    private DetailAction _PSOrderDetailAction;
 
     [ObservableProperty]
     private bool _AddCommandChecked;
@@ -464,47 +539,47 @@ public partial class PurchaseOrderDetailViewModel : DetailViewModel
     }
 
     [RelayCommand]
-    private void AddPOD()
+    private void AddItemDetail()
     {
         ResetCommandChecked();
 
-        _PurchaseOrderDetailAction = DetailAction.Add;
+        _PSOrderDetailAction = DetailAction.Add;
         AddCommandChecked = true;
 
-        Data.AddPurchaseOrderDetail();
-        SelectedPOD = Data.PurchaseOrderDetails.LastOrDefault();
+        Data.AddPSOrderDetail();
+        SelectedItemDetail = Data.PSOrderDetails.LastOrDefault();
     }
 
     [RelayCommand]
-    private void EditPOD()
+    private void EditItemDetail()
     {
         ResetCommandChecked();
 
-        if (SelectedPOD != null)
+        if (SelectedItemDetail != null)
         {
-            _PurchaseOrderDetailAction = DetailAction.Edit;
+            _PSOrderDetailAction = DetailAction.Edit;
         }
 
     }
 
     [RelayCommand]
-    private void DeletePOD()
+    private void DeleteItemDetail()
     {
         ResetCommandChecked();
 
-        if (SelectedPOD != null)
+        if (SelectedItemDetail != null)
         {
-            Data.PurchaseOrderDetails.Remove(SelectedPOD);
-            SelectedPOD = Data.PurchaseOrderDetails.FirstOrDefault();
+            Data.PSOrderDetails.Remove(SelectedItemDetail);
+            SelectedItemDetail = Data.PSOrderDetails.FirstOrDefault();
         }
     }
 
     //[RelayCommand]
-    //private void SavePurchaseOrderDetail()
+    //private void SavePSOrderDetail()
     //{
-    //    if (_PurchaseOrderDetailAction == DetailAction.Add)
+    //    if (_PSOrderDetailAction == DetailAction.Add)
     //    {
-    //        Data.PurchaseOrderDetails.Add(new PurchaseOrderDetail()
+    //        Data.PSOrderDetails.Add(new PSOrderDetail()
     //        {
     //            ItemName = DataDetail.ItemName,
     //            ItemCode = DataDetail.ItemCode,
@@ -515,18 +590,18 @@ public partial class PurchaseOrderDetailViewModel : DetailViewModel
     //            ModifiedBy = ""
     //        });
     //        OnPropertyChanged(nameof(Data));
-    //        Data.OnPropertyChanged(nameof(Data.PurchaseOrderDetails));
+    //        Data.OnPropertyChanged(nameof(Data.PSOrderDetails));
 
-    //        SelectedPOD = Data.PurchaseOrderDetails.LastOrDefault();
+    //        SelectedPSD = Data.PSOrderDetails.LastOrDefault();
     //        return;
     //    }
-    //    else if (_PurchaseOrderDetailAction == DetailAction.Edit)
+    //    else if (_PSOrderDetailAction == DetailAction.Edit)
     //    {
-    //        if (SelectedPOD != null)
+    //        if (SelectedPSD != null)
     //        {
-    //            SelectedPOD.ItemName = DataDetail.ItemName;
-    //            SelectedPOD.ItemCode = DataDetail.ItemCode;
-    //            SelectedPOD.Qty = DataDetail.Qty;
+    //            SelectedPSD.ItemName = DataDetail.ItemName;
+    //            SelectedPSD.ItemCode = DataDetail.ItemCode;
+    //            SelectedPSD.Qty = DataDetail.Qty;
     //            OnPropertyChanged(nameof(Data));
     //        }
     //    }

@@ -12,11 +12,14 @@ public partial class MstUser : INotifyPropertyChanged
     public void OnPropertyChanged([CallerMemberName] string? propertyName = null)
     {
         PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+        AfterPropertyChanged(propertyName);
     }
+
+    partial void AfterPropertyChanged(string propertyName);
 
     #endregion
 
-    private string _UserId = null!;
+    private string _UserId = string.Empty;
     
     public string UserId {
         get {
@@ -28,7 +31,7 @@ public partial class MstUser : INotifyPropertyChanged
         }
     }
 
-    private string _UserName = null!;
+    private string _UserName = string.Empty;
     
     public string UserName {
         get {
@@ -40,7 +43,7 @@ public partial class MstUser : INotifyPropertyChanged
         }
     }
 
-    private string _UserPassword = null!;
+    private string _UserPassword = string.Empty;
     
     public string UserPassword {
         get {
@@ -52,7 +55,7 @@ public partial class MstUser : INotifyPropertyChanged
         }
     }
 
-    private string _Salt = null!;
+    private string _Salt = string.Empty;
     
     public string Salt {
         get {
@@ -64,7 +67,7 @@ public partial class MstUser : INotifyPropertyChanged
         }
     }
 
-    private string _AccessList = null!;
+    private string _AccessList = string.Empty;
     
     public string AccessList {
         get {
@@ -100,7 +103,7 @@ public partial class MstUser : INotifyPropertyChanged
         }
     }
 
-    private string _CreatedBy = null!;
+    private string _CreatedBy = string.Empty;
     
     public string CreatedBy {
         get {
@@ -124,7 +127,7 @@ public partial class MstUser : INotifyPropertyChanged
         }
     }
 
-    private string _ModifiedBy = null!;
+    private string _ModifiedBy = string.Empty;
     
     public string ModifiedBy {
         get {

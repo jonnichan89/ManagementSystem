@@ -13,18 +13,18 @@ public partial class PurchaseOrderDetail
 
     [StringLength(50)]
     [Unicode(false)]
-    public string ItemCode { get; set; }
+    public string ItemCode { get; set; } = string.Empty;
 
     [StringLength(500)]
     [Unicode(false)]
-    public string ItemName { get; set; }
+    public string ItemName { get; set; } = string.Empty;
 
     [Column(TypeName = "money")]
     public decimal Qty { get; set; }
 
     [StringLength(20)]
     [Unicode(false)]
-    public string Unit { get; set; }
+    public string Unit { get; set; } = string.Empty;
 
     [Column(TypeName = "money")]
     public decimal UnitPrice { get; set; }
@@ -43,5 +43,5 @@ public partial class PurchaseOrderDetail
 
     [ForeignKey("POId")]
     [InverseProperty("PurchaseOrderDetails")]
-    public virtual PurchaseOrder PurchaseOrder { get; set; }
+    public virtual PurchaseOrder? PurchaseOrder { get; set; } = null;
 }

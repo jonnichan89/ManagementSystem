@@ -1,4 +1,6 @@
 
+using ManagementSystem.WPF.UI.Services.ServiceInterfaces;
+
 namespace ManagementSystem.WPF.UI.Services
 {
     public static class ServiceCollectionExtensions

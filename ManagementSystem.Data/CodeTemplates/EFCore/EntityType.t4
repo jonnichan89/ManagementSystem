@@ -167,9 +167,19 @@ public partial class <#= tableName #>
             {
                 columnName = property.Name;
             }
+
+            var initializer = "";
+            switch (code.Reference(property.ClrType))
+            {
+                case "string":
+                    initializer = " = string.Empty;";
+                    break;
+                default:
+                    break;
+            }
 //****************************************************************/
 #>
-    public <#= code.Reference(property.ClrType) #><#= needsNullable ? "?" : "" #> <#= columnName #> { get; set; }
+    public <#= code.Reference(property.ClrType) #><#= needsNullable ? "?" : "" #> <#= columnName #> { get; set; }<#= initializer #>
 <#
             firstProperty = false;
         }
@@ -239,8 +249,9 @@ public partial class <#= tableName #>
             {
                 var needsNullable = Options != null && Options.UseNullableReferenceTypes && !(navigation.ForeignKey.IsRequired && navigation.IsOnDependent);
                 var needsInitializer = Options != null && Options.UseNullableReferenceTypes && navigation.ForeignKey.IsRequired && navigation.IsOnDependent;
+                //needsNullable ? "?" : ""
 #>
-    public virtual <#= targetTableName #><#= needsNullable ? "?" : "" #> <#= targetTableName #> { get; set; }
+    public virtual <#= targetTableName #>? <#= targetTableName #> { get; set; } = null;
 <#
             }
         }

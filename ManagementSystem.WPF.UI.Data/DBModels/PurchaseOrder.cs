@@ -12,7 +12,10 @@ public partial class PurchaseOrder : INotifyPropertyChanged
     public void OnPropertyChanged([CallerMemberName] string? propertyName = null)
     {
         PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+        AfterPropertyChanged(propertyName);
     }
+
+    partial void AfterPropertyChanged(string propertyName);
 
     #endregion
 
@@ -28,7 +31,7 @@ public partial class PurchaseOrder : INotifyPropertyChanged
         }
     }
 
-    private string _POCode = null!;
+    private string _POCode = string.Empty;
     
     public string POCode {
         get {
@@ -52,7 +55,7 @@ public partial class PurchaseOrder : INotifyPropertyChanged
         }
     }
 
-    private string _SupplierCode = null!;
+    private string _SupplierCode = string.Empty;
     
     public string SupplierCode {
         get {
@@ -64,7 +67,7 @@ public partial class PurchaseOrder : INotifyPropertyChanged
         }
     }
 
-    private string _SupplierName = null!;
+    private string _SupplierName = string.Empty;
     
     public string SupplierName {
         get {
@@ -76,7 +79,7 @@ public partial class PurchaseOrder : INotifyPropertyChanged
         }
     }
 
-    private string _CurrencyId = null!;
+    private string _CurrencyId = string.Empty;
     
     public string CurrencyId {
         get {
@@ -196,9 +199,9 @@ public partial class PurchaseOrder : INotifyPropertyChanged
         }
     }
 
-    private DateTime _PaidAt;
+    private DateTime? _PaidAt;
     
-    public DateTime PaidAt {
+    public DateTime? PaidAt {
         get {
             return _PaidAt;
         }
@@ -208,7 +211,7 @@ public partial class PurchaseOrder : INotifyPropertyChanged
         }
     }
 
-    private string _PaidCurrencyId = null!;
+    private string _PaidCurrencyId = string.Empty;
     
     public string PaidCurrencyId {
         get {
@@ -244,7 +247,7 @@ public partial class PurchaseOrder : INotifyPropertyChanged
         }
     }
 
-    private string _PaidNote = null!;
+    private string _PaidNote = string.Empty;
     
     public string PaidNote {
         get {
@@ -280,7 +283,7 @@ public partial class PurchaseOrder : INotifyPropertyChanged
         }
     }
 
-    private string _CreatedBy = null!;
+    private string _CreatedBy = string.Empty;
     
     public string CreatedBy {
         get {
@@ -304,7 +307,7 @@ public partial class PurchaseOrder : INotifyPropertyChanged
         }
     }
 
-    private string _ModifiedBy = null!;
+    private string _ModifiedBy = string.Empty;
     
     public string ModifiedBy {
         get {

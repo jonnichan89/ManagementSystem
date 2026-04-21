@@ -324,8 +324,14 @@
   <data name="propSupplierCode" xml:space="preserve">
     <value>Kode Supplier</value>
   </data>
+  <data name="propAccountCode" xml:space="preserve">
+    <value>Kode Akun</value>
+  </data>
   <data name="propSupplierName" xml:space="preserve">
     <value>Nama Supplier</value>
+  </data>
+  <data name="propAccountName" xml:space="preserve">
+    <value>Nama Akun</value>
   </data>
   <data name="propItemCode" xml:space="preserve">
     <value>Kode Barang</value>
@@ -392,5 +398,77 @@
   </data>
   <data name="propMinimumStock" xml:space="preserve">
     <value>Stok Minimum</value>
+  </data>
+  <data name="propCurrencyId" xml:space="preserve">
+    <value>Mata Uang</value>
+  </data>
+  <data name="propCurrencyRate" xml:space="preserve">
+    <value>Kurs IDR</value>
+  </data>
+  <data name="propDPPDiscount" xml:space="preserve">
+    <value>Diskon DPP</value>
+  </data>
+  <data name="mwMstAccount" xml:space="preserve">
+    <value>Akun</value>
+  </data>
+  <data name="propModuleType" xml:space="preserve">
+    <value>Jenis Modul</value>
+  </data>
+  <data name="propDebitNameFormat" xml:space="preserve">
+    <value>Format Nama Akun Debit</value>
+  </data>
+  <data name="propCreditNameFormat" xml:space="preserve">
+    <value>Format Nama Akun Kredit</value>
+  </data>
+  <data name="propFinanceType" xml:space="preserve">
+    <value>Jenis Transaksi</value>
+  </data>
+  <data name="propFinanceCode" xml:space="preserve">
+    <value>Kode Keuangan</value>
+  </data>
+  <data name="propFinanceDate" xml:space="preserve">
+    <value>Tanggal Keuangan</value>
+  </data>
+  <data name="propReferenceType" xml:space="preserve">
+    <value>Jenis Referensi</value>
+  </data>
+  <data name="propReferenceCode" xml:space="preserve">
+    <value>Kode Referensi</value>
+  </data>
+  <data name="propSupplierReferenceNo" xml:space="preserve">
+    <value>Nomor Referensi Supplier</value>
+  </data>
+  <data name="propFinanceTypeARDN" xml:space="preserve">
+    <value>AR Debit Note</value>
+  </data>
+  <data name="propFinanceTypeARCN" xml:space="preserve">
+    <value>AR Credit Note</value>
+  </data>
+  <data name="propFinanceTypeAPDN" xml:space="preserve">
+    <value>AP Debit Note</value>
+  </data>
+  <data name="propFinanceTypeAPCN" xml:space="preserve">
+    <value>AP Credit Note</value>
+  </data>
+  <data name="propFinanceDetail" xml:space="preserve">
+    <value>Pembayaran</value>
+  </data>
+  <data name="propPaidAt" xml:space="preserve">
+    <value>Dibayar pada</value>
+  </data>
+  <data name="propNote" xml:space="preserve">
+    <value>Keterangan</value>
+  </data>
+  <data name="propAmount" xml:space="preserve">
+    <value>Jumlah</value>
+  </data>
+  <data name="rtOther" xml:space="preserve">
+    <value>Lain-lain</value>
+  </data>
+  <data name="propPaidAmount" xml:space="preserve">
+    <value>Jumlah Pembayaran</value>
+  </data>
+  <data name="other" xml:space="preserve">
+    <value>Lain-lain</value>
   </data>
 </root>

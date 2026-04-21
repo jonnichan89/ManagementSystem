@@ -1,7 +1,6 @@
-
-namespace ManagementSystem.WPF.UI.Services
+namespace ManagementSystem.WPF.UI.Services.ServiceInterfaces
 {
-    public interface IManagementApiClient
+    public partial interface IManagementApiClient
     {
         Task<string> DownloadItemImageFile(string imageFilePath, CancellationToken cancellationToken = default);
 
@@ -11,7 +10,7 @@ namespace ManagementSystem.WPF.UI.Services
         Task<ServiceActionResult> UpdateMstUserAsync(MstUser user, CancellationToken cancellationToken = default);
         Task<ServiceActionResult> DeleteMstUserAsync(string userId, CancellationToken cancellationToken = default);
 
-        Task<ServiceActionResult> GetMstItemsAsync(CancellationToken cancellationToken = default);
+        Task<ServiceActionResult<MstItem>> GetMstItemsAsync(CancellationToken cancellationToken = default);
         Task<ServiceActionResult> GetMstItemByIdAsync(int itemId, CancellationToken cancellationToken = default);
         Task<ServiceActionResult> CreateMstItemAsync(MstItem item, Stream? imageStream = null, string imageFileName = "", CancellationToken cancellationToken = default);
         Task<ServiceActionResult> UpdateMstItemAsync(MstItem item, Stream? imageStream = null, string imageFileName = "", CancellationToken cancellationToken = default);
@@ -30,14 +29,6 @@ namespace ManagementSystem.WPF.UI.Services
         Task<ServiceActionResult> CreateItemUsageAsync(ItemUsage itemUsage, CancellationToken cancellationToken = default);
         Task<ServiceActionResult> UpdateItemUsageAsync(ItemUsage itemUsage, CancellationToken cancellationToken = default);
         Task<ServiceActionResult> DeleteItemUsageAsync(int itemUsageId, CancellationToken cancellationToken = default);
-
-
-        Task<ServiceActionResult> GetPurchaseOrdersAsync(CancellationToken cancellationToken = default);
-        Task<ServiceActionResult> GetPurchaseOrderByIdAsync(int POId, CancellationToken cancellationToken = default);
-        Task<ServiceActionResult> CreatePurchaseOrderAsync(PurchaseOrder PurchaseOrder, CancellationToken cancellationToken = default);
-        Task<ServiceActionResult> UpdatePurchaseOrderAsync(PurchaseOrder PurchaseOrder, CancellationToken cancellationToken = default);
-        Task<ServiceActionResult> DeletePurchaseOrderAsync(int POId, CancellationToken cancellationToken = default);
-
 
     }
 }

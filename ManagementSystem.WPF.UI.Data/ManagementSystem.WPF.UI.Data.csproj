@@ -12,6 +12,7 @@
 		<Compile Remove="CodeTemplates\**" />
 		<EmbeddedResource Remove="CodeTemplates\**" />
 		<None Remove="CodeTemplates\**" />
+		<Page Remove="CodeTemplates\**" />
 	</ItemGroup>
 
 	<ItemGroup>

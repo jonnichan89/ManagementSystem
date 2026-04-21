@@ -1,5 +1,7 @@
 ﻿
 
+using ManagementSystem.WPF.UI.Services.ServiceInterfaces;
+
 namespace ManagementSystem.WPF.UI.Pages
 {
     /// <summary>

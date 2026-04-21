@@ -1,16 +1,18 @@
-﻿namespace ManagementSystem.WPF.UI.ViewModels;
+﻿using ManagementSystem.WPF.UI.Services.ServiceInterfaces;
+
+namespace ManagementSystem.WPF.UI.ViewModels;
 
 public partial class PurchaseOrderViewModel : ViewModel
 {
     private string _title = TranslationSource.Instance["mwPurchaseOrder"] ?? "PurchaseOrder";
 
-    private PurchaseOrder[]? _items;
+    private PSOrder[]? _items;
 
     [ObservableProperty]
-    private ObservableCollection<PurchaseOrderDetail>? _PODetails = null;
+    private ObservableCollection<PSOrderDetail>? _PSDetails = null;
 
-    private PurchaseOrder _selectedItem;
-    public PurchaseOrder SelectedItem
+    private PSOrder _selectedItem;
+    public PSOrder SelectedItem
     {
         get => _selectedItem;
         set
@@ -18,7 +20,7 @@ public partial class PurchaseOrderViewModel : ViewModel
             SetProperty(ref _selectedItem, value);
             if (_selectedItem != null)
             {
-                PODetails = _selectedItem.PurchaseOrderDetails;
+                PSDetails = _selectedItem.PSOrderDetails;
             }
         }
     }
@@ -68,8 +70,8 @@ public partial class PurchaseOrderViewModel : ViewModel
             }
             else
             {
-                int lastPurchaseOrderId = SelectedItem?.POId ?? 0;
-                SelectedItem = _previewItems.FirstOrDefault(iu => iu.POId == lastPurchaseOrderId) ?? _previewItems[0];
+                int lastPSOrderId = SelectedItem?.PSId ?? 0;
+                SelectedItem = _previewItems.FirstOrDefault(iu => iu.PSId == lastPSOrderId) ?? _previewItems[0];
             }
         }
 
@@ -82,7 +84,7 @@ public partial class PurchaseOrderViewModel : ViewModel
     private ObservableRangeCollection<PageIndex> _pageList = new();
 
     [ObservableProperty]
-    private ObservableRangeCollection<PurchaseOrder> _previewItems = new();
+    private ObservableRangeCollection<PSOrder> _previewItems = new();
 
     private int _itemPerPage = 50;
 
@@ -91,7 +93,7 @@ public partial class PurchaseOrderViewModel : ViewModel
         var actionResult = await _apiClient.GetPurchaseOrdersAsync();
         if (actionResult.ActionIsSuccess)
         {
-            _items = (PurchaseOrder[])actionResult.ActionResult;
+            _items = (PSOrder[])actionResult.ActionResult;
             RefreshPreviewItems(null);
         }
         else
@@ -246,6 +248,7 @@ public partial class PurchaseOrderViewModel : ViewModel
             Title = string.Format(
                 TranslationSource.Instance["detailTitleAdd"] ?? string.Empty,
                 _title),
+
             CloseButtonText = TranslationSource.Instance["dialogButtonCancel"] ?? string.Empty,
             PrimaryButtonText = TranslationSource.Instance["dialogButtonSave"] ?? string.Empty
         };
@@ -272,7 +275,7 @@ public partial class PurchaseOrderViewModel : ViewModel
     [RelayCommand]
     private async Task Edit()
     {
-        if (SelectedItem == null || SelectedItem.POId == 0)
+        if (SelectedItem == null || SelectedItem.PSId == 0)
         {
             await _contentDialogService.ShowAlertAsync(
                 string.Format(
@@ -292,12 +295,12 @@ public partial class PurchaseOrderViewModel : ViewModel
         try
         {
             detailPage = ManagementSystem.WPF.UI.App.GetRequiredService<PurchaseOrderDetailPage>();
-            await detailPage.InitializeAsync(DetailAction.Edit, SelectedItem.POId);
+            await detailPage.InitializeAsync(DetailAction.Edit, SelectedItem.PSId);
         }
         catch
         {
             detailPage = new PurchaseOrderDetailPage(_apiClient, _contentDialogService, _jsonSerializerOptions, _gFunctions);
-            await detailPage.InitializeAsync(DetailAction.Edit, SelectedItem.POId);
+            await detailPage.InitializeAsync(DetailAction.Edit, SelectedItem.PSId);
         }
 
         detailPage.Frame = new Frame
@@ -340,7 +343,7 @@ public partial class PurchaseOrderViewModel : ViewModel
     [RelayCommand]
     private async Task Delete()
     {
-        if (SelectedItem.POId == 0)
+        if (SelectedItem.PSId == 0)
         {
             await _contentDialogService.ShowAlertAsync(
                 string.Format(
@@ -361,7 +364,7 @@ public partial class PurchaseOrderViewModel : ViewModel
             new SimpleContentDialogCreateOptions()
             {
                 Title = string.Format(TranslationSource.Instance["messageTitleQuestionBeforeDelete"] ?? string.Empty, _title),
-                Content = string.Format(TranslationSource.Instance["messageQuestionBeforeDelete"] ?? string.Empty, _title + " " + SelectedItem.POCode),
+                Content = string.Format(TranslationSource.Instance["messageQuestionBeforeDelete"] ?? string.Empty, _title + " " + SelectedItem.PSCode),
                 PrimaryButtonText = TranslationSource.Instance["dialogButtonYes"] ?? string.Empty,
                 CloseButtonText = TranslationSource.Instance["dialogButtonNo"] ?? string.Empty
             });
@@ -374,14 +377,14 @@ public partial class PurchaseOrderViewModel : ViewModel
 
     private async Task DeleteAsync()
     {
-        ServiceActionResult actionResult = await _apiClient.DeletePurchaseOrderAsync(SelectedItem.POId);
+        ServiceActionResult actionResult = await _apiClient.DeletePurchaseOrderAsync(SelectedItem.PSId);
         if (actionResult.ActionIsSuccess)
         {
             ContentDialogResult answer = await _contentDialogService.ShowSimpleDialogAsync(
                new SimpleContentDialogCreateOptions()
                {
                    Title = string.Format(TranslationSource.Instance["messageTitleDeleteSucceed"] ?? string.Empty, _title),
-                   Content = string.Format(TranslationSource.Instance["messageDeleteSucceed"] ?? string.Empty, _title + " " + SelectedItem.POCode),
+                   Content = string.Format(TranslationSource.Instance["messageDeleteSucceed"] ?? string.Empty, _title + " " + SelectedItem.PSCode),
                    CloseButtonText = TranslationSource.Instance["dialogButtonOK"] ?? string.Empty
                });
 
@@ -393,7 +396,7 @@ public partial class PurchaseOrderViewModel : ViewModel
                 new SimpleContentDialogCreateOptions()
                 {
                     Title = string.Format(TranslationSource.Instance["messageTitleDeleteFailed"] ?? string.Empty, _title),
-                    Content = string.Format(TranslationSource.Instance["messageDeleteFailed"] ?? string.Empty, _title + " " + SelectedItem.POCode) + Environment.NewLine +
+                    Content = string.Format(TranslationSource.Instance["messageDeleteFailed"] ?? string.Empty, _title + " " + SelectedItem.PSCode) + Environment.NewLine +
                         actionResult.ErrorMessage,
                     CloseButtonText = TranslationSource.Instance["dialogButtonOK"] ?? string.Empty
                 });

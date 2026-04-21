@@ -33,8 +33,8 @@
 
             <TextBlock Text="{resx:Localization propSupplierName}" />
             <ComboBox x:Name="SupplierComboBox"
-                      ItemsSource="{Binding VM.FilteredViewSupplier}"
-                      SelectedItem="{Binding VM.SelectedSupplier, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                      ItemsSource="{Binding VM.SupplierCBVM.FilteredViewSupplier}"
+                      SelectedItem="{Binding VM.SupplierCBVM.SelectedSupplier, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
                       IsTextSearchEnabled="False"
                       IsTextSearchCaseSensitive="False"
                       IsEditable="True"
@@ -42,10 +42,8 @@
                       IsReadOnly="False"
                       ScrollViewer.CanContentScroll="True"
                       TextSearch.TextPath="SupplierName"
-                      PreviewKeyDown="SupplierComboBox_PreviewKeyDown"
-                      KeyUp="SupplierComboBox_KeyUp"
-                      SelectedIndex="{Binding VM.SupplierSelectedIndex, Mode=OneWay}">
-
+                      SelectedIndex="{Binding VM.SupplierCBVM.SupplierSelectedIndex, Mode=OneWay}">
+<!--
                 <ComboBox.ItemContainerStyle>
                     <Style TargetType="ComboBoxItem">
                         <EventSetter Event="PreviewMouseMove"
@@ -54,7 +52,7 @@
                                      Handler="SupplierComboBox_OnItemHoverExit" />
                     </Style>
                 </ComboBox.ItemContainerStyle>
-
+-->
                 <ComboBox.ItemsPanel>
                     <ItemsPanelTemplate>
                         <VirtualizingStackPanel VirtualizationMode="Recycling" />

@@ -46,5 +46,14 @@ namespace ManagementSystem.WPF.UI.Properties {
                 this["LastImagePath"] = value;
             }
         }
+        
+        [global::System.Configuration.ApplicationScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("http://localhost/ManagementSystem/")]
+        public string APIUrl {
+            get {
+                return ((string)(this["APIUrl"]));
+            }
+        }
     }
 }

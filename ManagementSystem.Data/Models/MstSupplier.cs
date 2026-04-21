@@ -10,11 +10,13 @@ public partial class MstSupplier
 
     [StringLength(50)]
     [Unicode(false)]
-    public string SupplierCode { get; set; }
+    public string SupplierCode { get; set; } = string.Empty;
 
     [StringLength(500)]
     [Unicode(false)]
-    public string SupplierName { get; set; }
+    public string SupplierName { get; set; } = string.Empty;
+
+    public byte SupplierType { get; set; }
 
     public bool IsBlacklist { get; set; }
 
@@ -23,12 +25,12 @@ public partial class MstSupplier
 
     [StringLength(20)]
     [Unicode(false)]
-    public string CreatedBy { get; set; }
+    public string CreatedBy { get; set; } = string.Empty;
 
     [Column(TypeName = "smalldatetime")]
     public DateTime ModifiedAt { get; set; }
 
     [StringLength(20)]
     [Unicode(false)]
-    public string ModifiedBy { get; set; }
+    public string ModifiedBy { get; set; } = string.Empty;
 }

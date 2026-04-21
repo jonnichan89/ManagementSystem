@@ -142,7 +142,7 @@
     <value>Project</value>
   </data>
   <data name="mwSales" xml:space="preserve">
-    <value>Sales</value>
+    <value>Sales Order</value>
   </data>
   <data name="mwFinancial" xml:space="preserve">
     <value>Financial</value>
@@ -324,8 +324,14 @@
   <data name="propSupplierCode" xml:space="preserve">
     <value>Supplier Code</value>
   </data>
+  <data name="propAccountCode" xml:space="preserve">
+    <value>Account Code</value>
+  </data>
   <data name="propSupplierName" xml:space="preserve">
     <value>Supplier Name</value>
+  </data>
+  <data name="propAccountName" xml:space="preserve">
+    <value>Account Name</value>
   </data>
   <data name="propItemCode" xml:space="preserve">
     <value>Item Code</value>
@@ -392,5 +398,77 @@
   </data>
   <data name="propMinimumStock" xml:space="preserve">
     <value>Minimum Stock</value>
+  </data>
+  <data name="propCurrencyId" xml:space="preserve">
+    <value>Currency</value>
+  </data>
+  <data name="propCurrencyRate" xml:space="preserve">
+    <value>IDR Rate</value>
+  </data>
+  <data name="propDPPDiscount" xml:space="preserve">
+    <value>DPP Discount</value>
+  </data>
+  <data name="mwMstAccount" xml:space="preserve">
+    <value>Account</value>
+  </data>
+  <data name="propModuleType" xml:space="preserve">
+    <value>Module Type</value>
+  </data>
+  <data name="propDebitNameFormat" xml:space="preserve">
+    <value>Format Debit Account Name</value>
+  </data>
+  <data name="propCreditNameFormat" xml:space="preserve">
+    <value>Format Credit Account Name</value>
+  </data>
+  <data name="propFinanceType" xml:space="preserve">
+    <value>Transaction Type</value>
+  </data>
+  <data name="propFinanceCode" xml:space="preserve">
+    <value>FinanceCode</value>
+  </data>
+  <data name="propFinanceDate" xml:space="preserve">
+    <value>Finance Date</value>
+  </data>
+  <data name="propReferenceType" xml:space="preserve">
+    <value>Reference Type</value>
+  </data>
+  <data name="propReferenceCode" xml:space="preserve">
+    <value>Reference Code</value>
+  </data>
+  <data name="propSupplierReferenceNo" xml:space="preserve">
+    <value>Supplier Reference Number</value>
+  </data>
+  <data name="propFinanceTypeARDN" xml:space="preserve">
+    <value>AR Debit Note</value>
+  </data>
+  <data name="propFinanceTypeARCN" xml:space="preserve">
+    <value>AR Credit Note</value>
+  </data>
+  <data name="propFinanceTypeAPDN" xml:space="preserve">
+    <value>AP Debit Note</value>
+  </data>
+  <data name="propFinanceTypeAPCN" xml:space="preserve">
+    <value>AP Credit Note</value>
+  </data>
+  <data name="propFinanceDetail" xml:space="preserve">
+    <value>Payments</value>
+  </data>
+  <data name="propPaidAt" xml:space="preserve">
+    <value>Paid at</value>
+  </data>
+  <data name="propNote" xml:space="preserve">
+    <value>Note</value>
+  </data>
+  <data name="propAmount" xml:space="preserve">
+    <value>Amount</value>
+  </data>
+  <data name="rtOther" xml:space="preserve">
+    <value>Other</value>
+  </data>
+  <data name="propPaidAmount" xml:space="preserve">
+    <value>Paid Amount</value>
+  </data>
+  <data name="other" xml:space="preserve">
+    <value>Other</value>
   </data>
 </root>

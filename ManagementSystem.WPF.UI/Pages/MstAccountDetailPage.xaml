@@ -1,0 +1,73 @@
+﻿<Page x:Class="ManagementSystem.WPF.UI.Pages.MstAccountDetailPage"
+      xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+      xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+      xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+      xmlns:resx="clr-namespace:ManagementSystem.WPF.UI.Resources"
+      xmlns:local="clr-namespace:ManagementSystem.WPF.UI"
+      xmlns:C="clr-namespace:ManagementSystem.WPF.UI.Controls"
+      xmlns:pages="clr-namespace:ManagementSystem.WPF.UI.Pages"
+      xmlns:vm="clr-namespace:ManagementSystem.WPF.UI.ViewModels"
+      xmlns:ui="http://schemas.lepo.co/wpfui/2022/xaml"
+      mc:Ignorable="d"
+      d:DataContext="{d:DesignInstance pages:MstAccountDetailPage, IsDesignTimeCreatable=False}"
+      d:DesignHeight="450"
+      d:DesignWidth="800"
+      Title="{Binding VM.Title, Mode=OneTime}"
+      Margin="10"
+      MinWidth="450">
+
+    <Grid x:Name="MainGrid">
+        <StackPanel x:Name="InputContainer">
+            <TextBlock Text="{resx:Localization propAccountCode}" />
+            <ui:TextBox Text="{Binding VM.Data.AccountCode, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                        IsReadOnly="{Binding VM.CanEditAccountCode}"
+                        />
+
+            <TextBlock Text="{resx:Localization propAccountName}" />
+            <ui:TextBox Text="{Binding VM.Data.AccountName, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+
+            <TextBlock Text="{resx:Localization propModuleType}" />
+            <WrapPanel>
+                <StackPanel>
+                    <RadioButton Content="{resx:Localization mwPurchase}"
+                                 GroupName="ModuleTypeMenu"
+                                 IsChecked="{Binding VM.Data.MTMenuPurchase, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+                    <RadioButton Content="{resx:Localization mwSales}"
+                                 GroupName="ModuleTypeMenu"
+                                 IsChecked="{Binding VM.Data.MTMenuSales, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+                    <RadioButton Content="{resx:Localization other}"
+                                 GroupName="ModuleTypeMenu"
+                                 IsChecked="{Binding VM.Data.MTOther, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+                </StackPanel>
+                <StackPanel Margin="10,0,0,0">
+                    <RadioButton Content="{resx:Localization propFinanceTypeAPDN}"
+                                 GroupName="ModuleTypeFinanceType"
+                                 IsChecked="{Binding VM.Data.MTAPDebitNote, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+                    <RadioButton Content="{resx:Localization propFinanceTypeAPCN}"
+                                 GroupName="ModuleTypeFinanceType"
+                                 IsChecked="{Binding VM.Data.MTAPCreditNote, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+                    <RadioButton Content="{resx:Localization propFinanceTypeARDN}"
+                                 GroupName="ModuleTypeFinanceType"
+                                 IsChecked="{Binding VM.Data.MTARDebitNote, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+                    <RadioButton Content="{resx:Localization propFinanceTypeARCN}"
+                                 GroupName="ModuleTypeFinanceType"
+                                 IsChecked="{Binding VM.Data.MTARCreditNote, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+                </StackPanel>
+            </WrapPanel>
+
+            <TextBlock Text="{resx:Localization propDebitNameFormat}" />
+            <ui:TextBox Text="{Binding VM.Data.DebitNameFormat, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+
+            <TextBlock Text="{resx:Localization propCreditNameFormat}" />
+            <ui:TextBox Text="{Binding VM.Data.CreditNameFormat, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+
+            <CheckBox Content="{resx:Localization propIsBlacklist}" />
+        </StackPanel>
+
+        <Viewbox x:Name="MessageBox" Stretch="None" VerticalAlignment="Top" Margin="0,10,0,0">
+            <Frame x:Name="MessageFrame"
+                   Visibility="Collapsed" />
+        </Viewbox>
+    </Grid>
+</Page>

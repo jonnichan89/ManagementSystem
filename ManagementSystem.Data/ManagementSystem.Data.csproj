@@ -9,13 +9,16 @@
 	<ItemGroup>
 		<Compile Remove="CodeTemplates\**" />
 		<Compile Remove="Commands\**" />
-		<Compile Remove="ModelExtensions\**" />
 		<EmbeddedResource Remove="CodeTemplates\**" />
 		<EmbeddedResource Remove="Commands\**" />
-		<EmbeddedResource Remove="ModelExtensions\**" />
 		<None Remove="CodeTemplates\**" />
 		<None Remove="Commands\**" />
-		<None Remove="ModelExtensions\**" />
+	</ItemGroup>
+
+	<ItemGroup>
+	  <Compile Remove="ModelExtensions\ItemUsage.extend.cs" />
+	  <Compile Remove="ModelExtensions\ItemUsageDetail.extend.cs" />
+	  <Compile Remove="ModelExtensions\MstItem.extend.cs" />
 	</ItemGroup>
 
 	<ItemGroup>

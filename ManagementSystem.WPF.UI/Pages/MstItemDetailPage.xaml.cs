@@ -1,4 +1,7 @@
 ﻿
+using ManagementSystem.WPF.UI.Pages.ToInherit;
+using ManagementSystem.WPF.UI.Services.ServiceInterfaces;
+
 namespace ManagementSystem.WPF.UI.Pages
 {
     /// <summary>
@@ -10,6 +13,8 @@ namespace ManagementSystem.WPF.UI.Pages
         {
             if (VM != null)
                 VM.Dispose();
+
+            SupplierCB_Dispose();
         }
 
         #region IViewInteractionService Implementation
@@ -125,59 +130,58 @@ namespace ManagementSystem.WPF.UI.Pages
             _itemId = itemId;
 
             await VM.InitializeAsync(_action, _itemId);
+            SupplierCB_Initialize();
         }
 
         #region ComboBox Supplier
 
-        private void SupplierComboBox_OnItemHoverExit(object sender, MouseEventArgs e)
+        InstantSupplierComboBox _supplierCB;
+
+        private void SupplierCB_Initialize()
         {
+            _supplierCB = new InstantSupplierComboBox(ref SupplierComboBox, VM.SupplierCBVM);
         }
 
-        private void SupplierComboBox_OnPreviewMouseMove(object sender, MouseEventArgs e)
+        private void SupplierCB_Dispose()
         {
+            if (_supplierCB != null)
+                _supplierCB.Dispose();
         }
+        //private void SupplierComboBox_PreviewKeyDown(object sender, KeyEventArgs e)
+        //{
+        //    System.Diagnostics.Debug.WriteLine("SupplierComboBox_PreviewKeyDown: " + SupplierComboBox.Text + " = " + SupplierComboBox.IsDropDownOpen.ToString() + " - " + e.Key.ToString());
 
-        private void SupplierComboBox_PreviewKeyDown(object sender, KeyEventArgs e)
-        {
-            System.Diagnostics.Debug.WriteLine("SupplierComboBox_PreviewKeyDown: " + SupplierComboBox.Text + " = " + SupplierComboBox.IsDropDownOpen.ToString() + " - " + e.Key.ToString());
-            
-        }
+        //    if (e.Key == Key.Enter || e.Key == Key.Return)
+        //    {
+        //        e.Handled = true;
+        //    }
+        //}
 
-        private void SupplierComboBox_KeyUp(object sender, KeyEventArgs e)
-        {
-            System.Diagnostics.Debug.WriteLine("SupplierComboBox_KeyUp: " + SupplierComboBox.Text + " = " + SupplierComboBox.IsDropDownOpen.ToString() + " - " + e.Key.ToString());
+        //private void SupplierComboBox_KeyUp(object sender, KeyEventArgs e)
+        //{
+        //    System.Diagnostics.Debug.WriteLine("SupplierComboBox_KeyUp: " + SupplierComboBox.Text + " = " + SupplierComboBox.IsDropDownOpen.ToString() + " - " + e.Key.ToString());
 
-            if (e.Key == Key.Enter || e.Key == Key.Return)
-            {
-                if (SupplierComboBox.Text.Length >= 3)
-                {
-                    VM.FilterSupplier = true;
+        //    if (e.Key == Key.Enter || e.Key == Key.Return)
+        //    {
+        //        if (VM.SelectedSupplier != null && VM.SelectedSupplier.SupplierName == SupplierComboBox.Text)
+        //        {
+        //            // Do Nothing
+        //        }
+        //        else if (SupplierComboBox.Text.Length >= 3)
+        //        {
+        //            VM.FilterSupplierText = SupplierComboBox.Text;
 
-                    System.Diagnostics.Debug.WriteLine("SupplierComboBox_KeyUp.FilterSupplierText: " + SupplierComboBox.Text);
-                    VM.FilterSupplierText = SupplierComboBox.Text;
+        //            if (VM.SupplierSelectedIndex == -1)
+        //                if (!SupplierComboBox.IsDropDownOpen)
+        //                {
+        //                    SupplierComboBox.IsDropDownOpen = true;
+        //                    SupplierComboBox.SelectedIndex = 0;
+        //                }
+        //        }   
+        //        e.Handled = true;
+        //    }
 
-                    if (!SupplierComboBox.IsDropDownOpen)
-                        SupplierComboBox.IsDropDownOpen = true;
-                }
-                e.Handled = true;
-            }
-
-            //if ((e.Key >= Key.A && e.Key <= Key.Z) || 
-            //    (e.Key >= Key.D0 && e.Key <= Key.D9) || 
-            //    (e.Key >= Key.NumPad0 && e.Key <= Key.NumPad9) ||
-            //     e.Key == Key.Back || 
-            //     e.Key == Key.Delete)
-            //{
-            //    if (SupplierComboBox.Text.Length >= 3)
-            //    {
-            //        System.Diagnostics.Debug.WriteLine("SupplierComboBox_KeyUp.FilterSupplierText: " + SupplierComboBox.Text);
-            //        VM.FilterSupplierText = SupplierComboBox.Text;
-
-            //        if (!SupplierComboBox.IsDropDownOpen)
-            //            SupplierComboBox.IsDropDownOpen = true;
-            //    }
-            //}
-        }
+        //}
 
         #endregion
 

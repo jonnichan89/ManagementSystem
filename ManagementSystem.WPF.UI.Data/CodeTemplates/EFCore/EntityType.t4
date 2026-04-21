@@ -28,7 +28,7 @@
         // Don't scaffold these
         return "";
     }
-
+    
     var services = (IServiceProvider)Host;
     var annotationCodeGenerator = services.GetRequiredService<IAnnotationCodeGenerator>();
     var code = services.GetRequiredService<ICSharpHelper>();
@@ -96,6 +96,7 @@ namespace <#= NamespaceHint #>;
         tableName = EntityType.Name;
     }
 //****************************************************************/
+
 #>
 public partial class <#= tableName #> : INotifyPropertyChanged 
 {
@@ -107,7 +108,10 @@ public partial class <#= tableName #> : INotifyPropertyChanged
     public void OnPropertyChanged([CallerMemberName] string? propertyName = null)
     {
         PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+        AfterPropertyChanged(propertyName);
     }
+
+    partial void AfterPropertyChanged(string propertyName);
 
     #endregion
 
@@ -175,9 +179,20 @@ public partial class <#= tableName #> : INotifyPropertyChanged
             {
                 columnName = property.Name;
             }
+
+            var initializer = ";";
+            switch (code.Reference(property.ClrType))
+            {
+                case "string":
+                    initializer = " = string.Empty;";
+                    break;
+                default:
+                    break;
+            }
+/* needsInitializer ? " = null!;" : ";" */
 //****************************************************************/
 #>
-    private <#= code.Reference(property.ClrType) #><#= needsNullable ? "?" : "" #> _<#= columnName #><#= needsInitializer ? " = null!;" : ";" #>
+    private <#= code.Reference(property.ClrType) #><#= needsNullable ? "?" : "" #> _<#= columnName #><#= initializer #>
     
     public <#= code.Reference(property.ClrType) #><#= needsNullable ? "?" : "" #> <#= columnName #> {
         get {

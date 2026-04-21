@@ -1,4 +1,5 @@
-﻿
+﻿using ManagementSystem.Common.OtherModels;
+
 namespace ManagementSystem.DataServices.Service
 {
     public class PurchaseOrderService
@@ -7,84 +8,109 @@ namespace ManagementSystem.DataServices.Service
         //public PurchaseOrderService(SharedResources resShared) { }
         public PurchaseOrderService() { }
 
-        public List<ModelValidation> CanContinueAction(ServiceAction action, PurchaseOrder model)
+        public List<ModelValidation> CanContinueAction(ServiceAction action, PSOrder model)
         {
             List<ModelValidation> validations = new List<ModelValidation>();
 
-            model.PurchaseOrderDetails.GroupBy(d => d.ItemCode).ToList().ForEach(g =>
+            if (action == ServiceAction.Delete)
             {
-                if (g.Count() > 1)
+                if (model.PSId <= 0)
+                    validations.Add(ModelValidation.FieldIsRequired(nameof(PSOrder), nameof(model.PSId), model.PSId.ToString()));
+            }
+            else
+            {
+                model.PSOrderDetails.GroupBy(d => d.ItemCode).ToList().ForEach(g =>
                 {
-                    validations.Add(ModelValidation.DuplicateRecord(
-                        nameof(PurchaseOrderDetail),
-                        nameof(PurchaseOrderDetail.ItemCode),
-                        g.Key));
-                }
-            });
-
-            // Validasi taro dibawah karena Delete cuma terisi PK nya saja
-            if (action != ServiceAction.Delete)
-            {
+                    if (g.Count() > 1)
+                    {
+                        validations.Add(ModelValidation.DuplicateRecord(
+                            nameof(PSOrderDetail),
+                            nameof(PSOrderDetail.ItemCode),
+                            g.Key));
+                    }
+                });
             }
 
             return validations;
         }
 
-        public IEnumerable<PurchaseOrder> GetPurchaseOrders()
+        public IEnumerable<PSOrder> GetPurchaseOrders()
         {
             using (var context = new ManagementSystemContext())
             {
                 var items = context.
-                    PurchaseOrders.
-                    Include(p => p.PurchaseOrderDetails).
+                    PSOrders.
+                    Include(p => p.PSOrderDetails).
+                    Where(p => p.PSType == "PO").
                     ToList();
                 return items;
             }
         }
 
-        public bool IsExists(ServiceAction action, PurchaseOrder model)
+        public IEnumerable<SearchOptionResultPSOrder> SearchPurchaseOrdersForOptions(SearchPSOrderForOptions searchPS)
+        {
+            if (searchPS == null) throw new ArgumentNullException(nameof(searchPS));
+
+            using (var context = new ManagementSystemContext())
+            {
+                SearchOptionResultPSOrder[] item = context.
+                    PSOrders.
+                    Include(p => p.PSOrderDetails).
+                    Where(p => p.PSType == "PO" && 
+                        p.PSCode.Contains(searchPS.PSCode)).
+                    Select(p => new SearchOptionResultPSOrder() {
+                        PSCode = p.PSCode,
+                        SupplierCode = p.SupplierCode,
+                        SupplierName = p.SupplierName,
+                    }).ToArray();
+                return item;
+            }
+        }
+
+        public bool IsExists(ServiceAction action, PSOrder model)
         {
             //if (action == ServiceAction.Add || action == ServiceAction.Get)
             //    using (var context = new ManagementSystemContext())
             //    {
             //        return context.
-            //            PurchaseOrders.
-            //            Include(p => p.PurchaseOrderDetails).
-            //            Any(u => u.POId != model.POId && u.PurchaseOrderDate == model.PurchaseOrderDate);
+            //            PSOrders.
+            //            Include(p => p.PSOrderDetails).
+            //            Any(u => u.PSId != model.PSId && u.PSOrderDate == model.PSOrderDate);
             //    }
 
             return false;
         }
 
-        public bool IsExists(ServiceAction action, PurchaseOrderDetail model)
+        public bool IsExists(ServiceAction action, PSOrderDetail model)
         {
             //using (var context = new ManagementSystemContext())
             //{
             //    return context.
-            //        PurchaseOrderDetails.
+            //        PSOrderDetails.
             //        Any(u =>
-            //            u.PurchaseOrderId == model.PurchaseOrderId &&
-            //            u.PurchaseOrderDetailId != model.PurchaseOrderDetailId &&
+            //            u.PSOrderId == model.PSOrderId &&
+            //            u.PSOrderDetailId != model.PSOrderDetailId &&
             //            u.ItemCode == model.ItemCode);
             //}
             return false;
         }
 
-        public PurchaseOrder? GetPurchaseOrderById(int POId)
+        public PSOrder? GetPurchaseOrderById(int PSId)
         {
-            if (POId == 0) throw new ArgumentNullException(nameof(POId));
+            if (PSId == 0) throw new ArgumentNullException(nameof(PSId));
 
             using (var context = new ManagementSystemContext())
             {
-                PurchaseOrder? item = context.
-                    PurchaseOrders.
-                    Include(p => p.PurchaseOrderDetails).
-                    SingleOrDefault(u => u.POId == POId);
+                PSOrder? item = context.
+                    PSOrders.
+                    Include(p => p.PSOrderDetails).
+                    Where(p => p.PSType == "PO").
+                    SingleOrDefault(u => u.PSId == PSId);
                 return item;
             }
         }
 
-        public int CreatePurchaseOrder(PurchaseOrder item)
+        public int CreatePurchaseOrder(PSOrder item)
         {
             using (var context = new ManagementSystemContext())
             {
@@ -92,24 +118,56 @@ namespace ManagementSystem.DataServices.Service
                 item.CreatedAt = now;
                 item.ModifiedAt = now;
 
-                foreach (var detail in item.PurchaseOrderDetails)
+                // Get Last PO Code
+                string prePSCode = $@"PO-{item.PSDate.ToString("ddMMyyyy")}-";
+                string newPSCode = "";
+                string lastPSCode = context.
+                    PSOrders.
+                    Where(p => p.PSType == "PO" && p.PSCode.StartsWith(prePSCode)).
+                    Max(p => p.PSCode);
+                int lastPSNumber = 0;
+                if (!string.IsNullOrWhiteSpace(lastPSCode))
                 {
-                    detail.PurchaseOrder = item;
+                    if (!int.TryParse(lastPSCode.Replace(prePSCode, ""), out lastPSNumber))
+                    {
+                        lastPSNumber = 0;
+                    }
                 }
 
-                context.PurchaseOrders.Add(item);
+                // Create new PO Code
+                lastPSNumber += 1;
+                newPSCode = prePSCode + lastPSNumber.ToString().PadLeft(3, '0');
+                while (context.
+                    PSOrders.
+                    Where(p => p.PSType == "PO").
+                    Count(p => p.PSCode == newPSCode) > 0)
+                {
+                    lastPSNumber++;
+                    newPSCode = prePSCode + lastPSNumber.ToString().PadLeft(3, '0');
+                }
+
+                // Assign Children
+                item.PSCode = newPSCode;
+                foreach (var detail in item.PSOrderDetails)
+                {
+                    detail.PSOrder = item;
+                }
+
+                // Insert
+                context.PSOrders.Add(item);
                 return context.SaveChanges();
             }
         }
 
-        public int UpdatePurchaseOrder(PurchaseOrder item)
+        public int UpdatePurchaseOrder(PSOrder item)
         {
             using (var context = new ManagementSystemContext())
             {
                 var existing = context.
-                    PurchaseOrders.
-                    Include(p => p.PurchaseOrderDetails).
-                    SingleOrDefault(u => u.POId == item.POId);
+                    PSOrders.
+                    Include(p => p.PSOrderDetails).
+                    Where(p => p.PSType == "PO").
+                    SingleOrDefault(u => u.PSId == item.PSId);
 
                 if (existing == null) return 0;
 
@@ -117,18 +175,18 @@ namespace ManagementSystem.DataServices.Service
                 existing.ModifiedAt = DateTime.Now;
                 existing.ModifiedBy = item.ModifiedBy;
 
-                existing.PurchaseOrderDetails.Where(d => !item.PurchaseOrderDetails.Any(nd => nd.PODId == d.PODId)).ToList().ForEach(d =>
+                existing.PSOrderDetails.Where(d => !item.PSOrderDetails.Any(nd => nd.PSDId == d.PSDId)).ToList().ForEach(d =>
                 {
                     // remove details that are not in the updated item
-                    context.PurchaseOrderDetails.Remove(d);
+                    context.PSOrderDetails.Remove(d);
                 });
 
-                foreach (var detail in item.PurchaseOrderDetails)
+                foreach (var detail in item.PSOrderDetails)
                 {
                     var existingDetail =
                         existing.
-                        PurchaseOrderDetails.
-                        SingleOrDefault(d => d.PODId == detail.PODId);
+                        PSOrderDetails.
+                        SingleOrDefault(d => d.PSDId == detail.PSDId);
 
                     if (existingDetail != null)
                     {
@@ -143,27 +201,30 @@ namespace ManagementSystem.DataServices.Service
                         // new detail
                         //detail.CreatedAt = DateTime.Now;
                         //detail.ModifiedAt = DateTime.Now;
-                        detail.PurchaseOrder = existing;
-                        existing.PurchaseOrderDetails.Add(detail);
+                        detail.PSOrder = existing;
+                        existing.PSOrderDetails.Add(detail);
                     }
                 }
 
-                context.PurchaseOrders.Update(existing);
+                context.PSOrders.Update(existing);
 
                 return context.SaveChanges();
             }
         }
 
-        public PurchaseOrder? DeletePurchaseOrder(int POId)
+        public PSOrder? DeletePurchaseOrder(int PSId)
         {
-            if (POId == 0) throw new ArgumentNullException(nameof(POId));
+            if (PSId == 0) throw new ArgumentNullException(nameof(PSId));
 
             using (var context = new ManagementSystemContext())
             {
-                var existing = context.PurchaseOrders.SingleOrDefault(u => u.POId == POId);
+                var existing = context.
+                    PSOrders.
+                    Where(p => p.PSType == "PO").
+                    SingleOrDefault(u => u.PSId == PSId);
                 if (existing == null) goto ReturnResult;
 
-                context.PurchaseOrders.Remove(existing);
+                context.PSOrders.Remove(existing);
                 if (context.SaveChanges() > 0)
                 {
                     return existing;

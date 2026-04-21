@@ -17,8 +17,11 @@ builder.Services.AddSingleton(typeof(ManagementSystem.DataServices.Resources.Sha
 builder.Services.AddScoped<MstUserService>();
 builder.Services.AddScoped<MstItemService>();
 builder.Services.AddScoped<MstSupplierService>();
+builder.Services.AddScoped<MstAccountService>();
 builder.Services.AddScoped<ItemUsageService>();
 builder.Services.AddScoped<PurchaseOrderService>();
+builder.Services.AddScoped<SalesOrderService>();
+builder.Services.AddScoped<FinanceService>();
 
 builder.Services
     .AddControllers(options =>

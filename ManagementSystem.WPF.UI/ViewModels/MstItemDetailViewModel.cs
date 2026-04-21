@@ -1,4 +1,7 @@
 ﻿
+using ManagementSystem.WPF.UI.Services.ServiceInterfaces;
+using ManagementSystem.WPF.UI.ViewModels.ToInherit;
+
 namespace ManagementSystem.WPF.UI.ViewModels;
 
 public partial class MstItemDetailViewModel : DetailViewModel
@@ -18,126 +21,167 @@ public partial class MstItemDetailViewModel : DetailViewModel
         }
     }
 
-    #region Search Supplier
+    //#region Search Supplier
 
-    string _filterTextSupplier;
-    Predicate<object> _filterPredicateSupplier;
-    ObservableRangeCollection<MstSupplier> _suppliers = new();
+    //string _filterTextSupplier;
+    //Predicate<object> _filterPredicateSupplier;
+    //ObservableRangeCollection<MstSupplier> _suppliers = new();
 
-    protected internal MstSupplier? _selectedSupplier;
+    //protected internal MstSupplier? _selectedSupplier;
 
-    [ObservableProperty]
-    private ListCollectionView _filteredViewSupplier;
+    //[ObservableProperty]
+    //private ListCollectionView _filteredViewSupplier;
 
-    [ObservableProperty]
-    private int _supplierSelectedIndex;
+    //[ObservableProperty]
+    //private int _supplierSelectedIndex;
 
-    public MstSupplier? SelectedSupplier
+    //private bool _isSelectedSupplierChanged;
+    //public MstSupplier? SelectedSupplier
+    //{
+    //    get { return _selectedSupplier; }
+    //    set
+    //    {
+    //        _isSelectedSupplierChanged = true;
+
+    //        _selectedSupplier = value;
+
+    //        if (_selectedSupplier != null)
+    //        {
+    //            _data.SupplierCode = _selectedSupplier.SupplierCode;
+    //            _data.SupplierName = _selectedSupplier.SupplierName;
+    //        }
+
+    //        _isSelectedSupplierChanged = false;
+
+    //        OnPropertyChanged(nameof(SelectedSupplier));
+    //    }
+    //}
+
+    //public string FilterSupplierText
+    //{
+    //    get { return _filterTextSupplier; }
+    //    set
+    //    {
+    //        if (_isSelectedSupplierChanged) return;
+
+    //        _filterTextSupplier = value;
+
+    //        if (_filterTextSupplier.Length >= 3 &&
+    //            _suppliers.Count > 0 &&
+    //            (_selectedSupplier == null || _selectedSupplier.SupplierName != _filterTextSupplier))
+    //        {
+    //            var foundSupplier = _suppliers.FirstOrDefault(i => i.SupplierName == value);
+
+    //            if (foundSupplier == null)
+    //            {
+    //                using (FilteredViewSupplier.DeferRefresh())
+    //                {
+    //                    FilteredViewSupplier.Filter = _filterPredicateSupplier;
+    //                    FilteredViewSupplier.SortDescriptions.Add(new SortDescription("Askterisk", ListSortDirection.Descending));
+    //                    FilteredViewSupplier.SortDescriptions.Add(new SortDescription("SupplierName", ListSortDirection.Ascending));
+    //                }
+
+    //                if (_suppliers.Count(S => S.Askterisk != "") == 1)
+    //                {
+    //                    FilteredViewSupplier.MoveCurrentTo(FilteredViewSupplier.GetItemAt(0));
+
+    //                    _filterTextSupplier = (FilteredViewSupplier.GetItemAt(0) as MstItem)?.ItemName ?? string.Empty;
+    //                    SupplierSelectedIndex = 0;
+    //                }
+    //                else
+    //                {
+    //                    SupplierSelectedIndex = -1;
+    //                }
+    //            }
+    //            else
+    //            {
+    //                _data.SupplierCode = foundSupplier.SupplierCode;
+    //                _data.SupplierName = foundSupplier.SupplierName;
+
+    //                _filterTextSupplier = foundSupplier.SupplierName;
+    //                SupplierSelectedIndex = FilteredViewSupplier.IndexOf(foundSupplier);
+    //            }
+    //            OnPropertyChanged(nameof(Data));
+    //        }
+    //    }
+    //}
+
+    //private async Task LoadSearchSupplierAsync()
+    //{
+    //    await _gFunctions.RefreshSupplierDataAsync(false);
+    //    _suppliers.Clear();
+    //    _suppliers.AddRange(_gFunctions.Suppliers.ToArray());
+
+    //    _filterPredicateSupplier = item =>
+    //    {
+    //        var item1 = (item as MstSupplier);
+    //        item1.PutSearchToTop = (item1.SearchKey.Contains(_filterTextSupplier, StringComparison.OrdinalIgnoreCase));
+    //        return true;
+    //    };
+
+    //    string supplierCode = _data.SupplierCode;
+    //    _filteredViewSupplier = new ListCollectionView(_suppliers);
+    //    OnPropertyChanged(nameof(FilteredViewSupplier));
+
+    //    SelectedSupplier = _suppliers.FirstOrDefault(i => i.SupplierCode == supplierCode);
+
+    //    if (_selectedSupplier != null)
+    //    {
+    //        _data.SupplierName = _selectedSupplier.SupplierName;
+    //        _supplierSelectedIndex = FilteredViewSupplier.IndexOf(SelectedSupplier);
+    //    }
+    //    else
+    //    {
+    //        _data.SupplierCode = "";
+    //        _data.SupplierName = "";
+    //        _supplierSelectedIndex = -1;
+    //    }
+
+    //    OnPropertyChanged(nameof(SupplierSelectedIndex));
+    //}
+
+    //#endregion
+
+    #region Initialize Supplier Combo Box
+
+    private InstantSupplierComboBoxVM _supplierCBVM;
+    public InstantSupplierComboBoxVM SupplierCBVM
     {
-        get { return _selectedSupplier; }
-        set
-        {
-            _selectedSupplier = value;
-
-            if (_selectedSupplier != null)
-            {
-                FilterSupplierText = _selectedSupplier.SupplierName;
-
-                if (_selectedSupplier != null)
-                {
-                    _data.SupplierCode = _selectedSupplier.SupplierCode;
-                    _data.SupplierName = _selectedSupplier.SupplierName;
-                }
-            }
-
-            OnPropertyChanged(nameof(SelectedSupplier));
+        get {
+            return _supplierCBVM;
         }
     }
 
-    public bool FilterSupplier { get; set; }
-    public string FilterSupplierText
+    private void InitializeSupplierCBVM()
     {
-        get { return _filterTextSupplier; }
-        set
-        {
-            System.Diagnostics.Debug.WriteLine("FilterSupplierText: " + value + " - FilterSupplier: " + FilterSupplier.ToString());
-            _filterTextSupplier = value;
-
-            if (_filterTextSupplier.Length >= 3 &&
-                _suppliers.Count > 0 &&
-                (_selectedSupplier == null || _selectedSupplier.SupplierName != _filterTextSupplier))
-            {
-                var foundSupplier = _suppliers.FirstOrDefault(i => i.SupplierName == value);
-
-                if (foundSupplier == null)
-                {
-                    System.Diagnostics.Debug.WriteLine("foundSupplier: false");
-                    using (FilteredViewSupplier.DeferRefresh())
-                    {
-                        FilteredViewSupplier.Filter = _filterPredicateSupplier;
-                        FilteredViewSupplier.SortDescriptions.Add(new SortDescription("Askterisk", ListSortDirection.Descending));
-                        FilteredViewSupplier.SortDescriptions.Add(new SortDescription("SupplierName", ListSortDirection.Ascending));
-                    }
-                    if (FilterSupplier)
-                    {
-                        System.Diagnostics.Debug.WriteLine("MoveCurrentTo: " + ((MstSupplier)FilteredViewSupplier.GetItemAt(0)).SupplierName);
-                        FilteredViewSupplier.MoveCurrentTo(FilteredViewSupplier.GetItemAt(0));
-
-                        _filterTextSupplier = (FilteredViewSupplier.GetItemAt(0) as MstItem)?.ItemName ?? string.Empty;
-                        SupplierSelectedIndex = 0;
-                    }
-                }
-                else
-                {
-                    System.Diagnostics.Debug.WriteLine("foundSupplier: true");
-                    _data.SupplierCode = foundSupplier.SupplierCode;
-                    _data.SupplierName = foundSupplier.SupplierName;
-
-                    if (FilterSupplier)
-                    {
-                        SupplierSelectedIndex = FilteredViewSupplier.IndexOf(foundSupplier);
-                        _filterTextSupplier = foundSupplier.SupplierName;
-                    }
-                }
-                OnPropertyChanged(nameof(Data));
-            }
-
-            FilterSupplier = false;
-        }
+        _supplierCBVM = new InstantSupplierComboBoxVM(_gFunctions);
+        _supplierCBVM.SupplierChanged = _supplierCBVM_SupplierChanged;
+        _supplierCBVM.GetSupplierCode = _supplierCBVM_GetSupplierCode;
+        _supplierCBVM.SetSupplierName = _supplierCBVM_SetSupplierName;
     }
 
-    private async Task LoadSearchSupplierAsync()
+    private void _supplierCBVM_SupplierChanged(MstSupplier? selectedSupplier)
     {
-        await _gFunctions.RefreshSupplierDataAsync(false);
-        _suppliers.Clear();
-        _suppliers.AddRange(_gFunctions.Suppliers.ToArray());
-
-        _filterPredicateSupplier = item =>
+        if (selectedSupplier != null)
         {
-            var item1 = (item as MstSupplier);
-            item1.PutSearchToTop = (item1.SearchKey.Contains(_filterTextSupplier, StringComparison.OrdinalIgnoreCase));
-            return true;
-        };
-
-        string supplierCode = _data.SupplierCode;
-        _filteredViewSupplier = new ListCollectionView(_suppliers);
-        OnPropertyChanged(nameof(FilteredViewSupplier));
-
-        SelectedSupplier = _suppliers.FirstOrDefault(i => i.SupplierCode == supplierCode);
-
-        if (_selectedSupplier != null)
-        {
-            _data.SupplierName = _selectedSupplier.SupplierName;
-            _supplierSelectedIndex = FilteredViewSupplier.IndexOf(SelectedSupplier);
+            _data.SupplierCode = selectedSupplier.SupplierCode;
+            _data.SupplierName = selectedSupplier.SupplierName;
         }
         else
         {
-            _data.SupplierCode = "";
-            _data.SupplierName = "";
-            _supplierSelectedIndex = -1;
+            _data.SupplierCode = string.Empty;
+            _data.SupplierName = string.Empty;
         }
+    }
 
-        OnPropertyChanged(nameof(SupplierSelectedIndex));
+    private string _supplierCBVM_GetSupplierCode()
+    {
+        return _data.SupplierCode;
+    }
+
+    private void _supplierCBVM_SetSupplierName(string supplierName)
+    {
+        _data.SupplierName = supplierName;
     }
 
     #endregion
@@ -163,6 +207,7 @@ public partial class MstItemDetailViewModel : DetailViewModel
         _gFunctions = gFunctions;
 
         ChangeLanguage();
+        InitializeSupplierCBVM();
     }
 
     public override async Task InitializeAsync(DetailAction action, object pk)
@@ -224,12 +269,12 @@ public partial class MstItemDetailViewModel : DetailViewModel
 
         if (loadSearchSuppliers)
         {
-            await LoadSearchSupplierAsync();
+            await _supplierCBVM.LoadSearchSupplierAsync();
         }
 
         if (!string.IsNullOrWhiteSpace(Data?.SupplierCode))
         {
-            Data.SupplierName = (_suppliers.First(s => s.SupplierCode == Data.SupplierCode))?.SupplierName ?? string.Empty;
+            Data.SupplierName = (_supplierCBVM._suppliers.First(s => s.SupplierCode == Data.SupplierCode))?.SupplierName ?? string.Empty;
         }
     }
 

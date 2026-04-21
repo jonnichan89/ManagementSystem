@@ -11,18 +11,21 @@ namespace ManagementSystem.DataServices.Service
         {
             List<ModelValidation> validations = new List<ModelValidation>();
 
-            if (string.IsNullOrWhiteSpace(model.ItemCode))
-                validations.Add(ModelValidation.FieldIsRequired(nameof(MstItem), nameof(model.ItemCode), model.ItemCode));
-
-            // Validasi taro dibawah karena Delete cuma terisi PK nya saja
-            if (action != ServiceAction.Delete)
+            if (action == ServiceAction.Delete)
             {
+                if (model.ItemId <= 0)
+                    validations.Add(ModelValidation.FieldIsRequired(nameof(MstItem), nameof(model.ItemId), model.ItemId.ToString()));
+            }
+            else
+            {
+                if (string.IsNullOrWhiteSpace(model.ItemCode))
+                    validations.Add(ModelValidation.FieldIsRequired(nameof(MstItem), nameof(model.ItemCode), model.ItemCode));
+
                 if (string.IsNullOrWhiteSpace(model.ItemName))
                     validations.Add(ModelValidation.FieldIsRequired(nameof(MstItem), nameof(model.ItemName), model.ItemName));
 
                 if (IsExists(action, model))
                     validations.Add(ModelValidation.PKAlreadyExists(nameof(MstItem), nameof(model.ItemCode), model.ItemCode));
-
             }
 
             return validations;

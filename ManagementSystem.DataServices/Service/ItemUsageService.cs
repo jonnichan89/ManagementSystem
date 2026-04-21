@@ -11,20 +11,24 @@ namespace ManagementSystem.DataServices.Service
         {
             List<ModelValidation> validations = new List<ModelValidation>();
 
-            model.ItemUsageDetails.GroupBy(d => d.ItemCode).ToList().ForEach(g =>
+            if (action == ServiceAction.Delete)
             {
-                if (g.Count() > 1)
+                if (model.ItemUsageId <= 0)
+                    validations.Add(ModelValidation.FieldIsRequired(nameof(ItemUsage), nameof(model.ItemUsageId), model.ItemUsageId.ToString()));
+            }
+            else
+            {
+                model.ItemUsageDetails.GroupBy(d => d.ItemCode).ToList().ForEach(g =>
                 {
-                    validations.Add(ModelValidation.DuplicateRecord(
-                        nameof(ItemUsageDetail),
-                        nameof(ItemUsageDetail.ItemCode),
-                        g.Key));
-                }
-            });
+                    if (g.Count() > 1)
+                    {
+                        validations.Add(ModelValidation.DuplicateRecord(
+                            nameof(ItemUsageDetail),
+                            nameof(ItemUsageDetail.ItemCode),
+                            g.Key));
+                    }
+                });
 
-            // Validasi taro dibawah karena Delete cuma terisi PK nya saja
-            if (action != ServiceAction.Delete)
-            {
                 if (IsExists(action, model))
                     validations.Add(ModelValidation.PKAlreadyExists(nameof(ItemUsage), nameof(model.ItemUsageDate), model.ItemUsageDate.ToString("dd MMM yyyy")));
             }

@@ -49,11 +49,29 @@
 	</ItemGroup>
 
 	<ItemGroup>
+		<Compile Update="Pages\MstAccountPage.xaml.cs">
+		  <SubType>Code</SubType>
+		</Compile>
+		<Compile Update="Pages\MstAccountDetailPage.xaml.cs">
+		  <SubType>Code</SubType>
+		</Compile>
+		<Compile Update="Pages\FinanceDetailPage.xaml.cs">
+		  <SubType>Code</SubType>
+		</Compile>
+		<Compile Update="Pages\SalesOrderDetailPage.xaml.cs">
+		  <SubType>Code</SubType>
+		</Compile>
 		<Compile Update="Pages\PurchaseOrderDetailPage.xaml.cs">
 		  <SubType>Code</SubType>
 		</Compile>
 		<Compile Update="Pages\ItemUsageDetailPage.xaml.cs">
 			<SubType>Code</SubType>
+		</Compile>
+		<Compile Update="Pages\FinancePage.xaml.cs">
+		  <SubType>Code</SubType>
+		</Compile>
+		<Compile Update="Pages\SalesOrderPage.xaml.cs">
+		  <SubType>Code</SubType>
 		</Compile>
 		<Compile Update="Pages\PurchaseOrderPage.xaml.cs">
 		  <SubType>Code</SubType>

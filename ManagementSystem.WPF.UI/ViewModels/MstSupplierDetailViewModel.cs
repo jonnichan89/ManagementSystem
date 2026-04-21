@@ -1,4 +1,6 @@
 ﻿
+using ManagementSystem.WPF.UI.Services.ServiceInterfaces;
+
 namespace ManagementSystem.WPF.UI.ViewModels;
 
 public partial class MstSupplierDetailViewModel : DetailViewModel

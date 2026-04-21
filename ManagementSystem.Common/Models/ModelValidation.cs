@@ -8,6 +8,14 @@
         public string ErrorMessage { get; set; }
     }
 
+    public class ServiceActionResult<T> where T : class
+    {
+        public List<ModelValidation> ModelValidations { get; set; }
+        public bool ActionIsSuccess { get; set; }
+        public T[] ActionResult { get; set; }
+        public string ErrorMessage { get; set; }
+    }
+
     public class ModelValidation
     {
         public string ObjectTypeName { get; set; }

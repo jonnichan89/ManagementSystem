@@ -1,4 +1,5 @@
 using ManagementSystem.Common.Models;
+using ManagementSystem.Common.OtherModels;
 using ManagementSystem.Common.Utilities;
 using ManagementSystem.Data.Models;
 using ManagementSystem.DataServices.Resources;
@@ -47,7 +48,7 @@ namespace ManagementSystem.Controllers
             return Ok(result);
         }
 
-        [Route("{POId}")]
+        [Route("{PSId}")]
         [HttpGet]
         public ActionResult<ServiceActionResult> Get([FromRoute] int POId)
         {
@@ -65,12 +66,32 @@ namespace ManagementSystem.Controllers
             return Ok(result);
         }
 
+        [Route("Search")]
+        [HttpGet]
+        public ActionResult<ServiceActionResult> Get([FromBody] SearchPSOrderForOptions searchPS )
+        {
+            ServiceActionResult result = new ServiceActionResult();
+            try
+            {
+                result.ActionResult = _PurchaseOrderService.SearchPurchaseOrdersForOptions(searchPS);
+                result.ActionIsSuccess = (result.ActionResult != null);
+            }
+            catch (Exception ex)
+            {
+                result.ActionIsSuccess = false;
+                result.ErrorMessage = ExceptionHelper.GetErrorMessage(ex, true);
+            }
+            return Ok(result);
+        }
+
         [Route("")]
         [HttpPost]
-        public ActionResult<ServiceActionResult> Add([FromBody] PurchaseOrder model)
+        public ActionResult<ServiceActionResult> Add([FromBody] PSOrder model)
         {
             try
             {
+                model.SetDefault();
+
                 ServiceActionResult result = new ServiceActionResult();
                 result.ModelValidations = _PurchaseOrderService.CanContinueAction(ServiceAction.Add, model);
 
@@ -97,15 +118,15 @@ namespace ManagementSystem.Controllers
             }
         }
 
-        [Route("{POId}")]
+        [Route("{PSId}")]
         [HttpPut]
-        public ActionResult<ServiceActionResult> Update([FromBody] PurchaseOrder model)
+        public ActionResult<ServiceActionResult> Update([FromRoute] int PSId, [FromBody] PSOrder model)
         {
             try
             {
-                foreach (var item in model.PurchaseOrderDetails)
+                foreach (var item in model.PSOrderDetails)
                 {
-                    item.PurchaseOrder = model;
+                    item.PSOrder = model;
                 }
 
                 ServiceActionResult result = new ServiceActionResult();
@@ -134,25 +155,25 @@ namespace ManagementSystem.Controllers
             }
         }
 
-        [Route("{POId}")]
+        [Route("{PSId}")]
         [HttpDelete]
-        public ActionResult<ServiceActionResult> Delete([FromRoute] int POId)
+        public ActionResult<ServiceActionResult> Delete([FromRoute] int PSId)
         {
             try
             {
                 ServiceActionResult result = new ServiceActionResult();
                 result.ModelValidations = _PurchaseOrderService.CanContinueAction(
                     ServiceAction.Delete,
-                    new PurchaseOrder
+                    new PSOrder
                     {
-                        POId = POId
+                        PSId = PSId
                     });
 
                 if (result.ModelValidations.Count == 0)
                 {
                     try
                     {
-                        result.ActionResult = _PurchaseOrderService.DeletePurchaseOrder(POId);
+                        result.ActionResult = _PurchaseOrderService.DeletePurchaseOrder(PSId);
                         result.ActionIsSuccess = (result.ActionResult != null);
                     }
                     catch (Exception ex)

@@ -45,6 +45,10 @@ public partial class App : Application
             _ = services.AddSingleton<MstSupplierViewModel>();
             _ = services.AddTransient<MstSupplierDetailPage>();
 
+            _ = services.AddSingleton<MstAccountPage>();
+            _ = services.AddSingleton<MstAccountViewModel>();
+            _ = services.AddTransient<MstAccountDetailPage>();
+
             _ = services.AddSingleton<ItemUsagePage>();
             _ = services.AddSingleton<ItemUsageViewModel>();
             _ = services.AddTransient<ItemUsageDetailPage>();
@@ -52,6 +56,10 @@ public partial class App : Application
             _ = services.AddSingleton<PurchaseOrderPage>();
             _ = services.AddSingleton<PurchaseOrderViewModel>();
             _ = services.AddTransient<PurchaseOrderDetailPage>();
+
+            _ = services.AddSingleton<FinancePage>();
+            _ = services.AddSingleton<FinanceViewModel>();
+            _ = services.AddTransient<FinanceDetailPage>();
 
             _ = services.AddSingleton<SettingPage>();
             _ = services.AddSingleton<SettingViewModel>();
@@ -68,8 +76,8 @@ public partial class App : Application
                 b.FromResource<StringResource>(new("en-US"));
                 b.FromResource<StringResource>(new("id-ID"));
             });
-
-            _ = services.AddManagementApiClient(new Uri("http://localhost/ManagementSystem/"));
+             
+            _ = services.AddManagementApiClient(new Uri(ManagementSystem.WPF.UI.Properties.Settings.Default.APIUrl.TrimEnd('/') + "/"));
 
             // Configure default JsonSerializerOptions
             //PropertyNameCaseInsensitive = true,

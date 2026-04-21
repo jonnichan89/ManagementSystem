@@ -11,7 +11,10 @@ public partial class PurchaseOrderDetail : INotifyPropertyChanged
     public void OnPropertyChanged([CallerMemberName] string? propertyName = null)
     {
         PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+        AfterPropertyChanged(propertyName);
     }
+
+    partial void AfterPropertyChanged(string propertyName);
 
     #endregion
 
@@ -39,7 +42,7 @@ public partial class PurchaseOrderDetail : INotifyPropertyChanged
         }
     }
 
-    private string _ItemCode = null!;
+    private string _ItemCode = string.Empty;
     
     public string ItemCode {
         get {
@@ -51,7 +54,7 @@ public partial class PurchaseOrderDetail : INotifyPropertyChanged
         }
     }
 
-    private string _ItemName = null!;
+    private string _ItemName = string.Empty;
     
     public string ItemName {
         get {
@@ -75,7 +78,7 @@ public partial class PurchaseOrderDetail : INotifyPropertyChanged
         }
     }
 
-    private string _Unit = null!;
+    private string _Unit = string.Empty;
     
     public string Unit {
         get {

@@ -46,7 +46,11 @@
                         <ui:NavigationViewItem Content="{resx:Localization mwMstItem}"
                                                Icon="{ui:SymbolIcon Box24}"
                                                TargetPageType="{x:Type pages:MstItemPage}" />
-                        
+
+                        <ui:NavigationViewItem Content="{resx:Localization mwMstAccount}"
+                                               Icon="{ui:SymbolIcon Box24}"
+                                               TargetPageType="{x:Type pages:MstAccountPage}" />
+
                         <ui:NavigationViewItem Content="{resx:Localization mwProjectTemplate}"
                                                Icon="{ui:SymbolIcon BookTemplate20}" />
                         
@@ -72,7 +76,8 @@
                         <ui:NavigationViewItem Content="{resx:Localization mwSales}"
                                                Icon="{ui:SymbolIcon Cart24}" />
                         <ui:NavigationViewItem Content="{resx:Localization mwFinancial}"
-                                               Icon="{ui:SymbolIcon Money24}" />
+                                               Icon="{ui:SymbolIcon Money24}"
+                                               TargetPageType="{x:Type pages:FinancePage}" />
                     </ui:NavigationViewItem.MenuItems>
                 </ui:NavigationViewItem>
 

@@ -8,5 +8,8 @@
     <Setting Name="LastImagePath" Type="System.String" Scope="User">
       <Value Profile="(Default)" />
     </Setting>
+    <Setting Name="APIUrl" Type="System.String" Scope="Application">
+      <Value Profile="(Default)">http://localhost/ManagementSystem/</Value>
+    </Setting>
   </Settings>
 </SettingsFile>

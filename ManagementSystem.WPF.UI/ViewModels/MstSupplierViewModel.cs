@@ -1,4 +1,6 @@
-﻿namespace ManagementSystem.WPF.UI.ViewModels;
+﻿using ManagementSystem.WPF.UI.Services.ServiceInterfaces;
+
+namespace ManagementSystem.WPF.UI.ViewModels;
 
 public partial class MstSupplierViewModel : ViewModel
 {

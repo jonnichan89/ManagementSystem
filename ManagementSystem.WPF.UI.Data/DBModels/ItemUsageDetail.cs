@@ -12,7 +12,10 @@ public partial class ItemUsageDetail : INotifyPropertyChanged
     public void OnPropertyChanged([CallerMemberName] string? propertyName = null)
     {
         PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+        AfterPropertyChanged(propertyName);
     }
+
+    partial void AfterPropertyChanged(string propertyName);
 
     #endregion
 
@@ -40,7 +43,7 @@ public partial class ItemUsageDetail : INotifyPropertyChanged
         }
     }
 
-    private string _ItemCode = null!;
+    private string _ItemCode = string.Empty;
     
     public string ItemCode {
         get {
@@ -76,7 +79,7 @@ public partial class ItemUsageDetail : INotifyPropertyChanged
         }
     }
 
-    private string _CreatedBy = null!;
+    private string _CreatedBy = string.Empty;
     
     public string CreatedBy {
         get {
@@ -100,7 +103,7 @@ public partial class ItemUsageDetail : INotifyPropertyChanged
         }
     }
 
-    private string _ModifiedBy = null!;
+    private string _ModifiedBy = string.Empty;
     
     public string ModifiedBy {
         get {

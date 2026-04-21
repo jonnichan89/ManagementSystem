@@ -23,8 +23,6 @@
                                           Focusable="False">
 
                                         <Border x:Name="MainBorder"
-                                                MaxWidth="{TemplateBinding DialogWidth}"
-                                                MaxHeight="{TemplateBinding DialogHeight}"
                                                 Margin="{TemplateBinding DialogMargin}"
                                                 Background="{TemplateBinding Background}"
                                                 BorderBrush="{TemplateBinding BorderBrush}"

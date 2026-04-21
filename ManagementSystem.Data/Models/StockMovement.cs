@@ -13,7 +13,7 @@ public partial class StockMovement
 
     [StringLength(50)]
     [Unicode(false)]
-    public string ItemCode { get; set; }
+    public string ItemCode { get; set; } = string.Empty;
 
     public int POId { get; set; }
 

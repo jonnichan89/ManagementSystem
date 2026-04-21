@@ -12,7 +12,10 @@ public partial class MstItem : INotifyPropertyChanged
     public void OnPropertyChanged([CallerMemberName] string? propertyName = null)
     {
         PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+        AfterPropertyChanged(propertyName);
     }
+
+    partial void AfterPropertyChanged(string propertyName);
 
     #endregion
 
@@ -28,7 +31,7 @@ public partial class MstItem : INotifyPropertyChanged
         }
     }
 
-    private string _ItemCode = null!;
+    private string _ItemCode = string.Empty;
     
     public string ItemCode {
         get {
@@ -40,7 +43,7 @@ public partial class MstItem : INotifyPropertyChanged
         }
     }
 
-    private string _ItemName = null!;
+    private string _ItemName = string.Empty;
     
     public string ItemName {
         get {
@@ -52,7 +55,7 @@ public partial class MstItem : INotifyPropertyChanged
         }
     }
 
-    private string _ItemDescription = null!;
+    private string _ItemDescription = string.Empty;
     
     public string ItemDescription {
         get {
@@ -64,7 +67,7 @@ public partial class MstItem : INotifyPropertyChanged
         }
     }
 
-    private string _ItemUnit = null!;
+    private string _ItemUnit = string.Empty;
     
     public string ItemUnit {
         get {
@@ -76,7 +79,7 @@ public partial class MstItem : INotifyPropertyChanged
         }
     }
 
-    private string _ImagePath = null!;
+    private string _ImagePath = string.Empty;
     
     public string ImagePath {
         get {
@@ -124,7 +127,7 @@ public partial class MstItem : INotifyPropertyChanged
         }
     }
 
-    private string _CreatedBy = null!;
+    private string _CreatedBy = string.Empty;
     
     public string CreatedBy {
         get {
@@ -148,7 +151,7 @@ public partial class MstItem : INotifyPropertyChanged
         }
     }
 
-    private string _ModifiedBy = null!;
+    private string _ModifiedBy = string.Empty;
     
     public string ModifiedBy {
         get {
@@ -172,7 +175,7 @@ public partial class MstItem : INotifyPropertyChanged
         }
     }
 
-    private string _SupplierCode = null!;
+    private string _SupplierCode = string.Empty;
     
     public string SupplierCode {
         get {

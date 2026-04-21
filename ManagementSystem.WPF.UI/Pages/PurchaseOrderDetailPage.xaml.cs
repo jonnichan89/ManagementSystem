@@ -1,4 +1,9 @@
-﻿
+﻿using ManagementSystem.WPF.UI.Pages.ToInherit;
+using ManagementSystem.WPF.UI.Services.ServiceInterfaces;
+using Microsoft.SqlServer.Server;
+using System.Diagnostics.Metrics;
+using Wpf.Ui.Controls;
+
 namespace ManagementSystem.WPF.UI.Pages
 {
     /// <summary>
@@ -10,6 +15,8 @@ namespace ManagementSystem.WPF.UI.Pages
         {
             if (VM != null)
                 VM.Dispose();
+
+            SupplierCB_Dispose();
         }
 
         #region IViewInteractionService Implementation
@@ -125,7 +132,117 @@ namespace ManagementSystem.WPF.UI.Pages
             _POId = POId;
 
             await VM.InitializeAsync(_action, _POId);
+            SupplierCB_Initialize();
         }
+
+        #region ComboBox Supplier
+
+        InstantSupplierComboBox _supplierCB;
+
+        private void SupplierCB_Initialize()
+        {
+            _supplierCB = new InstantSupplierComboBox(ref SupplierComboBox, VM.SupplierCBVM);
+        }
+
+        private void SupplierCB_Dispose()
+        {
+            if (_supplierCB != null)
+                _supplierCB.Dispose();
+        }
+
+        #endregion
+
+        #region Numeric Formatter
+
+        public class ValidateNumberFormatter1 : INumberFormatter, INumberParser
+        {
+            public ValidateNumberFormatter1(string currencyId)
+            {
+                CurrencyId = currencyId;
+            }
+
+            private string _stringFormat;
+            private string _currencyId;
+            public string CurrencyId
+            {
+                set
+                {
+                    _currencyId = value;
+                    switch (_currencyId)
+                    {
+                        case "IDR":
+                            _stringFormat = "N0";
+                            break;
+                        default:
+                            _stringFormat = "N2";
+                            break;
+                    }
+                }
+            }
+
+            /// <inheritdoc />
+            public string FormatDouble(double? value)
+            {
+                return value?.ToString(_stringFormat, GetCurrentCultureConverter()) ?? string.Empty;
+            }
+
+            /// <inheritdoc />
+            public string FormatInt(int? value)
+            {
+                return value?.ToString(_stringFormat, GetCurrentCultureConverter()) ?? string.Empty;
+            }
+
+            /// <inheritdoc />
+            public string FormatUInt(uint? value)
+            {
+                return value?.ToString(_stringFormat, GetCurrentCultureConverter()) ?? string.Empty;
+            }
+
+            /// <inheritdoc />
+            public double? ParseDouble(string? value)
+            {
+                return double.TryParse(value, out double d) ? d : null;
+            }
+
+            /// <inheritdoc />
+            public int? ParseInt(string? value)
+            {
+                return int.TryParse(value, out int i) ? i : null;
+            }
+
+            /// <inheritdoc />
+            public uint? ParseUInt(string? value)
+            {
+                return uint.TryParse(value, out uint ui) ? ui : (uint?)null;
+            }
+
+            private static CultureInfo GetCurrentCultureConverter()
+            {
+                return CultureInfo.CurrentCulture;
+            }
+        }
+
+        ValidateNumberFormatter1 formatter;
+
+        private void FormatNumericDisplay()
+        {
+            if (formatter == null)
+            {
+                formatter = new ValidateNumberFormatter1(VM.Data.CurrencyId);
+            }
+            formatter.CurrencyId = VM.Data.CurrencyId;
+            DPPNUD.NumberFormatter = formatter;
+            HeaderTotalDPPNUD.NumberFormatter = formatter;
+            HeaderDPPDiscountNUD.NumberFormatter = formatter;
+            HeaderTotalDPPNUD.InvalidateProperty(NumberBox.ValueProperty);
+            HeaderTotalDPPNUD.InvalidateProperty(NumberBox.TextProperty);
+        }
+        private void CurrencyRadioButton_Checked(object sender, RoutedEventArgs e)
+        {
+            FormatNumericDisplay();
+        }
+
+        #endregion
 
         private void ItemComboBox_OnItemHoverExit(object sender, MouseEventArgs e)
         {
@@ -205,7 +322,7 @@ namespace ManagementSystem.WPF.UI.Pages
                 }
                 else if (Keyboard.Modifiers == ModifierKeys.Control && e.Key == Key.Enter)
                 {
-                    VM.AddPODCommand.Execute(null);
+                    VM.AddItemDetailCommand.Execute(null);
                     ItemComboBox.Focus();
                     e.Handled = true;
                 }

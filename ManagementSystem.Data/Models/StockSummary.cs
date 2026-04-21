@@ -13,7 +13,7 @@ public partial class StockSummary
     [Key]
     [StringLength(50)]
     [Unicode(false)]
-    public string ItemCode { get; set; }
+    public string ItemCode { get; set; } = string.Empty;
 
     [Column(TypeName = "money")]
     public decimal BeginQty { get; set; }
