@@ -17,10 +17,16 @@ public partial class MainWindow : IWindow
 
         InitializeComponent();
 
+        this.Closed += MainWindow_Closed;
         snackbarService.SetSnackbarPresenter(SnackbarPresenter);
         navigationService.SetNavigationControl(NavigationView);
         contentDialogService.SetDialogHost(RootContentDialog);
         SetupTrayMenuEvents();
+    }
+
+    private void MainWindow_Closed(object? sender, EventArgs e)
+    {
+        System.Diagnostics.Debug.WriteLine("Main Window Closed.");
     }
 
     public MainWindowViewModel VM { get; }

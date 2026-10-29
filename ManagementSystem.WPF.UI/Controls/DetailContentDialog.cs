@@ -1,4 +1,6 @@
 ﻿
+using ManagementSystem.WPF.UI.ViewModels.ToInherit;
+
 namespace ManagementSystem.WPF.UI.Controls
 {
     public class DetailContentDialog : ContentDialog
@@ -25,6 +27,37 @@ namespace ManagementSystem.WPF.UI.Controls
         public DetailContentDialog(IDetailViewModel vm) : base()
         {
             _detailViewModel = vm;
+            this.Opened += DetailContentDialog_Opened;
+            this.Closed += DetailContentDialog_Closed;
+        }
+
+        Border b;
+
+        private void DetailContentDialog_Closed(ContentDialog sender, ContentDialogClosedEventArgs args)
+        {
+            if (b != null)
+            {
+                this.Opened -= DetailContentDialog_Opened;
+                this.Closed -= DetailContentDialog_Closed;
+            }
+
+            if (_titlePresenter != null)
+            {
+                _titlePresenter.PreviewMouseLeftButtonDown -= Title_PreviewMouseLeftButtonDown;
+                _titlePresenter.MouseMove -= Title_MouseMove;
+                _titlePresenter.PreviewMouseLeftButtonUp -= Title_PreviewMouseLeftButtonUp;
+                _titlePresenter.MouseLeave -= Title_MouseLeave;
+            }
+        }
+
+        private void DetailContentDialog_Opened(ContentDialog sender, RoutedEventArgs args)
+        {
+            b = (Border)this.GetTemplateChild("MainBorder");
+            if (b != null)
+            {
+                b.Width = this.DesiredSize.Width;
+                b.Height = this.DesiredSize.Height;
+            }
         }
 
         public Frame Frame1 { get; private set; }

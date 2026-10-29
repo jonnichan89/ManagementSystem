@@ -1,5 +1,6 @@
 ﻿using ManagementSystem.WPF.UI.Pages.ToInherit;
 using ManagementSystem.WPF.UI.Services.ServiceInterfaces;
+using ManagementSystem.WPF.UI.ViewModels.ToInherit;
 using Microsoft.SqlServer.Server;
 using System.Diagnostics.Metrics;
 using Wpf.Ui.Controls;

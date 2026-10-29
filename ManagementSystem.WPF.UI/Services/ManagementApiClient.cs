@@ -1,4 +1,11 @@
+using Azure.Core;
+using ManagementSystem.Common.OtherModels;
+using ManagementSystem.WPF.UI.Data.OtherModels;
+using ManagementSystem.WPF.UI.Models;
 using ManagementSystem.WPF.UI.Services.ServiceInterfaces;
+using Microsoft.EntityFrameworkCore.Metadata;
+using System.IO.Compression;
+using System.Text;
 using System.Text.Json.Serialization;
 
 namespace ManagementSystem.WPF.UI.Services
@@ -11,13 +18,24 @@ namespace ManagementSystem.WPF.UI.Services
             List<T> Values { get; set; }
         }
 
+        private string _folderImageMstItems;
+        private string _folderImageProjectTemplates;
+
         private readonly HttpClient _http;
         private readonly JsonSerializerOptions _jsonOptions;
+        private readonly SecureStorageService _storage;
 
-        public ManagementApiClient(HttpClient http, JsonSerializerOptions jsonOptions)
+        public ManagementApiClient(HttpClient http, JsonSerializerOptions jsonOptions, SecureStorageService storage)
         {
             _http = http ?? throw new ArgumentNullException(nameof(http));
             _jsonOptions = jsonOptions;
+            _storage = storage;
+
+            _folderImageMstItems = System.IO.Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "MstItems");
+            System.IO.Directory.CreateDirectory(_folderImageMstItems);
+
+            _folderImageProjectTemplates = System.IO.Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "ProjectTemplates");
+            System.IO.Directory.CreateDirectory(_folderImageProjectTemplates);
         }
 
         private void SetHttpClientLanguage()
@@ -28,23 +46,52 @@ namespace ManagementSystem.WPF.UI.Services
             );
         }
 
-        public async Task<string> DownloadItemImageFile(string imageFilePath, CancellationToken cancellationToken = default)
+        private void SetHttpClientAuthorizationHeader()
         {
-            string fileName = System.IO.Path.GetFileName(imageFilePath);
+            string runtimeToken = _storage.ReadToken();
+            if (string.IsNullOrEmpty(runtimeToken)) throw new UnauthorizedAccessException();
 
-            string outputPath = System.IO.Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "items");
-            System.IO.Directory.CreateDirectory(outputPath);
+            _http.DefaultRequestHeaders.Clear();
+            _http.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", runtimeToken);
+            runtimeToken = null;
+        }
 
-            string outputFullFileName = System.IO.Path.Combine(outputPath, fileName);
+        public async Task<string> DownloadImageFile(string localImageFolderPath, string urlImageFilePath, int imageFileSize, CancellationToken cancellationToken = default)
+        {
+            string fileName = System.IO.Path.GetFileName(urlImageFilePath);
 
-            if (!System.IO.File.Exists(outputFullFileName))
+            string outputFullFileName = System.IO.Path.Combine(localImageFolderPath, fileName);
+            bool downloadImage = false;
+            if (System.IO.File.Exists(outputFullFileName))
             {
-                var resp = await _http.GetAsync(Uri.EscapeDataString(imageFilePath), cancellationToken);
+                if (imageFileSize == 0)
+                    downloadImage = false;
+                else
+                {
+                    FileInfo fi = new FileInfo(outputFullFileName);
+                    if ((int)fi.Length != imageFileSize)
+                    {
+                        downloadImage = true;
+                    }
+                }
+            }
+            else
+            {
+                downloadImage = true;
+            }
 
-                using var downloadStream = await _http.GetStreamAsync(imageFilePath.TrimStart('/'));
-                using var fileStream = new FileStream(outputFullFileName, FileMode.Create, FileAccess.Write);
+            if (downloadImage)
+            {
+                try
+                {
+                    using var downloadStream = await _http.GetStreamAsync(urlImageFilePath.TrimStart('/'));
+                    using var fileStream = new FileStream(outputFullFileName, FileMode.Create, FileAccess.Write);
 
-                await downloadStream.CopyToAsync(fileStream); // Streams data to the file
+                    await downloadStream.CopyToAsync(fileStream); // Streams data to the file
+                }
+                catch (Exception)
+                {
+                }
             }
 
             return outputFullFileName;
@@ -82,14 +129,14 @@ namespace ManagementSystem.WPF.UI.Services
             return actionResult;
         }
 
-        public async Task<ServiceActionResult> GetMstUserByIdAsync(string userId, CancellationToken cancellationToken = default)
+        public async Task<ServiceActionResult> GetMstUserByUserNameAsync(string userName, CancellationToken cancellationToken = default)
         {
             SetHttpClientLanguage();
 
             ServiceActionResult actionResult;
             try
             {
-                actionResult = await _http.GetFromJsonAsync<ServiceActionResult>($"MstUser/{Uri.EscapeDataString(userId)}", cancellationToken) ?? new ServiceActionResult();
+                actionResult = await _http.GetFromJsonAsync<ServiceActionResult>($"MstUser/{Uri.EscapeDataString(userName)}", cancellationToken) ?? new ServiceActionResult();
                 if (actionResult.ActionIsSuccess)
                 {
                     actionResult.ActionResult = JsonSerializer.Deserialize<MstUser>(
@@ -144,7 +191,7 @@ namespace ManagementSystem.WPF.UI.Services
 
             SetHttpClientLanguage();
 
-            var resp = await _http.PutAsJsonAsync($"MstUser/{Uri.EscapeDataString(user.UserId)}", user, _jsonOptions, cancellationToken);
+            var resp = await _http.PutAsJsonAsync($"MstUser/{Uri.EscapeDataString(user.UserName)}", user, _jsonOptions, cancellationToken);
 
             if (resp.IsSuccessStatusCode)
             {
@@ -164,16 +211,16 @@ namespace ManagementSystem.WPF.UI.Services
             }
         }
 
-        public async Task<ServiceActionResult> DeleteMstUserAsync(string userId, CancellationToken cancellationToken = default)
+        public async Task<ServiceActionResult> DeleteMstUserAsync(string userName, CancellationToken cancellationToken = default)
         {
-            if (userId is null) throw new ArgumentNullException(nameof(userId));
+            if (userName is null) throw new ArgumentNullException(nameof(userName));
 
             SetHttpClientLanguage();
 
             ServiceActionResult actionResult;
             try
             {
-                actionResult = await _http.DeleteFromJsonAsync<ServiceActionResult>($"MstUser/{Uri.EscapeDataString(userId)}", cancellationToken) ?? new ServiceActionResult();
+                actionResult = await _http.DeleteFromJsonAsync<ServiceActionResult>($"MstUser/{Uri.EscapeDataString(userName)}", cancellationToken) ?? new ServiceActionResult();
                 if (actionResult.ActionIsSuccess)
                 {
                     actionResult.ActionResult = bool.Parse(actionResult.ActionResult.ToString());
@@ -194,242 +241,39 @@ namespace ManagementSystem.WPF.UI.Services
             return actionResult;
         }
 
-        #endregion
-
-        #region Item
-
-        public async Task<ServiceActionResult<MstItem>> GetMstItemsAsync(CancellationToken cancellationToken = default)
+        private class LoginDataResult
         {
+            public string Token { get; set; }
+            public string UserName { get; set; }
+            public string AccessList { get; set; }
+        }
+        public async Task<ServiceActionResult> LoginUserAsync(string userName, string password, CancellationToken cancellationToken = default)
+        {
+            if (userName is null) throw new ArgumentNullException(nameof(userName));
+            if (password is null) throw new ArgumentNullException(nameof(password));
+
             SetHttpClientLanguage();
 
-            ServiceActionResult<MstItem> actionResult;
+            ServiceActionResult actionResult = null;
             try
             {
-                actionResult = await _http.GetFromJsonAsync<ServiceActionResult<MstItem>>("MstItem", _jsonOptions, cancellationToken) ?? new ServiceActionResult<MstItem>();
-                //if (actionResult.ActionIsSuccess)
-                //{
-                //    actionResult.ActionResult = JsonSerializer.Deserialize<MstItem[]>(
-                //        (actionResult.ActionResult ?? string.Empty).
-                //        ToString() ?? string.Empty) ?? null;
-                //}
+                HttpResponseMessage response = await _http.PostAsJsonAsync($"MstUser/Login", new { UserName = userName, UserPassword = password }, cancellationToken);
 
-                //string[] files = System.IO.Directory.GetFiles(System.IO.Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "items1"));
-                //System.IO.Directory.CreateDirectory(System.IO.Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "items"));
-
-                int i = 0;
-                foreach (var item in actionResult.ActionResult) // (MstItem[]?)actionResult.ActionResult ?? Array.Empty<MstItem>())
+                // 2. Safely extract and deserialize the ServiceActionResult wrapper
+                if (response.IsSuccessStatusCode)
                 {
-                    //System.IO.File.Copy(files[i], System.IO.Path.Combine(AppDomain.CurrentDomain.BaseDirectory, item.ImagePath.TrimStart('/')), true);
-                    //i++;
-                    //if (i >= files.Length)
-                    //{
-                    //    i = 0;
-                    //}
+                    actionResult = await response.Content.ReadFromJsonAsync<ServiceActionResult>();
 
-                    if (!string.IsNullOrEmpty(item.ImagePath))
+                    if (actionResult.ActionIsSuccess)
                     {
-                        item.ImagePath = await DownloadItemImageFile(item.ImagePath, cancellationToken);
+                        LoginDataResult data = JsonSerializer.Deserialize<LoginDataResult>(
+                            (actionResult.ActionResult ?? string.Empty).
+                            ToString() ?? string.Empty) ?? null;
+
+                        App.UserName = data.UserName;
+                        App.AccessList = data.AccessList;
+                        App.AccessToken = data.Token;
                     }
-                }
-            }
-            catch (Exception ex)
-            {
-                actionResult = new ServiceActionResult<MstItem>()
-                {
-                    ActionIsSuccess = false,
-                    ErrorMessage =
-                        string.Format(
-                            TranslationSource.Instance["HttpClientFailedToReadResponse"] ?? "{0}",
-                            Environment.NewLine +
-                            ExceptionHelper.GetErrorMessage(ex, true))
-                };
-            }
-            return actionResult;
-        }
-
-        public async Task<ServiceActionResult> GetMstItemByIdAsync(int itemId, CancellationToken cancellationToken = default)
-        {
-            SetHttpClientLanguage();
-
-            ServiceActionResult actionResult;
-            try
-            {
-                actionResult = await _http.GetFromJsonAsync<ServiceActionResult>($"MstItem/{itemId}", cancellationToken) ?? new ServiceActionResult();
-                if (actionResult.ActionIsSuccess)
-                {
-                    actionResult.ActionResult = JsonSerializer.Deserialize<MstItem>(
-                        (actionResult.ActionResult ?? string.Empty).
-                        ToString() ?? string.Empty) ?? null;
-                }
-            }
-            catch (Exception ex)
-            {
-                actionResult = new ServiceActionResult()
-                {
-                    ActionIsSuccess = false,
-                    ErrorMessage =
-                        string.Format(
-                            TranslationSource.Instance["HttpClientFailedToReadResponse"] ?? "{0}",
-                            Environment.NewLine +
-                            ExceptionHelper.GetErrorMessage(ex, true))
-                };
-            }
-            return actionResult;
-        }
-
-        public async Task<ServiceActionResult> CreateMstItemAsync(MstItem item, Stream? imageStream = null, string imageFileName = "", CancellationToken cancellationToken = default)
-        {
-            if (item is null) throw new ArgumentNullException(nameof(item));
-
-            SetHttpClientLanguage();
-
-            // Build multipart/form-data content for form binding on server ([FromForm] MstItem model, IFormFile image)
-            using var content = new MultipartFormDataContent();
-
-            // Add scalar properties of MstItem as form fields. Skip ImagePath because server will populate it.
-            var props = typeof(MstItem).GetProperties(BindingFlags.Public | BindingFlags.Instance);
-            foreach (var p in props)
-            {
-                if (p.Name == nameof(MstItem.ImagePath)) continue;
-
-                if (p.GetMethod == null) continue;
-                var val = p.GetValue(item);
-                if (val == null) continue;
-
-                string strVal;
-                if (val is DateTime dt) strVal = dt.ToString("o", CultureInfo.InvariantCulture);
-                else if (val is bool b) strVal = b ? "True" : "False";
-                else if (val is IFormattable fmt) strVal = fmt.ToString(null, CultureInfo.InvariantCulture);
-                else strVal = val.ToString() ?? string.Empty;
-
-                // name must match the server parameter property name so model binder can bind.
-                content.Add(new StringContent(strVal), p.Name);
-            }
-
-            if (imageStream != null)
-            {
-                // Add file content. Use provided filename or fallback.
-                StreamContent streamContent = new StreamContent(imageStream);
-
-                switch (System.IO.Path.GetExtension(imageFileName))
-                {
-                    case ".jpeg":
-                    case ".jpg":
-                        streamContent.Headers.ContentType = new MediaTypeHeaderValue("image/jpeg");
-                        break;
-                    case ".png":
-                        streamContent.Headers.ContentType = new MediaTypeHeaderValue("image/png");
-                        break;
-
-                    default:
-                        break;
-                }
-                content.Add(streamContent, "image", imageFileName);
-            }
-
-            var respMultipart = await _http.PostAsync("MstItem", content, cancellationToken);
-
-            if (respMultipart.IsSuccessStatusCode)
-            {
-                ServiceActionResult? actionResult = await respMultipart.Content.ReadFromJsonAsync<ServiceActionResult>(_jsonOptions, cancellationToken);
-                if (actionResult == null)
-                    throw new Exception(
-                        string.Format(
-                            TranslationSource.Instance["HttpClientFailedToReadResponse"] ?? "{0}",
-                            Environment.NewLine +
-                            await respMultipart.Content.ReadAsStringAsync()));
-
-                return actionResult;
-            }
-            else
-            {
-                throw new Exception(await respMultipart.Content.ReadAsStringAsync());
-            }
-        }
-
-        public async Task<ServiceActionResult> UpdateMstItemAsync(MstItem item, Stream? imageStream = null, string imageFileName = "", CancellationToken cancellationToken = default)
-        {
-            if (item is null) throw new ArgumentNullException(nameof(item));
-
-            SetHttpClientLanguage();
-
-            // Build multipart/form-data content for form binding on server ([FromForm] MstItem model, IFormFile image)
-            using var content = new MultipartFormDataContent();
-
-            // Add scalar properties of MstItem as form fields. Skip ImagePath because server will populate it.
-            var props = typeof(MstItem).GetProperties(BindingFlags.Public | BindingFlags.Instance);
-            foreach (var p in props)
-            {
-                if (p.Name == nameof(MstItem.ImagePath)) continue;
-
-                if (p.GetMethod == null) continue;
-                var val = p.GetValue(item);
-                if (val == null) continue;
-
-                string strVal;
-                if (val is DateTime dt) strVal = dt.ToString("o", CultureInfo.InvariantCulture);
-                else if (val is bool b) strVal = b ? "True" : "False";
-                else if (val is IFormattable fmt) strVal = fmt.ToString(null, CultureInfo.InvariantCulture);
-                else strVal = val.ToString() ?? string.Empty;
-
-                // name must match the server parameter property name so model binder can bind.
-                content.Add(new StringContent(strVal), p.Name);
-            }
-
-            if (imageStream != null)
-            {
-                // Add file content. Use provided filename or fallback.
-                StreamContent streamContent = new StreamContent(imageStream);
-
-                switch (System.IO.Path.GetExtension(imageFileName))
-                {
-                    case ".jpeg":
-                    case ".jpg":
-                        streamContent.Headers.ContentType = new MediaTypeHeaderValue("image/jpeg");
-                        break;
-                    case ".png":
-                        streamContent.Headers.ContentType = new MediaTypeHeaderValue("image/png");
-                        break;
-
-                    default:
-                        break;
-                }
-                content.Add(streamContent, "image", imageFileName);
-            }
-
-            var respMultipart = await _http.PutAsync($"MstItem/{item.ItemId}", content, cancellationToken);
-
-            if (respMultipart.IsSuccessStatusCode)
-            {
-                ServiceActionResult? actionResult = await respMultipart.Content.ReadFromJsonAsync<ServiceActionResult>(_jsonOptions, cancellationToken);
-                if (actionResult == null)
-                    throw new Exception(
-                        string.Format(
-                            TranslationSource.Instance["HttpClientFailedToReadResponse"] ?? "{0}",
-                            Environment.NewLine +
-                            await respMultipart.Content.ReadAsStringAsync()));
-
-                return actionResult;
-            }
-            else
-            {
-                throw new Exception(await respMultipart.Content.ReadAsStringAsync());
-            }
-        }
-
-        public async Task<ServiceActionResult> DeleteMstItemAsync(int itemId, CancellationToken cancellationToken = default)
-        {
-            if (itemId == 0) throw new ArgumentNullException(nameof(itemId));
-
-            SetHttpClientLanguage();
-
-            ServiceActionResult actionResult;
-            try
-            {
-                actionResult = await _http.DeleteFromJsonAsync<ServiceActionResult>($"MstItem/{itemId}", cancellationToken) ?? new ServiceActionResult();
-                if (actionResult.ActionIsSuccess)
-                {
-                    actionResult.ActionResult = bool.Parse(actionResult.ActionResult.ToString());
                 }
             }
             catch (Exception ex)
@@ -494,6 +338,37 @@ namespace ManagementSystem.WPF.UI.Services
                     actionResult.ActionResult = JsonSerializer.Deserialize<MstSupplier>(
                         (actionResult.ActionResult ?? string.Empty).
                         ToString() ?? string.Empty) ?? null;
+                }
+            }
+            catch (Exception ex)
+            {
+                actionResult = new ServiceActionResult()
+                {
+                    ActionIsSuccess = false,
+                    ErrorMessage =
+                        string.Format(
+                            TranslationSource.Instance["HttpClientFailedToReadResponse"] ?? "{0}",
+                            Environment.NewLine +
+                            ExceptionHelper.GetErrorMessage(ex, true))
+                };
+            }
+            return actionResult;
+        }
+
+        public async Task<ServiceActionResult> GetMstSupplierLastModifiedAsync(CancellationToken cancellationToken = default)
+        {
+            SetHttpClientLanguage();
+
+            ServiceActionResult actionResult;
+            try
+            {
+                actionResult = await _http.GetFromJsonAsync<ServiceActionResult>($"MstSupplier/LastModified", cancellationToken) ?? new ServiceActionResult();
+                if (actionResult.ActionIsSuccess)
+                {
+                    actionResult.ActionResult = actionResult.ActionResult.ToString();
+                    //actionResult.ActionResult = JsonSerializer.Deserialize<MstSupplier>(
+                    //    (actionResult.ActionResult ?? string.Empty).
+                    //    ToString() ?? string.Empty) ?? null;
                 }
             }
             catch (Exception ex)
@@ -594,7 +469,6 @@ namespace ManagementSystem.WPF.UI.Services
         }
 
         #endregion
-
 
         #region ItemUsage
 

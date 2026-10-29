@@ -22,6 +22,7 @@
                                     <Grid Background="{DynamicResource ContentDialogSmokeFill}"
                                           Focusable="False">
 
+                                        <ScrollViewer>
                                         <Border x:Name="MainBorder"
                                                 Margin="{TemplateBinding DialogMargin}"
                                                 Background="{TemplateBinding Background}"
@@ -165,6 +166,7 @@
                                                 </Border>
                                             </Grid>
                                         </Border>
+                                        </ScrollViewer>
                                     </Grid>
 
                                     <ControlTemplate.Triggers>

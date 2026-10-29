@@ -1,5 +1,6 @@
 ﻿using ManagementSystem.WPF.UI.Pages.ToInherit;
 using ManagementSystem.WPF.UI.Services.ServiceInterfaces;
+using ManagementSystem.WPF.UI.ViewModels.ToInherit;
 using Microsoft.SqlServer.Server;
 using System.Diagnostics.Metrics;
 using Wpf.Ui.Controls;
@@ -231,11 +232,15 @@ namespace ManagementSystem.WPF.UI.Pages
                 formatter = new ValidateNumberFormatter1(VM.Data.CurrencyId);
             }
             formatter.CurrencyId = VM.Data.CurrencyId;
-            DPPNUD.NumberFormatter = formatter;
             HeaderTotalDPPNUD.NumberFormatter = formatter;
             HeaderDPPDiscountNUD.NumberFormatter = formatter;
-            HeaderTotalDPPNUD.InvalidateProperty(NumberBox.ValueProperty);
-            HeaderTotalDPPNUD.InvalidateProperty(NumberBox.TextProperty);
+            HeaderTotalAmountNUD.NumberFormatter = formatter;
+            UnitPriceNUD.NumberFormatter = formatter;
+            UnitPriceDiscountNUD.NumberFormatter = formatter;
+            DPPNUD.NumberFormatter = formatter;
+            TotalAmountNUD.NumberFormatter = formatter;
+            //HeaderTotalDPPNUD.InvalidateProperty(NumberBox.ValueProperty);
+            //HeaderTotalDPPNUD.InvalidateProperty(NumberBox.TextProperty);
         }
         private void CurrencyRadioButton_Checked(object sender, RoutedEventArgs e)
         {

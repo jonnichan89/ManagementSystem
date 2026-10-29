@@ -58,7 +58,7 @@ public partial class PurchaseOrderDetailViewModel : DetailViewModel
 
     private void InitializeSupplierCBVM()
     {
-        _supplierCBVM = new InstantSupplierComboBoxVM(_gFunctions);
+        _supplierCBVM = new InstantSupplierComboBoxVM(_gFunctions, InstantSupplierComboBoxVM.EnumSupplierUsedIn.Purchase);
         _supplierCBVM.SupplierChanged = _supplierCBVM_SupplierChanged;
         _supplierCBVM.GetSupplierCode = _supplierCBVM_GetSupplierCode;
         _supplierCBVM.SetSupplierName = _supplierCBVM_SetSupplierName;
@@ -191,10 +191,15 @@ public partial class PurchaseOrderDetailViewModel : DetailViewModel
             }
         }
     }
-
-    private async Task LoadSearchItemAsync()
+    
+    private async Task LoadSearchItemAsync(bool isFirstLoad = false)
     {
         await _gFunctions.RefreshItemDataAsync(false);
+        //if (!isFirstLoad && !hasNewData)
+        //{
+        //    return;
+        //}
+
         _items.Clear();
         _items.AddRange(_gFunctions.Items.ToArray());
 
@@ -291,6 +296,9 @@ public partial class PurchaseOrderDetailViewModel : DetailViewModel
                 if (sar.ActionIsSuccess)
                 {
                     Data = (PSOrder)sar.ActionResult;
+
+                    foreach (var itemDetail in Data.PSOrderDetails)
+                        itemDetail.PSOrder = Data;
                 }
 
                 loadSearchSuppliers = true;
@@ -314,7 +322,7 @@ public partial class PurchaseOrderDetailViewModel : DetailViewModel
 
         if (loadSearchItems)
         {
-            await LoadSearchItemAsync();
+            await LoadSearchItemAsync(true);
         }
 
         if (Data?.PSOrderDetails.Count > 0)
@@ -569,7 +577,7 @@ public partial class PurchaseOrderDetailViewModel : DetailViewModel
 
         if (SelectedItemDetail != null)
         {
-            Data.PSOrderDetails.Remove(SelectedItemDetail);
+            Data.RemovePSOrderDetail(SelectedItemDetail);
             SelectedItemDetail = Data.PSOrderDetails.FirstOrDefault();
         }
     }

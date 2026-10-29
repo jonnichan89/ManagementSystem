@@ -267,7 +267,7 @@
   <data name="dialogButtonNo" xml:space="preserve">
     <value>Tidak</value>
   </data>
-  <data name="messageTitleDeleteSucceed" xml:space="preserve">
+  <data name="messageTitleDelete" xml:space="preserve">
     <value>Menghapus Data {0}</value>
   </data>
   <data name="messageDeleteSucceed" xml:space="preserve">
@@ -470,5 +470,125 @@
   </data>
   <data name="other" xml:space="preserve">
     <value>Lain-lain</value>
+  </data>
+  <data name="propSOCode" xml:space="preserve">
+    <value>Nomor Penjualan</value>
+  </data>
+  <data name="propSODate" xml:space="preserve">
+    <value>Tanggal Penjualan</value>
+  </data>
+  <data name="propPTName" xml:space="preserve">
+    <value>Nama Templat Proyek</value>
+  </data>
+  <data name="propPTList" xml:space="preserve">
+    <value>Daftar Templat Proyek</value>
+  </data>
+  <data name="propPTMain" xml:space="preserve">
+    <value>Nama Templat Proyek Utama</value>
+  </data>
+  <data name="propSubPT" xml:space="preserve">
+    <value>Sub Proyek</value>
+  </data>
+  <data name="messageTitleLastItemCouldNotBeDeleted" xml:space="preserve">
+    <value>Item terakhir dari [{0}] tidak boleh dihapus.</value>
+  </data>
+  <data name="propPTNo" xml:space="preserve">
+    <value>Nomor Templat Proyek</value>
+  </data>
+  <data name="spTheme" xml:space="preserve">
+    <value>Tema</value>
+  </data>
+  <data name="spThemeLight" xml:space="preserve">
+    <value>Terang</value>
+  </data>
+  <data name="spThemeDark" xml:space="preserve">
+    <value>Gelap</value>
+  </data>
+  <data name="mwProjectPurchaseOrder" xml:space="preserve">
+    <value>Pembelian Proyek</value>
+  </data>
+  <data name="mwProjectSalesOrder" xml:space="preserve">
+    <value>Penjualan Proyek</value>
+  </data>
+  <data name="propItemColour" xml:space="preserve">
+    <value>Warna</value>
+  </data>
+  <data name="PreviewMode" xml:space="preserve">
+    <value>Mode Tampilan</value>
+  </data>
+  <data name="PreviewModeList" xml:space="preserve">
+    <value>List</value>
+  </data>
+  <data name="PreviewModeImage" xml:space="preserve">
+    <value>Gambar</value>
+  </data>
+  <data name="PreviewModeListImageMode" xml:space="preserve">
+    <value>Mode Gambar pada List</value>
+  </data>
+  <data name="PreviewModeListImageCollapsed" xml:space="preserve">
+    <value>Hilangkan</value>
+  </data>
+  <data name="PreviewModeListImageVisible" xml:space="preserve">
+    <value>Munculkan</value>
+  </data>
+  <data name="PreviewModeListImageVisibleWhenSelected" xml:space="preserve">
+    <value>Munculkan ketika dipilih</value>
+  </data>
+  <data name="propItemCalcDate" xml:space="preserve">
+    <value>Tgl Kalkulasi</value>
+  </data>
+  <data name="propItemCalcAfterQty" xml:space="preserve">
+    <value>Qty Akhir</value>
+  </data>
+  <data name="propItemCalcInQty" xml:space="preserve">
+    <value>Qty Masuk</value>
+  </data>
+  <data name="propItemCalcOutQty" xml:space="preserve">
+    <value>Qty Keluar</value>
+  </data>
+  <data name="propItemCalcPOQty" xml:space="preserve">
+    <value>Qty PO</value>
+  </data>
+  <data name="propItemCalcSOQty" xml:space="preserve">
+    <value>Qty SO</value>
+  </data>
+  <data name="propItemCalcIUQty" xml:space="preserve">
+    <value>Qty Pemakaian</value>
+  </data>
+  <data name="propItemCalcIAQty" xml:space="preserve">
+    <value>Qty Adj.</value>
+  </data>
+  <data name="propItemCalcList" xml:space="preserve">
+    <value>FIFO Barang</value>
+  </data>
+  <data name="propIADate" xml:space="preserve">
+    <value>Tgl Adj.</value>
+  </data>
+  <data name="propIAQty" xml:space="preserve">
+    <value>Qty Adj.</value>
+  </data>
+  <data name="mwItemAdjustment" xml:space="preserve">
+    <value>Penyesuaian Barang</value>
+  </data>
+  <data name="btnRefresh" xml:space="preserve">
+    <value>Refresh</value>
+  </data>
+  <data name="propPSOCode" xml:space="preserve">
+    <value>Nomor Penjualan Proyek</value>
+  </data>
+  <data name="propPSODate" xml:space="preserve">
+    <value>Tanggal Penjualan Proyek</value>
+  </data>
+  <data name="propPPOCode" xml:space="preserve">
+    <value>Nomor Pembelian Proyek</value>
+  </data>
+  <data name="propPPODate" xml:space="preserve">
+    <value>Tanggal Pembelian Proyek</value>
+  </data>
+  <data name="propSupplierUsedIn" xml:space="preserve">
+    <value>Munculkan di Menu</value>
+  </data>
+  <data name="propPassword" xml:space="preserve">
+    <value>Password</value>
   </data>
 </root>

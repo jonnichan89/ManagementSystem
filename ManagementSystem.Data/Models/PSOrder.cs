@@ -90,5 +90,13 @@ public partial class PSOrder
     [Unicode(false)]
     public string ModifiedBy { get; set; } = string.Empty;
 
+    [Column(TypeName = "smalldatetime")]
+    public DateTime? DispatchDate { get; set; }
+
+    [Column(TypeName = "smalldatetime")]
+    public DateTime? IncomingDate { get; set; }
+
     public virtual ObservableCollection<PSOrderDetail> PSOrderDetails { get; set; } = new ObservableCollection<PSOrderDetail>();
+
+    public virtual ObservableCollection<PSOrderPT> PSOrderPTs { get; set; } = new ObservableCollection<PSOrderPT>();
 }

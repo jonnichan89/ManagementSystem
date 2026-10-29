@@ -42,6 +42,11 @@
                           Command="{Binding VM.DeleteCommand, Mode=OneWay}"
                           Width="100" />
 
+                <MenuItem Header="{resx:Localization btnRefresh}"
+                          Icon="{ui:SymbolIcon ArrowClockwise24}"
+                          Command="{Binding VM.RefreshPreviewItemsCommand, Mode=OneWay}"
+                          Width="100" />
+
             </Menu>
 
             <Expander Header="{resx:Localization Filter}"

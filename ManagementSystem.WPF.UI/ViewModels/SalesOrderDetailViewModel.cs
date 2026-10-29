@@ -58,7 +58,7 @@ public partial class SalesOrderDetailViewModel : DetailViewModel
 
     private void InitializeSupplierCBVM()
     {
-        _supplierCBVM = new InstantSupplierComboBoxVM(_gFunctions);
+        _supplierCBVM = new InstantSupplierComboBoxVM(_gFunctions, InstantSupplierComboBoxVM.EnumSupplierUsedIn.Sales);
         _supplierCBVM.SupplierChanged = _supplierCBVM_SupplierChanged;
         _supplierCBVM.GetSupplierCode = _supplierCBVM_GetSupplierCode;
         _supplierCBVM.SetSupplierName = _supplierCBVM_SetSupplierName;
@@ -66,6 +66,8 @@ public partial class SalesOrderDetailViewModel : DetailViewModel
 
     private void _supplierCBVM_SupplierChanged(MstSupplier? selectedSupplier)
     {
+        if (_data == null) return;
+
         if (selectedSupplier != null)
         {
             _data.SupplierCode = selectedSupplier.SupplierCode;
@@ -80,11 +82,15 @@ public partial class SalesOrderDetailViewModel : DetailViewModel
 
     private string _supplierCBVM_GetSupplierCode()
     {
+        if (_data == null) return "";
+
         return _data.SupplierCode;
     }
 
     private void _supplierCBVM_SetSupplierName(string supplierName)
     {
+        if (_data == null) return;
+
         _data.SupplierName = supplierName;
     }
 
@@ -179,18 +185,25 @@ public partial class SalesOrderDetailViewModel : DetailViewModel
                     }
 
                     ItemSelectedIndex = FilteredView.IndexOf(foundItem);
-                    _filterText = foundItem.ItemName; 
+                    _filterText = foundItem.ItemName;
                 }
                 OnPropertyChanged(nameof(Data));
             }
         }
     }
 
-    private async Task LoadSearchItemAsync()
+    private async Task LoadSearchItemAsync(bool isFirstLoad = false)
     {
         await _gFunctions.RefreshItemDataAsync(false);
+        //if (!isFirstLoad && !hasNewData)
+        //{
+        //    return;
+        //}
+
         _items.Clear();
         _items.AddRange(_gFunctions.Items.ToArray());
+
+        if (_data == null) return;
 
         foreach (var PSOrderDetail in Data.PSOrderDetails)
         {
@@ -283,6 +296,9 @@ public partial class SalesOrderDetailViewModel : DetailViewModel
                 if (sar.ActionIsSuccess)
                 {
                     Data = (PSOrder)sar.ActionResult;
+
+                    foreach (var itemDetail in Data.PSOrderDetails)
+                        itemDetail.PSOrder = Data;
                 }
 
                 loadSearchSuppliers = true;
@@ -306,7 +322,7 @@ public partial class SalesOrderDetailViewModel : DetailViewModel
 
         if (loadSearchItems)
         {
-            await LoadSearchItemAsync();
+            await LoadSearchItemAsync(true);
         }
 
         if (Data?.PSOrderDetails.Count > 0)
@@ -551,7 +567,6 @@ public partial class SalesOrderDetailViewModel : DetailViewModel
         {
             _PSOrderDetailAction = DetailAction.Edit;
         }
-
     }
 
     [RelayCommand]
@@ -561,7 +576,7 @@ public partial class SalesOrderDetailViewModel : DetailViewModel
 
         if (SelectedItemDetail != null)
         {
-            Data.PSOrderDetails.Remove(SelectedItemDetail);
+            Data.RemovePSOrderDetail(SelectedItemDetail);
             SelectedItemDetail = Data.PSOrderDetails.FirstOrDefault();
         }
     }

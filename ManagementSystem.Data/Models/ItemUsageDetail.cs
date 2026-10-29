@@ -35,5 +35,6 @@ public partial class ItemUsageDetail
 
     [ForeignKey("ItemUsageId")]
     [InverseProperty("ItemUsageDetails")]
+    [System.Text.Json.Serialization.JsonIgnore]
     public virtual ItemUsage? ItemUsage { get; set; } = null;
 }

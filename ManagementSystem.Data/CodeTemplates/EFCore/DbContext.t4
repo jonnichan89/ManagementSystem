@@ -234,7 +234,7 @@ public partial class <#= Options.ContextName #> : DbContext
 
             // foreignKey.PrincipalToDependent != null ? $"p => p.{foreignKey.PrincipalToDependent.Name}" : "" 
 #>
-            entity.HasOne(d => d.<#= targetTableName #>).<#= foreignKey.IsUnique ? "WithOne" : "WithMany" #>(p => p.<#= prularizedTableName #>)<#= code.Fragment(foreignKeyFluentApiCalls, indent: 4) #>;
+            entity.HasOne(d => d.<#= tableName == targetTableName ? "Parent" + tableName : targetTableName #>).<#= foreignKey.IsUnique ? "WithOne" : "WithMany" #>(p => p.<#= prularizedTableName #>)<#= code.Fragment(foreignKeyFluentApiCalls, indent: 4) #>;
 <#
             anyEntityTypeConfiguration = true;
         }

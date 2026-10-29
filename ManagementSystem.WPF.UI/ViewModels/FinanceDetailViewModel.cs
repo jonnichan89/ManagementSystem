@@ -89,7 +89,7 @@ public partial class FinanceDetailViewModel : DetailViewModel
 
     private void InitializeSupplierCBVM()
     {
-        _supplierCBVM = new InstantSupplierComboBoxVM(_gFunctions);
+        _supplierCBVM = new InstantSupplierComboBoxVM(_gFunctions, InstantSupplierComboBoxVM.EnumSupplierUsedIn.None);
         _supplierCBVM.SupplierChanged = _supplierCBVM_SupplierChanged;
         _supplierCBVM.GetSupplierCode = _supplierCBVM_GetSupplierCode;
         _supplierCBVM.SetSupplierName = _supplierCBVM_SetSupplierName;

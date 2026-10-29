@@ -267,7 +267,7 @@
   <data name="dialogButtonNo" xml:space="preserve">
     <value>No</value>
   </data>
-  <data name="messageTitleDeleteSucceed" xml:space="preserve">
+  <data name="messageTitleDelete" xml:space="preserve">
     <value>Delete {0}</value>
   </data>
   <data name="messageDeleteSucceed" xml:space="preserve">
@@ -470,5 +470,125 @@
   </data>
   <data name="other" xml:space="preserve">
     <value>Other</value>
+  </data>
+  <data name="propSOCode" xml:space="preserve">
+    <value>SO Number</value>
+  </data>
+  <data name="propSODate" xml:space="preserve">
+    <value>SO Date</value>
+  </data>
+  <data name="propPTName" xml:space="preserve">
+    <value>Project Template Name</value>
+  </data>
+  <data name="propPTList" xml:space="preserve">
+    <value>Project List</value>
+  </data>
+  <data name="propPTMain" xml:space="preserve">
+    <value>Main Project Template Name</value>
+  </data>
+  <data name="propSubPT" xml:space="preserve">
+    <value>Sub Projects</value>
+  </data>
+  <data name="messageTitleLastItemCouldNotBeDeleted" xml:space="preserve">
+    <value>Last item of [{0}] could not be deleted.</value>
+  </data>
+  <data name="propPTNo" xml:space="preserve">
+    <value>Project Template Number</value>
+  </data>
+  <data name="spTheme" xml:space="preserve">
+    <value>Theme</value>
+  </data>
+  <data name="spThemeLight" xml:space="preserve">
+    <value>Light</value>
+  </data>
+  <data name="spThemeDark" xml:space="preserve">
+    <value>Dark</value>
+  </data>
+  <data name="mwProjectPurchaseOrder" xml:space="preserve">
+    <value>Project PO</value>
+  </data>
+  <data name="mwProjectSalesOrder" xml:space="preserve">
+    <value>Project SO</value>
+  </data>
+  <data name="propItemColour" xml:space="preserve">
+    <value>Colour</value>
+  </data>
+  <data name="PreviewMode" xml:space="preserve">
+    <value>Preview Mode</value>
+  </data>
+  <data name="PreviewModeList" xml:space="preserve">
+    <value>List</value>
+  </data>
+  <data name="PreviewModeImage" xml:space="preserve">
+    <value>Image</value>
+  </data>
+  <data name="PreviewModeListImageMode" xml:space="preserve">
+    <value>Preview Image Mode</value>
+  </data>
+  <data name="PreviewModeListImageCollapsed" xml:space="preserve">
+    <value>Collapsed</value>
+  </data>
+  <data name="PreviewModeListImageVisible" xml:space="preserve">
+    <value>Visible</value>
+  </data>
+  <data name="PreviewModeListImageVisibleWhenSelected" xml:space="preserve">
+    <value>Visible when selected</value>
+  </data>
+  <data name="propItemCalcDate" xml:space="preserve">
+    <value>Calc. Date</value>
+  </data>
+  <data name="propItemCalcAfterQty" xml:space="preserve">
+    <value>Last Qty</value>
+  </data>
+  <data name="propItemCalcInQty" xml:space="preserve">
+    <value>In Qty</value>
+  </data>
+  <data name="propItemCalcOutQty" xml:space="preserve">
+    <value>Out Qty</value>
+  </data>
+  <data name="propItemCalcPOQty" xml:space="preserve">
+    <value>PO Qty</value>
+  </data>
+  <data name="propItemCalcSOQty" xml:space="preserve">
+    <value>SO Qty</value>
+  </data>
+  <data name="propItemCalcIUQty" xml:space="preserve">
+    <value>Item Usage Qty</value>
+  </data>
+  <data name="propItemCalcIAQty" xml:space="preserve">
+    <value>Item Adj. Qty</value>
+  </data>
+  <data name="propItemCalcList" xml:space="preserve">
+    <value>Item FIFO</value>
+  </data>
+  <data name="propIADate" xml:space="preserve">
+    <value>Item Adj. Date</value>
+  </data>
+  <data name="propIAQty" xml:space="preserve">
+    <value>Item Adj. Qty</value>
+  </data>
+  <data name="mwItemAdjustment" xml:space="preserve">
+    <value>Item Adjustment</value>
+  </data>
+  <data name="btnRefresh" xml:space="preserve">
+    <value>Refresh</value>
+  </data>
+  <data name="propPSOCode" xml:space="preserve">
+    <value>Project SO Number</value>
+  </data>
+  <data name="propPSODate" xml:space="preserve">
+    <value>Project SO Date</value>
+  </data>
+  <data name="propPPOCode" xml:space="preserve">
+    <value>Project PO Number</value>
+  </data>
+  <data name="propPPODate" xml:space="preserve">
+    <value>Project PO Date</value>
+  </data>
+  <data name="propSupplierUsedIn" xml:space="preserve">
+    <value>Show in Menu</value>
+  </data>
+  <data name="propPassword" xml:space="preserve">
+    <value>Password</value>
   </data>
 </root>

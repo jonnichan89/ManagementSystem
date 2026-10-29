@@ -55,5 +55,53 @@ namespace ManagementSystem.WPF.UI.Properties {
                 return ((string)(this["APIUrl"]));
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("List")]
+        public string MstItemPreviewMode {
+            get {
+                return ((string)(this["MstItemPreviewMode"]));
+            }
+            set {
+                this["MstItemPreviewMode"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("AlwaysVisible")]
+        public string MstItemPreviewListImageMode {
+            get {
+                return ((string)(this["MstItemPreviewListImageMode"]));
+            }
+            set {
+                this["MstItemPreviewListImageMode"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("List")]
+        public string PTPreviewMode {
+            get {
+                return ((string)(this["PTPreviewMode"]));
+            }
+            set {
+                this["PTPreviewMode"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("AlwaysVisible")]
+        public string PTPreviewListImageMode {
+            get {
+                return ((string)(this["PTPreviewListImageMode"]));
+            }
+            set {
+                this["PTPreviewListImageMode"] = value;
+            }
+        }
     }
 }

@@ -19,7 +19,21 @@ public partial class MstItem
 
     #endregion
 
-    private string _SupplierName = null!;
+    private string _SupplierName = ""!;
+    private string _ImagePathToUpload = ""!;
+
+    public string ImagePathToUpload
+    {
+        get
+        {
+            return _ImagePathToUpload;
+        }
+        set
+        {
+            _ImagePathToUpload = value;
+            OnPropertyChanged("ImagePathToUpload");
+        }
+    }
 
     public string SupplierName
     {
@@ -34,4 +48,5 @@ public partial class MstItem
         }
     }
 
+    public List<ItemCalc> ItemCalcs { get; set; } = null;
 }

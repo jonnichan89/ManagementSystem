@@ -24,8 +24,9 @@ namespace ManagementSystem.DataServices.Service
                 if (string.IsNullOrWhiteSpace(model.SupplierName))
                     validations.Add(ModelValidation.FieldIsRequired(nameof(MstSupplier), nameof(model.SupplierName), model.SupplierName));
 
-                if (IsExists(action, model))
-                    validations.Add(ModelValidation.PKAlreadyExists(nameof(MstSupplier), nameof(model.SupplierCode), model.SupplierCode));
+                List<ModelValidation> validations1 = IsExists(action, model);
+                if (validations1.Count > 0)
+                    validations.AddRange(validations1);
             }
 
             return validations;
@@ -40,15 +41,36 @@ namespace ManagementSystem.DataServices.Service
             }
         }
 
-        public bool IsExists(ServiceAction action, MstSupplier model)
+        public async Task<IEnumerable<MstSupplier>> GetAllMstSuppliers()
         {
-            if (action == ServiceAction.Add || action == ServiceAction.Get)
+            using (var context = new ManagementSystemContext())
+            {
+                return await context.MstSuppliers.ToListAsync();
+            }
+        }
+
+        public async Task<DateTime?> GetLastModifiedAsync()
+        {
+            using (var context = new ManagementSystemContext())
+            {
+                if (await context.MstSuppliers.CountAsync() > 0)
+                    return await context.MstSuppliers.MaxAsync(p => p.ModifiedAt);
+                else
+                    return null;
+            }
+        }
+
+        public List<ModelValidation> IsExists(ServiceAction action, MstSupplier model)
+        {
+            List<ModelValidation> validations = new List<ModelValidation>();
+            if (action == ServiceAction.Add || action == ServiceAction.Update)
                 using (var context = new ManagementSystemContext())
                 {
-                    return context.MstSuppliers.Any(u => u.SupplierId != model.SupplierId && u.SupplierCode == model.SupplierCode);
+                    if (context.MstSuppliers.Any(u => u.SupplierId != model.SupplierId && u.SupplierCode == model.SupplierCode))
+                        validations.Add(ModelValidation.PKAlreadyExists(nameof(MstSupplier), nameof(model.SupplierCode), model.SupplierCode));
                 }
 
-            return false;
+            return validations;
         }
 
         public MstSupplier? GetMstSupplierById(int supplierId)
@@ -85,6 +107,10 @@ namespace ManagementSystem.DataServices.Service
                 // update allowed fields
                 existing.SupplierCode = supplier.SupplierCode;
                 existing.SupplierName = supplier.SupplierName;
+                existing.UsedInPO = supplier.UsedInPO;
+                existing.UsedInSO = supplier.UsedInSO;
+                existing.UsedInPPO = supplier.UsedInPPO;
+                existing.UsedInPSO = supplier.UsedInPSO;
                 existing.IsBlacklist = supplier.IsBlacklist;
                 existing.ModifiedAt = DateTime.Now;
                 existing.ModifiedBy = supplier.ModifiedBy;

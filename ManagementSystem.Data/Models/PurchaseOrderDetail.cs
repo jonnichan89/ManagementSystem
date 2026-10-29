@@ -43,5 +43,6 @@ public partial class PurchaseOrderDetail
 
     [ForeignKey("POId")]
     [InverseProperty("PurchaseOrderDetails")]
+    [System.Text.Json.Serialization.JsonIgnore]
     public virtual PurchaseOrder? PurchaseOrder { get; set; } = null;
 }

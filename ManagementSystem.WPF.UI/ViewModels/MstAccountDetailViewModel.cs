@@ -1,5 +1,6 @@
 ﻿
 using ManagementSystem.WPF.UI.Services.ServiceInterfaces;
+using ManagementSystem.WPF.UI.ViewModels.ToInherit;
 
 namespace ManagementSystem.WPF.UI.ViewModels;
 

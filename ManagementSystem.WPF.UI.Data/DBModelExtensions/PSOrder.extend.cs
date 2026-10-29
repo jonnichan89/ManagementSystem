@@ -1,5 +1,6 @@
 ﻿
 using System.Diagnostics.Eventing.Reader;
+using System.Linq;
 
 namespace ManagementSystem.WPF.UI.Data.DBModels;
 
@@ -7,10 +8,48 @@ public partial class PSOrder
 {
     public void AddPSOrderDetail()
     {
+        int lastPSDId = PSOrderDetails.LastOrDefault()?.PSDId ?? 0;
+
         PSOrderDetails.Add(new PSOrderDetail()
         {
             PSOrder = this,
+            PSDId = lastPSDId + 1
         });
+    }
+
+    public void RemovePSOrderDetail(PSOrderDetail psd)
+    {
+        PSOrderDetails.Remove(psd);
+
+        int psdId = 0;
+        foreach (PSOrderDetail psd1 in PSOrderDetails.OrderBy(p => p.PSDId))
+        {
+            psdId++;
+            psd1.PSDId = psdId;
+        }
+    }
+
+    public void AddPSOrderPT()
+    {
+        int lastPSTId = PSOrderPTs.LastOrDefault()?.PSTId ?? 0;
+
+        PSOrderPTs.Add(new PSOrderPT()
+        {
+            PSOrder = this,
+            PSTId = lastPSTId + 1
+        });
+    }
+
+    public void RemovePSOrderPT(PSOrderPT pst)
+    {
+        PSOrderPTs.Remove(pst);
+
+        int pstId = 0;
+        foreach (PSOrderPT pst1 in PSOrderPTs.OrderBy(p => p.PSTId))
+        {
+            pstId++;
+            pst1.PSTId = pstId;
+        }
     }
 
     #region ExtendedProperty
@@ -94,7 +133,8 @@ public partial class PSOrder
 
     public decimal DPPIDR
     {
-        get {
+        get
+        {
             return _CurrencyRate * _DPP;
         }
     }

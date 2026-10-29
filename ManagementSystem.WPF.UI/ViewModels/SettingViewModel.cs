@@ -1,7 +1,9 @@
 ﻿
+using ManagementSystem.WPF.UI.ViewModels.ToInherit;
+
 namespace ManagementSystem.WPF.UI.ViewModels;
 
-public partial class SettingViewModel() : ViewModel
+public partial class SettingViewModel() : BaseViewModel
 {
     [RelayCommand]
     private void IsEnglishSelected(bool value)
@@ -33,5 +35,29 @@ public partial class SettingViewModel() : ViewModel
         TranslationSource.Instance.CurrentCulture = new CultureInfo("id-ID");
 
         WeakReferenceMessenger.Default.Send(new ActionMessage(ActionMessage.ActionName.ChangeLanguage, null));
+    }
+
+    [RelayCommand]
+    private void IsThemeLightSelected(bool value)
+    {
+        if (!value) return;
+
+        Wpf.Ui.Appearance.ApplicationThemeManager.Apply(
+            Wpf.Ui.Appearance.ApplicationTheme.Light,
+            WindowBackdropType.Mica
+        );
+        ManagementSystem.WPF.UI.Properties.Settings.Default.Save();
+    }
+
+    [RelayCommand]
+    private void IsThemeDarkSelected(bool value)
+    {
+        if (!value) return;
+
+        Wpf.Ui.Appearance.ApplicationThemeManager.Apply(
+            Wpf.Ui.Appearance.ApplicationTheme.Dark,
+            WindowBackdropType.Mica
+        );
+        ManagementSystem.WPF.UI.Properties.Settings.Default.Save();
     }
 }

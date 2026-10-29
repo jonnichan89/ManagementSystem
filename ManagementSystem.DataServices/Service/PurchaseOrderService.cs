@@ -2,7 +2,7 @@
 
 namespace ManagementSystem.DataServices.Service
 {
-    public class PurchaseOrderService
+    public class PurchaseOrderService : BaseService
     {
         //SharedResources _resShared;
         //public PurchaseOrderService(SharedResources resShared) { }
@@ -118,36 +118,12 @@ namespace ManagementSystem.DataServices.Service
                 item.CreatedAt = now;
                 item.ModifiedAt = now;
 
-                // Get Last PO Code
-                string prePSCode = $@"PO-{item.PSDate.ToString("ddMMyyyy")}-";
-                string newPSCode = "";
-                string lastPSCode = context.
-                    PSOrders.
-                    Where(p => p.PSType == "PO" && p.PSCode.StartsWith(prePSCode)).
-                    Max(p => p.PSCode);
-                int lastPSNumber = 0;
-                if (!string.IsNullOrWhiteSpace(lastPSCode))
+                if (string.IsNullOrWhiteSpace(item.PSCode))
                 {
-                    if (!int.TryParse(lastPSCode.Replace(prePSCode, ""), out lastPSNumber))
-                    {
-                        lastPSNumber = 0;
-                    }
+                    // Assign Children
+                    item.PSCode = CreateNewPOCode(context, ref item);
                 }
 
-                // Create new PO Code
-                lastPSNumber += 1;
-                newPSCode = prePSCode + lastPSNumber.ToString().PadLeft(3, '0');
-                while (context.
-                    PSOrders.
-                    Where(p => p.PSType == "PO").
-                    Count(p => p.PSCode == newPSCode) > 0)
-                {
-                    lastPSNumber++;
-                    newPSCode = prePSCode + lastPSNumber.ToString().PadLeft(3, '0');
-                }
-
-                // Assign Children
-                item.PSCode = newPSCode;
                 foreach (var detail in item.PSOrderDetails)
                 {
                     detail.PSOrder = item;
@@ -155,7 +131,15 @@ namespace ManagementSystem.DataServices.Service
 
                 // Insert
                 context.PSOrders.Add(item);
-                return context.SaveChanges();
+
+                int rowsAffected = context.SaveChanges();
+                if (rowsAffected > 0)
+                {
+                    ExecuteRecalItemCalc(context, item.PSDate);
+                }
+
+                return rowsAffected;
+
             }
         }
 
@@ -163,6 +147,12 @@ namespace ManagementSystem.DataServices.Service
         {
             using (var context = new ManagementSystemContext())
             {
+                if (string.IsNullOrWhiteSpace(item.PSCode))
+                {
+                    // Assign Children
+                    item.PSCode = CreateNewPOCode(context, ref item);
+                }
+
                 var existing = context.
                     PSOrders.
                     Include(p => p.PSOrderDetails).
@@ -172,6 +162,7 @@ namespace ManagementSystem.DataServices.Service
                 if (existing == null) return 0;
 
                 // update allowed fields
+                existing.PSCode = item.PSCode;
                 existing.ModifiedAt = DateTime.Now;
                 existing.ModifiedBy = item.ModifiedBy;
 
@@ -191,10 +182,7 @@ namespace ManagementSystem.DataServices.Service
                     if (existingDetail != null)
                     {
                         // update allowed fields
-                        existingDetail.ItemCode = detail.ItemCode;
-                        existingDetail.Qty = detail.Qty;
-                        //existingDetail.ModifiedAt = DateTime.Now;
-                        //existingDetail.ModifiedBy = detail.ModifiedBy;
+                        existingDetail.CopyFrom(detail);
                     }
                     else
                     {
@@ -208,8 +196,48 @@ namespace ManagementSystem.DataServices.Service
 
                 context.PSOrders.Update(existing);
 
-                return context.SaveChanges();
+                int rowsAffected = context.SaveChanges();
+                if (rowsAffected > 0)
+                {
+                    ExecuteRecalItemCalc(context, existing.PSDate);
+                }
+
+                return rowsAffected;
+
             }
+        }
+
+        private string CreateNewPOCode(ManagementSystemContext context, ref PSOrder item)
+        {
+            // Get Last PO Code
+            string prePSCode = $@"PO-{item.PSDate.ToString("ddMMyyyy")}-";
+            string newPSCode = "";
+            string lastPSCode = context.
+                PSOrders.
+                Where(p => p.PSType == "PO" && p.PSCode.StartsWith(prePSCode)).
+                Max(p => p.PSCode);
+            int lastPSNumber = 0;
+            if (!string.IsNullOrWhiteSpace(lastPSCode))
+            {
+                if (!int.TryParse(lastPSCode.Replace(prePSCode, ""), out lastPSNumber))
+                {
+                    lastPSNumber = 0;
+                }
+            }
+
+            // Create new PO Code
+            lastPSNumber += 1;
+            newPSCode = prePSCode + lastPSNumber.ToString().PadLeft(3, '0');
+            while (context.
+                PSOrders.
+                Where(p => p.PSType == "PO").
+                Count(p => p.PSCode == newPSCode) > 0)
+            {
+                lastPSNumber++;
+                newPSCode = prePSCode + lastPSNumber.ToString().PadLeft(3, '0');
+            }
+
+            return newPSCode;
         }
 
         public PSOrder? DeletePurchaseOrder(int PSId)

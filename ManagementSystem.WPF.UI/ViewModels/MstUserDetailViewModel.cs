@@ -1,5 +1,6 @@
 ﻿
 using ManagementSystem.WPF.UI.Services.ServiceInterfaces;
+using ManagementSystem.WPF.UI.ViewModels.ToInherit;
 
 namespace ManagementSystem.WPF.UI.ViewModels;
 
@@ -75,7 +76,7 @@ public partial class MstUserDetailViewModel : DetailViewModel
                     TranslationSource.Instance["detailTitleEdit"] ?? string.Empty,
                     TranslationSource.Instance["mwUser"]);
 
-                ServiceActionResult sar = await _apiClient.GetMstUserByIdAsync(userId);
+                ServiceActionResult sar = await _apiClient.GetMstUserByUserNameAsync(userId);
                 if (sar.ActionIsSuccess)
                 {
                     Data = (MstUser)sar.ActionResult;
@@ -197,6 +198,17 @@ public partial class MstUserDetailViewModel : DetailViewModel
         },
         new UserModule()
         {
+            ModuleId = "mwMstSupplier",
+            ModuleName = "",
+            EnableViewList = true,
+            EnableViewDetail = true,
+            EnableAdd = true,
+            EnableEdit = true,
+            EnableDelete = true,
+            IsInitializing = false,
+        },
+        new UserModule()
+        {
             ModuleId = "mwMstItem",
             ModuleName = "",
             EnableViewList = true,
@@ -208,7 +220,95 @@ public partial class MstUserDetailViewModel : DetailViewModel
         },
         new UserModule()
         {
-            ModuleId = "mwMstSupplier",
+            ModuleId = "mwMstAccount",
+            ModuleName = "",
+            EnableViewList = true,
+            EnableViewDetail = true,
+            EnableAdd = true,
+            EnableEdit = true,
+            EnableDelete = true,
+            IsInitializing = false,
+        },
+        new UserModule()
+        {
+            ModuleId = "mwProjectTemplate",
+            ModuleName = "",
+            EnableViewList = true,
+            EnableViewDetail = true,
+            EnableAdd = true,
+            EnableEdit = true,
+            EnableDelete = true,
+            IsInitializing = false,
+        },
+        new UserModule()
+        {
+            ModuleId = "mwItemAdjustment",
+            ModuleName = "",
+            EnableViewList = true,
+            EnableViewDetail = true,
+            EnableAdd = true,
+            EnableEdit = true,
+            EnableDelete = true,
+            IsInitializing = false,
+        },
+        new UserModule()
+        {
+            ModuleId = "mwItemUsage",
+            ModuleName = "",
+            EnableViewList = true,
+            EnableViewDetail = true,
+            EnableAdd = true,
+            EnableEdit = true,
+            EnableDelete = true,
+            IsInitializing = false,
+        },
+        new UserModule()
+        {
+            ModuleId = "mwPurchase",
+            ModuleName = "",
+            EnableViewList = true,
+            EnableViewDetail = true,
+            EnableAdd = true,
+            EnableEdit = true,
+            EnableDelete = true,
+            IsInitializing = false,
+        },
+        new UserModule()
+        {
+            ModuleId = "mwSales",
+            ModuleName = "",
+            EnableViewList = true,
+            EnableViewDetail = true,
+            EnableAdd = true,
+            EnableEdit = true,
+            EnableDelete = true,
+            IsInitializing = false,
+        },
+        new UserModule()
+        {
+            ModuleId = "mwProjectPurchaseOrder",
+            ModuleName = "",
+            EnableViewList = true,
+            EnableViewDetail = true,
+            EnableAdd = true,
+            EnableEdit = true,
+            EnableDelete = true,
+            IsInitializing = false,
+        },
+        new UserModule()
+        {
+            ModuleId = "mwProjectSalesOrder",
+            ModuleName = "",
+            EnableViewList = true,
+            EnableViewDetail = true,
+            EnableAdd = true,
+            EnableEdit = true,
+            EnableDelete = true,
+            IsInitializing = false,
+        },
+        new UserModule()
+        {
+            ModuleId = "mwFinancial",
             ModuleName = "",
             EnableViewList = true,
             EnableViewDetail = true,

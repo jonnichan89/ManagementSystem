@@ -1,0 +1,44 @@
+﻿<ui:FluentWindow x:Class="ManagementSystem.WPF.UI.LoginWindow"
+                 xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                 xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                 xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+                 xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+                 xmlns:resx="clr-namespace:ManagementSystem.WPF.UI.Resources"
+                 xmlns:local="clr-namespace:ManagementSystem.WPF.UI"
+                 xmlns:pages="clr-namespace:ManagementSystem.WPF.UI.Pages"
+                 xmlns:tray="http://schemas.lepo.co/wpfui/2022/xaml/tray"
+                 xmlns:ui="http://schemas.lepo.co/wpfui/2022/xaml"
+                 mc:Ignorable="d"
+      d:DataContext="{d:DesignInstance local:LoginWindow, IsDesignTimeCreatable=False}"
+                 Title="Login Management System"
+                 Height="520"
+                 Width="900"
+                 WindowStartupLocation="CenterScreen"
+                 ResizeMode="NoResize"
+                 ShowInTaskbar="True"
+                 ExtendsContentIntoTitleBar="True">
+
+    <!-- Use application-level dictionaries defined in App.xaml (ThemesDictionary, ControlsDictionary) -->
+    <ui:FluentWindow.Resources>
+        <!-- Local brushes / small overrides (optional) -->
+        <LinearGradientBrush x:Key="LeftPanelGradient"
+                             StartPoint="0,0"
+                             EndPoint="1,1">
+            <GradientStop Color="#FF1565C0" Offset="0.0" />
+            <GradientStop Color="#FF1E88E5" Offset="1.0" />
+        </LinearGradientBrush>
+    </ui:FluentWindow.Resources>
+
+    <Grid>
+        <StackPanel x:Name="InputContainer">
+            <TextBlock Text="{resx:Localization propUserId}" />
+            <ui:TextBox Text="{Binding VM.Data.UserId, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+
+            <TextBlock Text="{resx:Localization propPassword}" />
+            <ui:PasswordBox Password="{Binding VM.Data.Password, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+            
+        </StackPanel>
+        
+    </Grid>
+    
+</ui:FluentWindow>

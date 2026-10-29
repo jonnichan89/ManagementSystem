@@ -10,9 +10,6 @@ public partial class MstItemDetailViewModel : DetailViewModel
     public string Title { get; private set; }
 
     [ObservableProperty]
-    private string _imagePath;
-
-    [ObservableProperty]
     public bool CanEditItemCode
     {
         get
@@ -154,7 +151,7 @@ public partial class MstItemDetailViewModel : DetailViewModel
 
     private void InitializeSupplierCBVM()
     {
-        _supplierCBVM = new InstantSupplierComboBoxVM(_gFunctions);
+        _supplierCBVM = new InstantSupplierComboBoxVM(_gFunctions, InstantSupplierComboBoxVM.EnumSupplierUsedIn.Purchase);
         _supplierCBVM.SupplierChanged = _supplierCBVM_SupplierChanged;
         _supplierCBVM.GetSupplierCode = _supplierCBVM_GetSupplierCode;
         _supplierCBVM.SetSupplierName = _supplierCBVM_SetSupplierName;
@@ -236,6 +233,9 @@ public partial class MstItemDetailViewModel : DetailViewModel
                     ItemName = "",
                     ItemDescription = "",
                     ItemUnit = "",
+                    ImagePath = "",
+                    ImagePathToUpload = "",
+                    ImageFileSize = 0,
                     IsStockControl = false,
                     IsBlacklist = false,
                     CreatedAt = DateTime.Now,
@@ -355,11 +355,11 @@ public partial class MstItemDetailViewModel : DetailViewModel
             absoluteCannotSave = true;
         }
 
-        if (!string.IsNullOrWhiteSpace(ImagePath))
+        if (!string.IsNullOrWhiteSpace(_data.ImagePathToUpload))
         {
-            if (System.IO.File.Exists(ImagePath))
+            if (System.IO.File.Exists(_data.ImagePathToUpload))
             {
-                string fileExt = System.IO.Path.GetExtension(ImagePath);
+                string fileExt = System.IO.Path.GetExtension(_data.ImagePathToUpload);
                 switch (fileExt)
                 {
                     case ".jpg":
@@ -371,7 +371,7 @@ public partial class MstItemDetailViewModel : DetailViewModel
                         message +=
                             string.Format(
                                 TranslationSource.Instance["messageUnsupportedFileType"] ?? string.Empty,
-                                TranslationSource.Instance["propImagePath"], Environment.NewLine + ImagePath) +
+                                TranslationSource.Instance["propImagePath"], Environment.NewLine + _data.ImagePathToUpload) +
                             Environment.NewLine;
 
                         absoluteCannotSave = true;
@@ -383,7 +383,7 @@ public partial class MstItemDetailViewModel : DetailViewModel
                 message +=
                     string.Format(
                         TranslationSource.Instance["messageFileNotExists"] ?? string.Empty,
-                        TranslationSource.Instance["propImagePath"], Environment.NewLine + ImagePath) +
+                        TranslationSource.Instance["propImagePath"], Environment.NewLine + _data.ImagePathToUpload) +
                     Environment.NewLine;
 
                 absoluteCannotSave = true;
@@ -411,23 +411,15 @@ public partial class MstItemDetailViewModel : DetailViewModel
     {
         try
         {
-            Stream? imageStream = null;
-            string fileExt = "";
-            if (!string.IsNullOrWhiteSpace(ImagePath))
-            {
-                imageStream = new FileStream(ImagePath, FileMode.Open);
-                fileExt = System.IO.Path.GetFileName(ImagePath);
-            }
-
             ServiceActionResult result;
             switch (_action)
             {
                 case DetailAction.Add:
-                    result = await _apiClient.CreateMstItemAsync(_data, imageStream, fileExt);
+                    result = await _apiClient.CreateMstItemAsync(_data);
                     break;
 
                 case DetailAction.Edit:
-                    result = await _apiClient.UpdateMstItemAsync(_data, imageStream, fileExt);
+                    result = await _apiClient.UpdateMstItemAsync(_data);
                     break;
 
                 default:
@@ -551,7 +543,7 @@ public partial class MstItemDetailViewModel : DetailViewModel
             _openFileDialog.InitialDirectory = ManagementSystem.WPF.UI.Properties.Settings.Default.LastImagePath;
         }
 
-        ImagePath = _openFileDialog.FileName;
+        _data.ImagePathToUpload = _openFileDialog.FileName;
     }
 
 }

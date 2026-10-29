@@ -226,6 +226,7 @@ public partial class <#= tableName #>
                                 else
                                 {#>
     [InverseProperty("<#= prularizedTableName #>")]
+    [System.Text.Json.Serialization.JsonIgnore]
 <#
                                 }
                             }
@@ -251,7 +252,7 @@ public partial class <#= tableName #>
                 var needsInitializer = Options != null && Options.UseNullableReferenceTypes && navigation.ForeignKey.IsRequired && navigation.IsOnDependent;
                 //needsNullable ? "?" : ""
 #>
-    public virtual <#= targetTableName #>? <#= targetTableName #> { get; set; } = null;
+    public virtual <#= targetTableName #>? <#= tableName == targetTableName ? "Parent" + tableName : targetTableName #> { get; set; } = null;
 <#
             }
         }

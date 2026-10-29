@@ -11,19 +11,16 @@ namespace ManagementSystem.DataServices.Service
         {
             List<ModelValidation> validations = new List<ModelValidation>();
 
-            if (string.IsNullOrWhiteSpace(model.UserId))
-                validations.Add(ModelValidation.FieldIsRequired(nameof(MstUser), nameof(model.UserId), model.UserId));
+            if (string.IsNullOrWhiteSpace(model.UserName))
+                validations.Add(ModelValidation.FieldIsRequired(nameof(MstUser), nameof(model.UserName), model.UserName));
 
             if (action == ServiceAction.Delete)
             {
             }
             else
             {
-                if (string.IsNullOrWhiteSpace(model.UserName))
-                    validations.Add(ModelValidation.FieldIsRequired(nameof(MstUser), nameof(model.UserName), model.UserName));
-
                 if (IsExists(action, model))
-                    validations.Add(ModelValidation.PKAlreadyExists(nameof(MstUser), nameof(model.UserId), model.UserId));
+                    validations.Add(ModelValidation.PKAlreadyExists(nameof(MstUser), nameof(model.UserName), model.UserName));
 
             }
 
@@ -50,19 +47,19 @@ namespace ManagementSystem.DataServices.Service
             if (action == ServiceAction.Add || action == ServiceAction.Get)
                 using (var context = new ManagementSystemContext())
                 {
-                    return context.MstUsers.Any(u => u.UserId == model.UserId);
+                    return context.MstUsers.Any(u => u.UserName == model.UserName);
                 }
 
             return false;
         }
 
-        public MstUser? GetMstUserById(string userId)
+        public MstUser? GetMstUserByUserName(string userName)
         {
-            if (string.IsNullOrWhiteSpace(userId)) throw new ArgumentNullException(nameof(userId));
+            if (string.IsNullOrWhiteSpace(userName)) throw new ArgumentNullException(nameof(userName));
 
             using (var context = new ManagementSystemContext())
             {
-                MstUser? user = context.MstUsers.SingleOrDefault(u => u.UserId == userId);
+                MstUser? user = context.MstUsers.SingleOrDefault(u => u.UserName == userName);
                 if (user != null)
                 {
                     user.UserPassword = "";
@@ -72,11 +69,34 @@ namespace ManagementSystem.DataServices.Service
             }
         }
 
+        public MstUser? CheckLogin(string userName, string password)
+        {
+            MstUser? user = null;
+            using (var context = new ManagementSystemContext())
+            {
+                user = context.MstUsers.SingleOrDefault(u => u.UserName == userName);
+                if (user != null)
+                {
+                    string encrypted = CryptoHelper.EncryptString(password, user.Salt);
+                    if (string.Equals(user.UserPassword, password, StringComparison.Ordinal))
+                    {
+                        user.UserPassword = "";
+                        user.Salt = "";
+                    }
+                    else {
+                        user = null;
+                    }
+                }
+            }
+            return user;
+        }
+
         public int CreateMstUser(MstUser user)
         {
             using (var context = new ManagementSystemContext())
             {
-                string[] encrypted = CryptoHelper.EncryptString(char.ToUpper(user.UserId[0]) + user.UserId.Substring(1) + "**");
+                user.UserId = Guid.NewGuid().ToString().Replace("-", "");
+                string[] encrypted = CryptoHelper.EncryptString(char.ToUpper(user.UserName[0]) + user.UserName.Substring(1) + "**");
                 user.Salt = encrypted[0];
                 user.UserPassword = encrypted[1];
 
@@ -93,11 +113,10 @@ namespace ManagementSystem.DataServices.Service
         {
             using (var context = new ManagementSystemContext())
             {
-                var existing = context.MstUsers.SingleOrDefault(u => u.UserId == user.UserId);
+                var existing = context.MstUsers.SingleOrDefault(u => u.UserName == user.UserName);
                 if (existing == null) return 0;
 
                 // update allowed fields
-                existing.UserName = user.UserName;
                 existing.AccessList = user.AccessList;
                 existing.IsBlacklist = user.IsBlacklist;
                 existing.ModifiedAt = DateTime.Now;
@@ -111,16 +130,16 @@ namespace ManagementSystem.DataServices.Service
             }
         }
 
-        public bool ResetPassword(string userId, string modifiedBy)
+        public bool ResetPassword(string userName, string modifiedBy)
         {
-            if (string.IsNullOrWhiteSpace(userId)) throw new ArgumentNullException(nameof(userId));
+            if (string.IsNullOrWhiteSpace(userName)) throw new ArgumentNullException(nameof(userName));
 
             using (var context = new ManagementSystemContext())
             {
-                var existing = context.MstUsers.SingleOrDefault(u => u.UserId == userId);
+                var existing = context.MstUsers.SingleOrDefault(u => u.UserName == userName);
                 if (existing == null) return false;
 
-                string[] encrypted = CryptoHelper.EncryptString(char.ToUpper(existing.UserId[0]) + existing.UserId.Substring(1) + "**");
+                string[] encrypted = CryptoHelper.EncryptString(char.ToUpper(existing.UserName[0]) + existing.UserName.Substring(1) + "**");
                 existing.Salt = encrypted[0];
                 existing.UserPassword = encrypted[1];
 
@@ -132,13 +151,13 @@ namespace ManagementSystem.DataServices.Service
             }
         }
 
-        public bool DeleteMstUser(string userId)
+        public bool DeleteMstUser(string userName)
         {
-            if (string.IsNullOrWhiteSpace(userId)) throw new ArgumentNullException(nameof(userId));
+            if (string.IsNullOrWhiteSpace(userName)) throw new ArgumentNullException(nameof(userName));
 
             using (var context = new ManagementSystemContext())
             {
-                var existing = context.MstUsers.SingleOrDefault(u => u.UserId == userId);
+                var existing = context.MstUsers.SingleOrDefault(u => u.UserName == userName);
                 if (existing == null) return false;
 
                 context.MstUsers.Remove(existing);
@@ -150,13 +169,13 @@ namespace ManagementSystem.DataServices.Service
         /// Soft-delete by marking IsBlacklist = true and updating ModifiedAt/ModifiedBy.
         /// Returns true when save succeeded and user existed.
         /// </summary>
-        public bool BlacklistUser(bool value, string userId, string modifiedBy)
+        public bool BlacklistUser(bool value, string userName, string modifiedBy)
         {
-            if (string.IsNullOrWhiteSpace(userId)) throw new ArgumentNullException(nameof(userId));
+            if (string.IsNullOrWhiteSpace(userName)) throw new ArgumentNullException(nameof(userName));
 
             using (var context = new ManagementSystemContext())
             {
-                var existing = context.MstUsers.SingleOrDefault(u => u.UserId == userId);
+                var existing = context.MstUsers.SingleOrDefault(u => u.UserName == userName);
                 if (existing == null) return false;
 
                 existing.IsBlacklist = value;

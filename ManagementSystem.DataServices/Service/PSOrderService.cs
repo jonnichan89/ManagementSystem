@@ -1,7 +1,7 @@
 ﻿
 namespace ManagementSystem.DataServices.Service
 {
-    public class PSOrderService
+    public class PSOrderService : BaseService
     {
         //SharedResources _resShared;
         //public PSOrderService(SharedResources resShared) { }
@@ -141,7 +141,15 @@ namespace ManagementSystem.DataServices.Service
 
                 // Insert
                 context.PSOrders.Add(item);
-                return context.SaveChanges();
+
+                int rowsAffected = context.SaveChanges();
+                if (rowsAffected > 0)
+                {
+                    ExecuteRecalItemCalc(context, item.PSDate);
+                }
+
+                return rowsAffected;
+
             }
         }
 
@@ -193,7 +201,14 @@ namespace ManagementSystem.DataServices.Service
 
                 context.PSOrders.Update(existing);
 
-                return context.SaveChanges();
+                int rowsAffected = context.SaveChanges();
+                if (rowsAffected > 0)
+                {
+                    ExecuteRecalItemCalc(context, existing.PSDate);
+                }
+
+                return rowsAffected;
+
             }
         }
 
@@ -207,10 +222,14 @@ namespace ManagementSystem.DataServices.Service
                 if (existing == null) goto ReturnResult;
 
                 context.PSOrders.Remove(existing);
-                if (context.SaveChanges() > 0)
+
+                int rowsAffected = context.SaveChanges();
+                if (rowsAffected > 0)
                 {
-                    return existing;
+                    ExecuteRecalItemCalc(context, existing.PSDate);
                 }
+
+                return existing;
             }
 
         ReturnResult:

@@ -76,9 +76,11 @@
             <TextBlock Text="{resx:Localization propItemDescription}" />
             <ui:TextBox Text="{Binding VM.Data.ItemDescription, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
 
-
             <TextBlock Text="{resx:Localization propItemUnit}" />
             <ui:TextBox Text="{Binding VM.Data.ItemUnit, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+
+            <TextBlock Text="{resx:Localization propItemColour}" />
+            <ui:TextBox Text="{Binding VM.Data.Colour, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
 
             <TextBlock Text="{resx:Localization propImagePath}" />
             <Grid>
@@ -87,7 +89,7 @@
                     <ColumnDefinition Width="30" />
                 </Grid.ColumnDefinitions>
                 <ui:TextBox Grid.Column="0"
-                            Text="{Binding VM.ImagePath, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                            Text="{Binding VM.Data.ImagePathToUpload, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
                             IsReadOnly="True" />
                 <ui:Button Grid.Column="1"
                            Content="..."

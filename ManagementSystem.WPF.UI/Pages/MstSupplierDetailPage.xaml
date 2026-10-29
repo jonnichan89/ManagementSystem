@@ -27,7 +27,32 @@
             <TextBlock Text="{resx:Localization propSupplierName}" />
             <ui:TextBox Text="{Binding VM.Data.SupplierName, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
 
-            <CheckBox Content="{resx:Localization propIsBlacklist}" />
+            <TextBlock Text="{resx:Localization propSupplierUsedIn}" />
+            <GroupBox>
+                <WrapPanel>
+                    <CheckBox Content="{resx:Localization mwPurchase}"
+                              IsChecked="{Binding VM.Data.UsedInPO, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                              Margin="0,5,5,0"/>
+
+                    <CheckBox Content="{resx:Localization mwSales}"
+                              IsChecked="{Binding VM.Data.UsedInSO, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                              Margin="0,5,5,0" />
+
+                    <CheckBox Content="{resx:Localization mwProjectPurchaseOrder}"
+                              IsChecked="{Binding VM.Data.UsedInPPO, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                              Margin="0,5,5,0" />
+
+                    <CheckBox Content="{resx:Localization mwProjectSalesOrder}"
+                              IsChecked="{Binding VM.Data.UsedInPSO, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                              Margin="0,5,5,0" />
+                    
+                </WrapPanel>
+                
+            </GroupBox>
+
+            <CheckBox Content="{resx:Localization propIsBlacklist}"
+                      IsChecked="{Binding VM.Data.IsBlacklist, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+            
         </StackPanel>
 
         <Viewbox x:Name="MessageBox" Stretch="None" VerticalAlignment="Top" Margin="0,10,0,0">

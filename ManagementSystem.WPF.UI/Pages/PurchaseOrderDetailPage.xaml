@@ -18,20 +18,19 @@
       d:DesignHeight="450"
       d:DesignWidth="800"
       Title="{Binding VM.Title, Mode=OneTime}"
-      Margin="10"
-      Width="1500">
+      Margin="10">
     <Page.Resources>
         <h:BindingProxy x:Key="Page1"
                         Data="{Binding}" />
         <conv:BoolToVisibilityConverter x:Key="BoolToVisibilityConverter" />
         <local:EnumToBooleanConverter x:Key="EnumToBooleanConverter" />
+        <conv:FileToImageConverter x:Key="FileToImageConverter" />
     </Page.Resources>
 
     <!--<ScrollViewer CanContentScroll="True"
                   HorizontalScrollBarVisibility="Visible"
                   VerticalScrollBarVisibility="Visible">-->
-    <Grid x:Name="MainGrid"
-          Width="1400">
+    <Grid x:Name="MainGrid">
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="320" />
             <ColumnDefinition Width="*" />
@@ -47,8 +46,7 @@
             <StackPanel x:Name="InputContainer">
                 <TextBlock Text="{resx:Localization propPOCode}"
                            Margin="0,5,0,5" />
-                <ui:TextBox Text="{Binding VM.Data.PSCode}"
-                            IsReadOnly="True"
+                <ui:TextBox Text="{Binding VM.Data.PSCode, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
                             HorizontalContentAlignment="Stretch" />
 
                 <TextBlock Text="{resx:Localization propPODate}"
@@ -169,7 +167,7 @@
                     </StackPanel>
 
                     <StackPanel Grid.Column="1">
-                        <TextBlock Text="{resx:Localization propDPPIDR}" />
+                        <TextBlock Text="{resx:Localization propDPP}" />
                         <ui:NumberBox x:Name="HeaderTotalDPPIDRNUD"
                                       Value="{Binding VM.Data.DPPIDR, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}"
                                       LargeChange="0"
@@ -208,12 +206,11 @@
                     Grid.Column="1"
                     Margin="10,0,0,0">
 
-            <TextBlock Text="{resx:Localization propPODetail}"
+            <TextBlock Text="{resx:Localization propItemDetail}"
                        Margin="0,5,0,5" />
             <Border BorderThickness="1"
                     BorderBrush="Gray"
                     CornerRadius="10"
-                    Width="900"
                     Height="200"
                     HorizontalAlignment="Left">
                 <StackPanel>
@@ -366,13 +363,24 @@
                         </ComboBox>
 
                         <TextBlock Text="{resx:Localization propQty}" />
-                        <ui:NumberBox x:Name="QtyNUD"
-                                      Value="{Binding VM.SelectedItemDetail.Qty, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
-                                      LargeChange="0"
-                                      SmallChange="0"
-                                      MaxDecimalPlaces="2"
-                                      KeyUp="ItemComboBox_NUD_KeyUp" />
-
+                        <WrapPanel>
+                            <ui:NumberBox x:Name="QtyNUD"
+                                          Value="{Binding VM.SelectedItemDetail.Qty, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                          LargeChange="0"
+                                          SmallChange="0"
+                                          MaxDecimalPlaces="2"
+                                          Width="150"
+                                          KeyUp="ItemComboBox_NUD_KeyUp" />
+                            <ui:ClientAreaBorder BorderThickness="1"
+                                                 BorderBrush="#33808080"
+                                                 CornerRadius="5"
+                                                 Margin="3,0,0,0">
+                                <ui:TextBlock Text="{Binding VM.SelectedItemDetail.Unit, Mode=OneWay}"
+                                              VerticalAlignment="Center"
+                                              Margin="10,0,10,0" />
+                            </ui:ClientAreaBorder>
+                        </WrapPanel>
+                        
                         <TextBlock Text="{resx:Localization propUnitPrice}" />
                         <ui:NumberBox x:Name="UnitPriceNUD"
                                       Value="{Binding VM.SelectedItemDetail.UnitPrice, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
@@ -412,7 +420,7 @@
                         BorderBrush="Gray"
                         CornerRadius="10"
                         Margin="5,0,0,0">
-                    <Image Source="{Binding VM.PreviewImagePath, Mode=OneWay}"
+                    <Image Source="{Binding VM.PreviewImagePath, Mode=OneWay, Converter={StaticResource FileToImageConverter}}"
                            Width="195" />
                 </Border>
 

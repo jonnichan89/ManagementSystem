@@ -43,5 +43,6 @@ public partial class PSOrderDetail
 
     [ForeignKey("PSId")]
     [InverseProperty("PSOrderDetails")]
+    [System.Text.Json.Serialization.JsonIgnore]
     public virtual PSOrder? PSOrder { get; set; } = null;
 }

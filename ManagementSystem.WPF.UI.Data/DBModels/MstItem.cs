@@ -91,6 +91,18 @@ public partial class MstItem : INotifyPropertyChanged
         }
     }
 
+    private int _ImageFileSize;
+    
+    public int ImageFileSize {
+        get {
+            return _ImageFileSize;
+        }
+        set {
+            _ImageFileSize = value;
+            OnPropertyChanged("ImageFileSize");
+        }
+    }
+
     private bool _IsStockControl;
     
     public bool IsStockControl {
@@ -184,6 +196,18 @@ public partial class MstItem : INotifyPropertyChanged
         set {
             _SupplierCode = value;
             OnPropertyChanged("SupplierCode");
+        }
+    }
+
+    private string _Colour = string.Empty;
+    
+    public string Colour {
+        get {
+            return _Colour;
+        }
+        set {
+            _Colour = value;
+            OnPropertyChanged("Colour");
         }
     }
 }

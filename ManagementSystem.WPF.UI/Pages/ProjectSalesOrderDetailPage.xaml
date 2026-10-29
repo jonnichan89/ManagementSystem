@@ -1,0 +1,433 @@
+﻿<Page x:Class="ManagementSystem.WPF.UI.Pages.ProjectSalesOrderDetailPage"
+      xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+      xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+      xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+      xmlns:resx="clr-namespace:ManagementSystem.WPF.UI.Resources"
+      xmlns:local="clr-namespace:ManagementSystem.WPF.UI"
+      xmlns:h="clr-namespace:ManagementSystem.WPF.UI.Helpers"
+      xmlns:C="clr-namespace:ManagementSystem.WPF.UI.Controls"
+      xmlns:conv="clr-namespace:ManagementSystem.WPF.UI.Converters"
+      xmlns:pages="clr-namespace:ManagementSystem.WPF.UI.Pages"
+      xmlns:vm="clr-namespace:ManagementSystem.WPF.UI.ViewModels"
+      xmlns:data="clr-namespace:ManagementSystem.WPF.UI.Data.DBModels;assembly=ManagementSystem.WPF.UI.Data"
+      xmlns:data0="clr-namespace:ManagementSystem.WPF.UI.Data;assembly=ManagementSystem.WPF.UI.Data"
+      xmlns:ui="http://schemas.lepo.co/wpfui/2022/xaml"
+      mc:Ignorable="d"
+      d:DataContext="{d:DesignInstance pages:ProjectSalesOrderDetailPage, IsDesignTimeCreatable=False}"
+      d:DesignHeight="450"
+      d:DesignWidth="800"
+      Title="{Binding VM.Title, Mode=OneTime}"
+      Margin="10">
+    <Page.Resources>
+        <h:BindingProxy x:Key="Page1"
+                        Data="{Binding}" />
+        <conv:BoolToVisibilityConverter x:Key="BoolToVisibilityConverter" />
+        <local:EnumToBooleanConverter x:Key="EnumToBooleanConverter" />
+        <conv:FileToImageConverter x:Key="FileToImageConverter" />
+    </Page.Resources>
+
+    <!--<ScrollViewer CanContentScroll="True"
+                  HorizontalScrollBarVisibility="Visible"
+                  VerticalScrollBarVisibility="Visible">-->
+    <Grid x:Name="MainGrid">
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="320" />
+            <ColumnDefinition Width="*" />
+        </Grid.ColumnDefinitions>
+
+        <Border Grid.Column="0"
+                BorderThickness="1"
+                BorderBrush="Gray"
+                CornerRadius="10"
+                HorizontalAlignment="Left"
+                Padding="10"
+                Width="320">
+            <StackPanel x:Name="InputContainer">
+                <TextBlock Text="{resx:Localization propPSOCode}"
+                           Margin="0,5,0,5" />
+                <ui:TextBox Text="{Binding VM.Data.PSCode}"
+                            IsReadOnly="True"
+                            HorizontalContentAlignment="Stretch" />
+
+                <TextBlock Text="{resx:Localization propPSODate}"
+                           Margin="0,5,0,5" />
+                <WrapPanel>
+                    <ui:TextBox Text="{Binding VM.Data.PSDate, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, StringFormat='dd MMM yyyy'}"
+                                IsReadOnly="True"
+                                Margin="0,0,5,0" />
+
+                    <ui:CalendarDatePicker Date="{Binding VM.Data.PSDate, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                           IsEnabled="{Binding VM.CanEditPSDate}" />
+
+                </WrapPanel>
+
+                <TextBlock Text="{resx:Localization propSupplierCode}" />
+                <ui:TextBox Text="{Binding VM.Data.SupplierCode}"
+                            IsReadOnly="True" />
+
+                <TextBlock Text="{resx:Localization propSupplierName}" />
+                <ComboBox x:Name="SupplierComboBox"
+                          ItemsSource="{Binding VM.SupplierCBVM.FilteredViewSupplier}"
+                          SelectedItem="{Binding VM.SupplierCBVM.SelectedSupplier, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                          IsTextSearchEnabled="False"
+                          IsTextSearchCaseSensitive="False"
+                          IsEditable="True"
+                          StaysOpenOnEdit="True"
+                          IsReadOnly="False"
+                          ScrollViewer.CanContentScroll="True"
+                          TextSearch.TextPath="SupplierName"
+                          SelectedIndex="{Binding VM.SupplierCBVM.SupplierSelectedIndex, Mode=OneWay}">
+                    <ComboBox.ItemsPanel>
+                        <ItemsPanelTemplate>
+                            <VirtualizingStackPanel VirtualizationMode="Recycling" />
+                        </ItemsPanelTemplate>
+                    </ComboBox.ItemsPanel>
+                    <ComboBox.ItemTemplate>
+                        <DataTemplate DataType="data:MstSupplier">
+                            <StackPanel Width="300">
+                                <WrapPanel>
+                                    <ui:TextBlock Text="{Binding Askterisk}"
+                                                  Width="10" />
+                                    <ui:TextBlock Text="{Binding SupplierName}" />
+                                </WrapPanel>
+                                <ui:TextBlock Text="{Binding SupplierCode}"
+                                              Margin="10,0,0,0" />
+                            </StackPanel>
+                        </DataTemplate>
+                    </ComboBox.ItemTemplate>
+                </ComboBox>
+
+                <TextBlock Text="{resx:Localization propCurrencyId}"
+                           Margin="0,5,0,5" />
+                <WrapPanel Width="210"
+                           HorizontalAlignment="Left">
+                    <RadioButton Content="IDR"
+                                 GroupName="CurrencyId"
+                                 IsChecked="{Binding VM.Data.CurrencyIdEnumValue, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, Converter={StaticResource EnumToBooleanConverter}, ConverterParameter={x:Static data0:CurrencyIdEnum.IDR}}"
+                                 MinWidth="70"
+                                 Width="50"
+                                 Checked="CurrencyRadioButton_Checked"
+                                 />
+                    <RadioButton Content="CNY"
+                                 GroupName="CurrencyId"
+                                 IsChecked="{Binding VM.Data.CurrencyIdEnumValue, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, Converter={StaticResource EnumToBooleanConverter}, ConverterParameter={x:Static data0:CurrencyIdEnum.CNY}}"
+                                 MinWidth="70"
+                                 Width="70"
+                                 Checked="CurrencyRadioButton_Checked" />
+                    <RadioButton Content="USD"
+                                 GroupName="CurrencyId"
+                                 IsChecked="{Binding VM.Data.CurrencyIdEnumValue, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, Converter={StaticResource EnumToBooleanConverter}, ConverterParameter={x:Static data0:CurrencyIdEnum.USD}}"
+                                 MinWidth="70"
+                                 Width="70"
+                                 Checked="CurrencyRadioButton_Checked" />
+                </WrapPanel>
+
+                <TextBlock Text="{resx:Localization propCurrencyRate}" />
+                <ui:NumberBox x:Name="CurrencyRateNUD"
+                              Value="{Binding VM.Data.CurrencyRate, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                              LargeChange="0"
+                              SmallChange="0"
+                              MaxDecimalPlaces="4" />
+
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="*" />
+                    </Grid.ColumnDefinitions>
+
+                    <StackPanel Grid.Column="0">
+                        <TextBlock Text="{resx:Localization propDPP}" />
+                        <ui:NumberBox x:Name="HeaderTotalDPPNUD"
+                                      Value="{Binding VM.Data.DPP, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                      LargeChange="0"
+                                      SmallChange="0"
+                                      SpinButtonPlacementMode="Hidden"
+                                      MaxDecimalPlaces="{Binding VM.Data.Rounding, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}" />
+
+                        <TextBlock Text="{resx:Localization propDPPDiscount}" />
+                        <ui:NumberBox x:Name="HeaderDPPDiscountNUD"
+                                      Value="{Binding VM.Data.DPPDiscount, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                      LargeChange="0"
+                                      SmallChange="0"
+                                      SpinButtonPlacementMode="Hidden"
+                                      MaxDecimalPlaces="{Binding VM.Data.Rounding, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}" />
+
+                        <TextBlock Text="{resx:Localization propTotalAmount}" />
+                        <ui:NumberBox x:Name="HeaderTotalAmountNUD"
+                                      Value="{Binding VM.Data.TotalAmount, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                      LargeChange="0"
+                                      SmallChange="0"
+                                      SpinButtonPlacementMode="Hidden"
+                                      MaxDecimalPlaces="{Binding VM.Data.Rounding, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}" />
+
+                    </StackPanel>
+
+                    <StackPanel Grid.Column="1">
+                        <TextBlock Text="{resx:Localization propDPP}" />
+                        <ui:NumberBox x:Name="HeaderTotalDPPIDRNUD"
+                                      Value="{Binding VM.Data.DPPIDR, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}"
+                                      LargeChange="0"
+                                      SmallChange="0"
+                                      SpinButtonPlacementMode="Hidden"
+                                      MaxDecimalPlaces="{Binding VM.Data.Rounding, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}"
+                                      IsReadOnly="True"
+                                      Background="LightYellow" />
+
+                        <TextBlock Text="{resx:Localization propDPPDiscount}" />
+                        <ui:NumberBox x:Name="HeaderDPPIDRDiscountNUD"
+                                      Value="{Binding VM.Data.DPPIDRDiscount, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}"
+                                      LargeChange="0"
+                                      SmallChange="0"
+                                      SpinButtonPlacementMode="Hidden"
+                                      MaxDecimalPlaces="{Binding VM.Data.Rounding, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}"
+                                      IsReadOnly="True"
+                                      Background="LightYellow" />
+
+                        <TextBlock Text="{resx:Localization propTotalAmount}" />
+                        <ui:NumberBox x:Name="HeaderTotalAmountIDRNUD"
+                                      Value="{Binding VM.Data.TotalAmountIDR, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}"
+                                      LargeChange="0"
+                                      SmallChange="0"
+                                      SpinButtonPlacementMode="Hidden"
+                                      MaxDecimalPlaces="{Binding VM.Data.Rounding, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}"
+                                      IsReadOnly="True"
+                                      Background="LightYellow" />
+
+                    </StackPanel>
+
+                </Grid>
+
+            </StackPanel>
+
+        </Border>
+
+        <StackPanel x:Name="InputContainer1"
+                    Grid.Column="1"
+                    Margin="10,0,0,0">
+
+            <TextBlock Text="{resx:Localization propPSODetail}"
+                       Margin="0,5,0,5" />
+            <Border BorderThickness="1"
+                    BorderBrush="Gray"
+                    CornerRadius="10"
+                    Height="200"
+                    HorizontalAlignment="Left">
+                <StackPanel>
+                    <DataGrid x:Name="ItemDetailDataGrid"
+                              CanUserAddRows="False"
+                              AutoGenerateColumns="False"
+                              SelectedItem="{Binding VM.SelectedPTDetail, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                              ItemsSource="{Binding VM.Data.PSOrderPTs, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                              Height="200"
+                              HorizontalScrollBarVisibility="Auto">
+                        <DataGrid.Columns>
+                            <DataGridTextColumn Header="{resx:Localization propPTName}"
+                                                Binding="{Binding PTName, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                                IsReadOnly="True"
+                                                Width="200" />
+
+                            <DataGridTextColumn Header="{resx:Localization propQty}"
+                                                Binding="{Binding Qty, StringFormat=N0, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                                IsReadOnly="False" />
+
+                            <!-- N0 Columns -->
+                            <DataGridTextColumn Header="{resx:Localization propUnitPrice}"
+                                                Binding="{Binding UnitPrice, StringFormat=N0, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                                Visibility="{Binding Data.VM.Data.N0Visibility, Mode=OneWay, Source={StaticResource Page1}, Converter={StaticResource BoolToVisibilityConverter}}"
+                                                IsReadOnly="False" />
+
+                            <DataGridTextColumn Header="{resx:Localization propUnitPriceDiscount}"
+                                                Binding="{Binding UnitPriceDiscount, StringFormat=N0, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                                Visibility="{Binding Data.VM.Data.N0Visibility, Mode=OneWay, Source={StaticResource Page1}, Converter={StaticResource BoolToVisibilityConverter}}"
+                                                IsReadOnly="False" />
+
+                            <DataGridTextColumn Header="{resx:Localization propDPP}"
+                                                Binding="{Binding DPP, StringFormat=N0, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                                Visibility="{Binding Data.VM.Data.N0Visibility, Mode=OneWay, Source={StaticResource Page1}, Converter={StaticResource BoolToVisibilityConverter}}"
+                                                IsReadOnly="False" />
+
+                            <DataGridTextColumn Header="{resx:Localization propTotalAmount}"
+                                                Binding="{Binding TotalAmount, StringFormat=N0, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                                Visibility="{Binding Data.VM.Data.N0Visibility, Mode=OneWay, Source={StaticResource Page1}, Converter={StaticResource BoolToVisibilityConverter}}"
+                                                IsReadOnly="False" />
+                            <!-- N2 Columns -->
+                            <DataGridTextColumn Header="{resx:Localization propUnitPrice}"
+                                                Binding="{Binding UnitPrice, StringFormat=N2, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                                Visibility="{Binding Data.VM.Data.N2Visibility, Mode=OneWay, Source={StaticResource Page1}, Converter={StaticResource BoolToVisibilityConverter}}"
+                                                IsReadOnly="False" />
+
+                            <DataGridTextColumn Header="{resx:Localization propUnitPriceDiscount}"
+                                                Binding="{Binding UnitPriceDiscount, StringFormat=N2, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                                Visibility="{Binding Data.VM.Data.N2Visibility, Mode=OneWay, Source={StaticResource Page1}, Converter={StaticResource BoolToVisibilityConverter}}"
+                                                IsReadOnly="False" />
+
+                            <DataGridTextColumn Header="{resx:Localization propDPP}"
+                                                Binding="{Binding DPP, StringFormat=N2, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                                Visibility="{Binding Data.VM.Data.N2Visibility, Mode=OneWay, Source={StaticResource Page1}, Converter={StaticResource BoolToVisibilityConverter}}"
+                                                IsReadOnly="False" />
+
+                            <DataGridTextColumn Header="{resx:Localization propTotalAmount}"
+                                                Binding="{Binding TotalAmount, StringFormat=N2, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                                Visibility="{Binding Data.VM.Data.N2Visibility, Mode=OneWay, Source={StaticResource Page1}, Converter={StaticResource BoolToVisibilityConverter}}"
+                                                IsReadOnly="False" />
+
+                        </DataGrid.Columns>
+
+                    </DataGrid>
+
+                </StackPanel>
+
+            </Border>
+
+            <WrapPanel Margin="0,5,0,5">
+                <Border BorderThickness="1"
+                        BorderBrush="Gray"
+                        CornerRadius="10"
+                        Padding="10"
+                        Width="400">
+                    <StackPanel>
+                        <Menu Height="50"
+                              BorderThickness="0,1,0,1"
+                              BorderBrush="Gray"
+                              Margin="0,5,0,5">
+                            <MenuItem Header="{resx:Localization btnAdd}"
+                                      Icon="{ui:SymbolIcon Add24}"
+                                      Command="{Binding VM.AddItemDetailCommand, Mode=OneWay}"
+                                      IsCheckable="True"
+                                      IsChecked="{Binding VM.AddCommandChecked, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                      Width="100" />
+
+                            <MenuItem Header="{resx:Localization btnDelete}"
+                                      Icon="{ui:SymbolIcon Delete24}"
+                                      Command="{Binding VM.DeleteItemDetailCommand, Mode=OneWay}"
+                                      Width="100" />
+
+                        </Menu>
+
+                        <TextBlock Text="{resx:Localization propPTName}" />
+                        <ComboBox x:Name="PTComboBox"
+                                  ItemsSource="{Binding VM.FilteredViewPT}"
+                                  SelectedItem="{Binding VM.SelectedPT, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                  IsTextSearchEnabled="False"
+                                  IsTextSearchCaseSensitive="False"
+                                  IsEditable="True"
+                                  IsReadOnly="False"
+                                  ScrollViewer.CanContentScroll="True"
+                                  TextSearch.TextPath="PTName"
+                                  PreviewKeyDown="PTComboBox_PreviewKeyDown"
+                                  KeyUp="PTComboBox_NUD_KeyUp"
+                                  SelectedIndex="{Binding VM.PTSelectedIndex, Mode=OneWay}">
+
+                            <!--Text="{Binding VM.FilterText, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, Delay=150}"-->
+                            <!--PreviewKeyDown="ItemComboBox_PreviewKeyDown"-->
+                            <!--DropDownOpened="MyComboBox_DropDownOpened"-->
+                            <!--SelectedIndex="{Binding VM.ItemSelectedIndex, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"-->
+                            <!--SelectedValue="{Binding VM.SelectedItemId, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"-->
+                            <ComboBox.ItemContainerStyle>
+                                <Style TargetType="ComboBoxItem">
+                                    <EventSetter Event="PreviewMouseMove"
+                                                 Handler="PTComboBox_OnPreviewMouseMove" />
+                                    <EventSetter Event="MouseLeave"
+                                                 Handler="PTComboBox_OnItemHoverExit" />
+                                </Style>
+                            </ComboBox.ItemContainerStyle>
+
+                            <ComboBox.ItemsPanel>
+                                <ItemsPanelTemplate>
+                                    <VirtualizingStackPanel VirtualizationMode="Recycling" />
+                                </ItemsPanelTemplate>
+                            </ComboBox.ItemsPanel>
+                            <ComboBox.ItemTemplate>
+                                <DataTemplate DataType="data:ProjectTemplate">
+                                    <StackPanel Width="300">
+                                        <WrapPanel Margin="10,0,0,0">
+                                            <ui:TextBlock Text="{Binding Askterisk}"
+                                                          Width="10" />
+                                            <ui:TextBlock Text="{Binding PTName}" />
+                                        </WrapPanel>
+                                    </StackPanel>
+                                </DataTemplate>
+                            </ComboBox.ItemTemplate>
+                        </ComboBox>
+
+                        <TextBlock Text="{resx:Localization propQty}" />
+                        <WrapPanel>
+                            <ui:NumberBox x:Name="QtyNUD"
+                                          Value="{Binding VM.SelectedPTDetail.Qty, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                          LargeChange="0"
+                                          SmallChange="0"
+                                          MaxDecimalPlaces="2"
+                                          Width="150"
+                                          KeyUp="PTComboBox_NUD_KeyUp" />
+                            <ui:ClientAreaBorder BorderThickness="1"
+                                                 BorderBrush="#33808080"
+                                                 CornerRadius="5"
+                                                 Margin="3,0,0,0">
+                                <ui:TextBlock Text="{Binding VM.SelectedPTDetail.Unit, Mode=OneWay}"
+                                              VerticalAlignment="Center"
+                                              Margin="10,0,10,0" />
+                            </ui:ClientAreaBorder>
+                        </WrapPanel>
+                        
+                        <TextBlock Text="{resx:Localization propUnitPrice}" />
+                        <ui:NumberBox x:Name="UnitPriceNUD"
+                                      Value="{Binding VM.SelectedPTDetail.UnitPrice, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                      LargeChange="0"
+                                      SmallChange="0"
+                                      MaxDecimalPlaces="4"
+                                      KeyUp="PTComboBox_NUD_KeyUp" />
+
+                        <TextBlock Text="{resx:Localization propUnitPriceDiscount}" />
+                        <ui:NumberBox x:Name="UnitPriceDiscountNUD"
+                                      Value="{Binding VM.SelectedPTDetail.UnitPriceDiscount, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                      LargeChange="0"
+                                      SmallChange="0"
+                                      MaxDecimalPlaces="4"
+                                      KeyUp="PTComboBox_NUD_KeyUp" />
+
+                        <TextBlock Text="{resx:Localization propDPP}" />
+                        <ui:NumberBox x:Name="DPPNUD"
+                                      Value="{Binding VM.SelectedPTDetail.DPP, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                      LargeChange="0"
+                                      SmallChange="0"
+                                      MaxDecimalPlaces="4"
+                                      KeyUp="PTComboBox_NUD_KeyUp" />
+
+                        <TextBlock Text="{resx:Localization propTotalAmount}" />
+                        <ui:NumberBox x:Name="TotalAmountNUD"
+                                      Value="{Binding VM.SelectedPTDetail.TotalAmount, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                      LargeChange="0"
+                                      SmallChange="0"
+                                      MaxDecimalPlaces="4"
+                                      KeyUp="PTComboBox_NUD_KeyUp" />
+
+                    </StackPanel>
+                </Border>
+
+                <Border BorderThickness="1"
+                        BorderBrush="Gray"
+                        CornerRadius="10"
+                        Margin="5,0,0,0">
+                    <Image Source="{Binding VM.PreviewImagePath, Mode=OneWay, Converter={StaticResource FileToImageConverter}}"
+                           Width="195" />
+                </Border>
+
+            </WrapPanel>
+
+        </StackPanel>
+
+        <Viewbox x:Name="MessageBox"
+                 Stretch="None"
+                 VerticalAlignment="Top"
+                 Margin="0,10,0,0"
+                 MaxWidth="{Binding ActualWidth, ElementName=MainGrid}"
+                 Grid.Column="0"
+                 Grid.ColumnSpan="2">
+            <Frame x:Name="MessageFrame"
+                   Visibility="Collapsed"
+                   MaxWidth="{Binding ActualWidth, ElementName=MainGrid}" />
+        </Viewbox>
+    </Grid>
+    <!--</ScrollViewer>-->
+</Page>

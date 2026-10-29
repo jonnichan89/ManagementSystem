@@ -1,5 +1,4 @@
-﻿
-namespace ManagementSystem.WPF.UI.ViewModels
+﻿namespace ManagementSystem.WPF.UI.ViewModels.ToInherit
 {
     public interface IDetailViewModel
     {
@@ -11,7 +10,7 @@ namespace ManagementSystem.WPF.UI.ViewModels
         bool Close();
     }
 
-    public abstract partial class DetailViewModel : ViewModel, IDetailViewModel
+    public abstract partial class DetailViewModel : BaseViewModel, IDetailViewModel
     {
         protected internal string Title { get; private set; }
         public virtual async Task InitializeAsync(DetailAction action, object pk) { await Task.Delay(100); }
@@ -30,6 +29,7 @@ namespace ManagementSystem.WPF.UI.ViewModels
 
     public enum DetailAction
     {
+        None,
         ViewDetail,
         Add,
         Edit

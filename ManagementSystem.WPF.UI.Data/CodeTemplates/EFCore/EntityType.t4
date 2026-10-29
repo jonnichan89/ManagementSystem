@@ -258,16 +258,18 @@ public partial class <#= tableName #> : INotifyPropertyChanged
             {
                 var needsNullable = Options != null && Options.UseNullableReferenceTypes && !(navigation.ForeignKey.IsRequired && navigation.IsOnDependent);
                 var needsInitializer = Options != null && Options.UseNullableReferenceTypes && navigation.ForeignKey.IsRequired && navigation.IsOnDependent;
+                var propertyName = tableName == targetTableName ? "Parent" + tableName : targetTableName;
 #>
-    private <#= targetTableName #><#= needsNullable ? "?" : "" #> _<#= targetTableName #><#= needsInitializer ? " = null!;" : ";" #>
+    private <#= targetTableName #><#= needsNullable ? "?" : "" #> _<#= propertyName #><#= needsInitializer ? " = null!;" : ";" #>
     
-    public virtual <#= targetTableName #><#= needsNullable ? "?" : "" #> <#= targetTableName #> {
+    [System.Text.Json.Serialization.JsonIgnore]
+    public virtual <#= targetTableName #><#= needsNullable ? "?" : "" #> <#= propertyName #> {
         get {
-            return _<#= targetTableName #>;
+            return _<#= propertyName #>;
         }
         set {
-            _<#= targetTableName #> = value;
-            OnPropertyChanged("<#= targetTableName #>");
+            _<#= propertyName #> = value;
+            OnPropertyChanged("<#= propertyName #>");
         }
     }
 <#

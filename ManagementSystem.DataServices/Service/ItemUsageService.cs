@@ -1,7 +1,7 @@
 ﻿
 namespace ManagementSystem.DataServices.Service
 {
-    public class ItemUsageService
+    public class ItemUsageService : BaseService
     {
         //SharedResources _resShared;
         //public ItemUsageService(SharedResources resShared) { }
@@ -103,7 +103,15 @@ namespace ManagementSystem.DataServices.Service
                 }
 
                 context.ItemUsages.Add(item);
-                return context.SaveChanges();
+
+                int rowsAffected = context.SaveChanges();
+                if (rowsAffected > 0)
+                {
+                    ExecuteRecalItemCalc(context, item.ItemUsageDate);
+                }
+
+                return rowsAffected;
+
             }
         }
 
@@ -156,7 +164,14 @@ namespace ManagementSystem.DataServices.Service
 
                 context.ItemUsages.Update(existing);
 
-                return context.SaveChanges();
+                int rowsAffected = context.SaveChanges();
+                if (rowsAffected > 0)
+                {
+                    ExecuteRecalItemCalc(context, existing.ItemUsageDate);
+                }
+
+                return rowsAffected;
+
             }
         }
 
@@ -170,10 +185,15 @@ namespace ManagementSystem.DataServices.Service
                 if (existing == null) goto ReturnResult;
 
                 context.ItemUsages.Remove(existing);
-                if (context.SaveChanges() > 0)
+
+                int rowsAffected = context.SaveChanges();
+                if (rowsAffected > 0)
                 {
-                    return existing;
+                    ExecuteRecalItemCalc(context, existing.ItemUsageDate);
                 }
+
+                return existing;
+
             }
 
         ReturnResult:

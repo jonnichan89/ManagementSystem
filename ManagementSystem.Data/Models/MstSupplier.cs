@@ -33,4 +33,12 @@ public partial class MstSupplier
     [StringLength(20)]
     [Unicode(false)]
     public string ModifiedBy { get; set; } = string.Empty;
+
+    public bool UsedInPO { get; set; }
+
+    public bool UsedInSO { get; set; }
+
+    public bool UsedInPPO { get; set; }
+
+    public bool UsedInPSO { get; set; }
 }

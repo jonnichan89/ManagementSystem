@@ -1,27 +1,36 @@
 ﻿using ManagementSystem.WPF.UI.Services.ServiceInterfaces;
+using ManagementSystem.WPF.UI.ViewModels.ToInherit;
 
 namespace ManagementSystem.WPF.UI.ViewModels;
 
-public partial class FinanceViewModel : ViewModel
+public partial class FinanceViewModel : BaseListViewModel<Finance>
 {
     private string _title = TranslationSource.Instance["mwFinance"] ?? "Finance";
 
-    private Finance[]? _items;
+    //private Finance[]? _items;
 
     [ObservableProperty]
     private ObservableCollection<FinanceDetail>? _FinanceDetails = null;
 
-    private Finance _selectedItem;
-    public Finance SelectedItem
+    //private Finance _selectedItem;
+    //public Finance SelectedItem
+    //{
+    //    get => _selectedItem;
+    //    set
+    //    {
+    //        SetProperty(ref _selectedItem, value);
+    //        if (_selectedItem != null)
+    //        {
+    //            FinanceDetails = _selectedItem.FinanceDetails;
+    //        }
+    //    }
+    //}
+
+    protected override void AfterSelectedItemChanged()
     {
-        get => _selectedItem;
-        set
+        if (_selectedItem != null)
         {
-            SetProperty(ref _selectedItem, value);
-            if (_selectedItem != null)
-            {
-                FinanceDetails = _selectedItem.FinanceDetails;
-            }
+            FinanceDetails = _selectedItem.FinanceDetails;
         }
     }
 
@@ -60,6 +69,7 @@ public partial class FinanceViewModel : ViewModel
     public async Task Initialize()
     {
         _title = TranslationSource.Instance["mwFinance"] ?? "Finance";
+        _previewItems.Clear();
         await RefreshListDataAsync();
 
         if (_previewItems.Count > 0)
@@ -80,13 +90,14 @@ public partial class FinanceViewModel : ViewModel
 
     #region Paging
 
-    [ObservableProperty]
-    private ObservableRangeCollection<PageIndex> _pageList = new();
+    //[ObservableProperty]
+    //private ObservableRangeCollection<PageIndex> _pageList = new();
 
-    [ObservableProperty]
-    private ObservableRangeCollection<Finance> _previewItems = new();
+    //[ObservableProperty]
+    //private ObservableRangeCollection<Finance> _previewItems = new();
 
-    private int _itemPerPage = 50;
+    //private int _currentPage = 1;
+    //private int _itemPerPage = 50;
 
     private async Task RefreshListDataAsync()
     {
@@ -107,112 +118,119 @@ public partial class FinanceViewModel : ViewModel
         }
     }
 
-    [RelayCommand]
-    private void RefreshPreviewItems(PageIndex? page)
-    {
-        _previewItems.Clear();
+    //[RelayCommand]
+    //private void RefreshPreviewItems(PageIndex? page)
+    //{
+    //    _previewItems.Clear();
 
-        int pageIndex = RefreshPageList(page, page?.ForceUpdatePageList ?? true)?.PageValue ?? 1;
-        _previewItems.AddRange(_items.Skip((pageIndex - 1) * _itemPerPage).Take(_itemPerPage));
+    //    if (page == null)
+    //    {
+    //        page = new PageIndex(_currentPage, (_pageList.Count > 0 ? false : true));
+    //    }
 
-    }
+    //    int pageIndex = RefreshPageList(page, page.ForceUpdatePageList)?.PageValue ?? 1;
+    //    _previewItems.AddRange(_items.Skip((pageIndex - 1) * _itemPerPage).Take(_itemPerPage));
 
-    private PageIndex? RefreshPageList(PageIndex? currentPage, bool forceUpdateList)
-    {
-        if (currentPage == null)
-        {
-            currentPage = new PageIndex(1, false);
-            forceUpdateList = true;
-        }
+    //    _currentPage = pageIndex;
 
-        PageIndex returnPage = null;
-        bool updateList = forceUpdateList;
-        if (!forceUpdateList)
-        {
-            updateList = currentPage.IsPreviousPageList || currentPage.IsNextPageList;
-        }
+    //}
 
-        if (updateList)
-        {
-            int maxPage = (int)Math.Ceiling((decimal)_items.Length / _itemPerPage);
+    //private PageIndex? RefreshPageList(PageIndex? currentPage, bool forceUpdateList)
+    //{
+    //    if (currentPage == null)
+    //    {
+    //        currentPage = new PageIndex(1, false);
+    //        forceUpdateList = true;
+    //    }
 
-            int prevPageIndex = _pageList.FirstOrDefault(p => p.IsSelected)?.PageValue ?? 1;
-            int pageIndex = currentPage.PageValue;
+    //    PageIndex returnPage = null;
+    //    bool updateList = forceUpdateList;
+    //    if (!forceUpdateList)
+    //    {
+    //        updateList = currentPage.IsPreviousPageList || currentPage.IsNextPageList;
+    //    }
 
-            int fromPageIndex = _pageList.Count > 0 ? _pageList.Where(p => p.PageValue > 0).Min(p => p.PageValue) : 1;
-            int toPageIndex = fromPageIndex - 1 + 10 > maxPage ? maxPage : fromPageIndex - 1 + 10;
+    //    if (updateList)
+    //    {
+    //        int maxPage = (int)Math.Ceiling((decimal)_items.Length / _itemPerPage);
 
-            if (forceUpdateList)
-            {
-                fromPageIndex = pageIndex == 1 ?
-                    1 :
-                    pageIndex == maxPage ?
-                    (((int)Math.Ceiling((maxPage / 10.0)) - 1) * 10) + 1 :
-                    (((int)Math.Floor((maxPage / 10.0)) - 1) * 10) + 1;
-            }
-            else if (currentPage.IsPreviousPageList)
-            {
-                fromPageIndex = currentPage.PageListStartFrom;
-            }
-            else if (currentPage.IsNextPageList)
-            {
-                fromPageIndex = currentPage.PageListStartFrom;
-            }
+    //        int prevPageIndex = _pageList.FirstOrDefault(p => p.IsSelected)?.PageValue ?? 1;
+    //        int pageIndex = currentPage.PageValue;
 
-            toPageIndex = (fromPageIndex + 10 - 1 > maxPage ? maxPage : fromPageIndex + 10 - 1);
+    //        int fromPageIndex = _pageList.Count > 0 ? _pageList.Where(p => p.PageValue > 0).Min(p => p.PageValue) : 1;
+    //        int toPageIndex = fromPageIndex - 1 + 10 > maxPage ? maxPage : fromPageIndex - 1 + 10;
 
-            _pageList.Clear();
+    //        if (forceUpdateList)
+    //        {
+    //            fromPageIndex = pageIndex == 1 ?
+    //                1 :
+    //                pageIndex == maxPage ?
+    //                (((int)Math.Ceiling((maxPage / 10.0)) - 1) * 10) + 1 :
+    //                (((int)Math.Floor((maxPage / 10.0)) - 1) * 10) + 1;
+    //        }
+    //        else if (currentPage.IsPreviousPageList)
+    //        {
+    //            fromPageIndex = currentPage.PageListStartFrom;
+    //        }
+    //        else if (currentPage.IsNextPageList)
+    //        {
+    //            fromPageIndex = currentPage.PageListStartFrom;
+    //        }
 
-            bool dotPrevious = false;
-            bool dotNext = false;
-            for (int i = 1; i <= maxPage; i++)
-            {
-                if (i == 1)
-                    _pageList.Add(new PageIndex(i, !(i >= fromPageIndex && i <= toPageIndex)));
+    //        toPageIndex = (fromPageIndex + 10 - 1 > maxPage ? maxPage : fromPageIndex + 10 - 1);
 
-                else if (i >= fromPageIndex - 10 && i < fromPageIndex)
-                {
-                    if (dotPrevious) continue;
+    //        _pageList.Clear();
 
-                    _pageList.Add(new PageIndex(true, false, fromPageIndex - 10));
-                    dotPrevious = true;
-                }
+    //        bool dotPrevious = false;
+    //        bool dotNext = false;
+    //        for (int i = 1; i <= maxPage; i++)
+    //        {
+    //            if (i == 1)
+    //                _pageList.Add(new PageIndex(i, !(i >= fromPageIndex && i <= toPageIndex)));
 
-                else if (i >= fromPageIndex && i <= toPageIndex)
-                    _pageList.Add(new PageIndex(i, false));
+    //            else if (i >= fromPageIndex - 10 && i < fromPageIndex)
+    //            {
+    //                if (dotPrevious) continue;
 
-                else if (i > toPageIndex && i < maxPage)
-                {
-                    if (dotNext) continue;
+    //                _pageList.Add(new PageIndex(true, false, fromPageIndex - 10));
+    //                dotPrevious = true;
+    //            }
 
-                    _pageList.Add(new PageIndex(false, true, i));
-                    dotNext = true;
-                }
+    //            else if (i >= fromPageIndex && i <= toPageIndex)
+    //                _pageList.Add(new PageIndex(i, false));
 
-                else if (i == maxPage)
-                    _pageList.Add(new PageIndex(i, !(i >= fromPageIndex && i <= toPageIndex)));
+    //            else if (i > toPageIndex && i < maxPage)
+    //            {
+    //                if (dotNext) continue;
 
-                if (i == fromPageIndex)
-                {
-                    returnPage = _pageList.Last();
-                    returnPage.IsSelected = true;
-                }
-            }
+    //                _pageList.Add(new PageIndex(false, true, i));
+    //                dotNext = true;
+    //            }
 
-        }
-        else
-        {
-            int currentPageIndex = currentPage.PageValue;
-            foreach (var pageItem in PageList)
-            {
-                pageItem.IsSelected = (pageItem.PageValue == currentPageIndex);
-            }
+    //            else if (i == maxPage)
+    //                _pageList.Add(new PageIndex(i, !(i >= fromPageIndex && i <= toPageIndex)));
 
-            returnPage = _pageList.First(p => p.IsSelected);
-        }
+    //            if (i == fromPageIndex)
+    //            {
+    //                returnPage = _pageList.Last();
+    //                returnPage.IsSelected = true;
+    //            }
+    //        }
 
-        return returnPage;
-    }
+    //    }
+    //    else
+    //    {
+    //        int currentPageIndex = currentPage.PageValue;
+    //        foreach (var pageItem in PageList)
+    //        {
+    //            pageItem.IsSelected = (pageItem.PageValue == currentPageIndex);
+    //        }
+
+    //        returnPage = _pageList.First(p => p.IsSelected);
+    //    }
+
+    //    return returnPage;
+    //}
 
     #endregion
 
@@ -383,7 +401,7 @@ public partial class FinanceViewModel : ViewModel
             ContentDialogResult answer = await _contentDialogService.ShowSimpleDialogAsync(
                new SimpleContentDialogCreateOptions()
                {
-                   Title = string.Format(TranslationSource.Instance["messageTitleDeleteSucceed"] ?? string.Empty, _title),
+                   Title = string.Format(TranslationSource.Instance["messageTitleDelete"] ?? string.Empty, _title),
                    Content = string.Format(TranslationSource.Instance["messageDeleteSucceed"] ?? string.Empty, _title + " " + SelectedItem.FinanceCode),
                    CloseButtonText = TranslationSource.Instance["dialogButtonOK"] ?? string.Empty
                });

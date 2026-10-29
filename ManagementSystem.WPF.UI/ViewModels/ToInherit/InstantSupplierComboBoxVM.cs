@@ -9,10 +9,39 @@ namespace ManagementSystem.WPF.UI.ViewModels.ToInherit
 {
     public partial class InstantSupplierComboBoxVM : ObservableObject
     {
+        public enum EnumSupplierUsedIn
+        {
+            None = 0,
+            Purchase = 1,
+            Sales = 2,
+            ProjectPurchase = 3,
+            ProjectSales = 4,
+        }
+
         GlobalFunctions _gFunctions;
-        public InstantSupplierComboBoxVM(GlobalFunctions gFunctions)
+        bool _usedInPO, _usedInSO, _usedInPPO, _usedInPSO;
+        public InstantSupplierComboBoxVM(GlobalFunctions gFunctions, EnumSupplierUsedIn usedIn)
         {
             _gFunctions = gFunctions;
+            switch (usedIn)
+            {
+                case EnumSupplierUsedIn.None:
+                    break;
+                case EnumSupplierUsedIn.Purchase:
+                    _usedInPO = true;
+                    break;
+                case EnumSupplierUsedIn.Sales:
+                    _usedInSO = true;
+                    break;
+                case EnumSupplierUsedIn.ProjectPurchase:
+                    _usedInPPO = true;
+                    break;
+                case EnumSupplierUsedIn.ProjectSales:
+                    _usedInPSO = true;
+                    break;
+                default:
+                    break;
+            }
         }
 
         public Action<MstSupplier?> SupplierChanged; // (MstSupplier? selectedSupplier);
@@ -110,7 +139,14 @@ namespace ManagementSystem.WPF.UI.ViewModels.ToInherit
         {
             await _gFunctions.RefreshSupplierDataAsync(false);
             _suppliers.Clear();
-            _suppliers.AddRange(_gFunctions.Suppliers.ToArray());
+            _suppliers.AddRange(_gFunctions.
+                Suppliers.
+                Where(p => 
+                    (_usedInPO && p.UsedInPO == _usedInPO) ||
+                    (_usedInSO && p.UsedInSO == _usedInSO) ||
+                    (_usedInPPO && p.UsedInPPO == _usedInPPO) ||
+                    (_usedInPSO && p.UsedInPSO == _usedInPSO)).
+                ToArray());
 
             _filterPredicateSupplier = item =>
             {

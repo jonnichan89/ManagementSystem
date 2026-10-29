@@ -1,9 +1,12 @@
-﻿
-namespace ManagementSystem.WPF.UI.ViewModels
+﻿using ManagementSystem.Common.OtherModels;
+using ManagementSystem.WPF.UI.Services.ServiceInterfaces;
+using System.Diagnostics;
+
+namespace ManagementSystem.WPF.UI.ViewModels.ToInherit
 {
-    public abstract partial class ViewModel : ObservableObject, INavigationAware, IDisposable
+    public abstract partial class BaseViewModel : ObservableObject, INavigationAware, IDisposable
     {
-        public ViewModel()
+        public BaseViewModel()
         {
             // Example of subscribing to an observable (if needed)
             //_subscription = someObservable.Subscribe(value => { /* Handle value */ });
@@ -12,7 +15,6 @@ namespace ManagementSystem.WPF.UI.ViewModels
             {
                 OnActionMessageReceived(m);
             });
-
         }
 
         internal virtual void OnActionMessageReceived(ActionMessage m) { }

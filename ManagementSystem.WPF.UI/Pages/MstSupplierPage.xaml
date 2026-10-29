@@ -41,7 +41,12 @@
                           Icon="{ui:SymbolIcon Delete24}"
                           Command="{Binding VM.DeleteCommand, Mode=OneWay}"
                           Width="100" />
-                
+
+                <MenuItem Header="{resx:Localization btnRefresh}"
+                          Icon="{ui:SymbolIcon ArrowClockwise24}"
+                          Command="{Binding VM.RefreshPreviewItemsCommand, Mode=OneWay}"
+                          Width="100" />
+
             </Menu>
 
             <Expander Header="{resx:Localization Filter}"
@@ -81,6 +86,54 @@
 
                     <DataGridTextColumn Header="{resx:Localization propSupplierName}"
                                         Binding="{Binding SupplierName}" />
+
+                    <DataGridTemplateColumn Header="{resx:Localization mwPurchase}">
+                        <DataGridTemplateColumn.CellTemplate>
+                            <DataTemplate>
+                                <CheckBox IsChecked="{Binding UsedInPO}"
+                                          IsEnabled="False"
+                                          HorizontalAlignment="Center"
+                                          VerticalAlignment="Center"
+                                          Margin="0" />
+                            </DataTemplate>
+                        </DataGridTemplateColumn.CellTemplate>
+                    </DataGridTemplateColumn>
+
+                    <DataGridTemplateColumn Header="{resx:Localization mwSales}">
+                        <DataGridTemplateColumn.CellTemplate>
+                            <DataTemplate>
+                                <CheckBox IsChecked="{Binding UsedInSO}"
+                                          IsEnabled="False"
+                                          HorizontalAlignment="Center"
+                                          VerticalAlignment="Center"
+                                          Margin="0" />
+                            </DataTemplate>
+                        </DataGridTemplateColumn.CellTemplate>
+                    </DataGridTemplateColumn>
+
+                    <DataGridTemplateColumn Header="{resx:Localization mwProjectPurchaseOrder}">
+                        <DataGridTemplateColumn.CellTemplate>
+                            <DataTemplate>
+                                <CheckBox IsChecked="{Binding UsedInPPO}"
+                                          IsEnabled="False"
+                                          HorizontalAlignment="Center"
+                                          VerticalAlignment="Center"
+                                          Margin="0" />
+                            </DataTemplate>
+                        </DataGridTemplateColumn.CellTemplate>
+                    </DataGridTemplateColumn>
+
+                    <DataGridTemplateColumn Header="{resx:Localization mwProjectSalesOrder}">
+                        <DataGridTemplateColumn.CellTemplate>
+                            <DataTemplate>
+                                <CheckBox IsChecked="{Binding UsedInPSO}"
+                                          IsEnabled="False"
+                                          HorizontalAlignment="Center"
+                                          VerticalAlignment="Center"
+                                          Margin="0" />
+                            </DataTemplate>
+                        </DataGridTemplateColumn.CellTemplate>
+                    </DataGridTemplateColumn>
 
                     <DataGridTemplateColumn Header="{resx:Localization propIsBlacklist}">
                         <DataGridTemplateColumn.CellTemplate>

@@ -1,16 +1,111 @@
 ﻿
+using ManagementSystem.Common.OtherModels;
 using ManagementSystem.WPF.UI.Services.ServiceInterfaces;
+using ManagementSystem.WPF.UI.ViewModels.ToInherit;
 
 namespace ManagementSystem.WPF.UI.ViewModels;
 
-public partial class MstItemViewModel : ViewModel
+public partial class MstItemViewModel : BaseListViewModel<MstItem>
 {
     private string _title = TranslationSource.Instance["mwMstItem"] ?? "Item";
 
-    private MstItem[]? _items;
+    //ObservableRangeCollection<MstItem> _items = new();
+
+    //private MstItem _selectedItem = new();
+    //public MstItem SelectedItem
+    //{
+    //    get => _selectedItem;
+    //    set
+    //    {
+    //        _selectedItem = value;
+    //        if (_selectedItem != null)
+    //        {
+    //            _ = GetAllItemCalcsAsync(_selectedItem.ItemCode);
+    //        }
+    //        OnPropertyChanged(nameof(SelectedItem));
+    //    }
+    //}
+
+    protected override void AfterSelectedItemChanged()
+    {
+        if (_selectedItem != null)
+        {
+            _ = GetAllItemCalcsAsync(_selectedItem.ItemCode);
+        }
+    }
+
+    private async Task GetAllItemCalcsAsync(string itemCode)
+    {
+        var actionResult = await _apiClient.GetAllItemCalcsAsync(_selectedItem.ItemCode);
+        if (actionResult.ActionIsSuccess)
+        {
+            _selectedItem.ItemCalcs = ((ItemCalc[])actionResult.ActionResult).ToList();
+            _previewItemCalcs.Clear();
+            _previewItemCalcs.AddRange(_selectedItem.ItemCalcs.OrderByDescending(p => p.CalcDate));
+        }
+    }
+
+    private string _PreviewMode = ManagementSystem.WPF.UI.Properties.Settings.Default.MstItemPreviewMode;
+
+    public string PreviewMode
+    {
+        get => _PreviewMode;
+        set
+        {
+            ManagementSystem.WPF.UI.Properties.Settings.Default.MstItemPreviewMode = value;
+            ManagementSystem.WPF.UI.Properties.Settings.Default.Save();
+
+            SetProperty(ref _PreviewMode, value);
+
+            switch (_PreviewMode)
+            {
+                case "List":
+                    PreviewModeListImageMode = "Collapsed";
+                    break;
+                case "Image":
+                    PreviewModeListImageMode = "Collapsed";
+                    break;
+                default:
+                    PreviewModeListImageMode = "Collapsed";
+                    break;
+            }
+        }
+    }
+
+    private string _PreviewModeListImageMode = ManagementSystem.WPF.UI.Properties.Settings.Default.MstItemPreviewListImageMode;
+
+    public string PreviewModeListImageMode
+    {
+        get => _PreviewModeListImageMode;
+        set
+        {
+            ManagementSystem.WPF.UI.Properties.Settings.Default.MstItemPreviewListImageMode = value;
+            ManagementSystem.WPF.UI.Properties.Settings.Default.Save();
+
+            SetProperty(ref _PreviewModeListImageMode, value);
+
+            switch (_PreviewModeListImageMode)
+            {
+                case "Collapsed":
+                    RowDetailsVisibilityMode = DataGridRowDetailsVisibilityMode.Collapsed;
+                    break;
+                case "Visible":
+                    RowDetailsVisibilityMode = DataGridRowDetailsVisibilityMode.Visible;
+                    break;
+                case "VisibleWhenSelected":
+                    RowDetailsVisibilityMode = DataGridRowDetailsVisibilityMode.VisibleWhenSelected;
+                    break;
+                default:
+                    RowDetailsVisibilityMode = DataGridRowDetailsVisibilityMode.Collapsed;
+                    break;
+            }
+
+        }
+    }
 
     [ObservableProperty]
-    private MstItem _selectedItem = new();
+    private DataGridRowDetailsVisibilityMode _RowDetailsVisibilityMode = DataGridRowDetailsVisibilityMode.Collapsed;
+    //(DataGridRowDetailsVisibilityMode)ManagementSystem.WPF.UI.Properties.Settings.Default.MstItemPreviewListImageMode;
 
     private DetailViewModelDoAction _promptAction = DetailViewModelDoAction.None;
     private ListViewModelDoAction _listAction = ListViewModelDoAction.None;
@@ -47,144 +142,171 @@ public partial class MstItemViewModel : ViewModel
     public async Task Initialize()
     {
         _title = TranslationSource.Instance["mwMstItem"] ?? "Item";
-        await RefreshListDataAsync();
+        _previewItems.Clear();
+        SelectedItem = null;
+        _previewItemCalcs.Clear();
+        await RefreshListDataAsync(true);
     }
 
     #region Paging
 
-    [ObservableProperty]
-    private ObservableRangeCollection<PageIndex> _pageList = new();
+    //[ObservableProperty]
+    //private ObservableRangeCollection<PageIndex> _pageList = new();
+
+    //[ObservableProperty]
+    //private ObservableRangeCollection<MstItem> _previewItems = new();
 
     [ObservableProperty]
-    private ObservableRangeCollection<MstItem> _previewItems = new();
+    private ObservableRangeCollection<ItemCalc> _previewItemCalcs = new();
 
-    private int _itemPerPage = 50;
-
-    private async Task RefreshListDataAsync()
+    //private int _currentPage = 1;
+    private PageFilterMstItem _pageFilter = new PageFilterMstItem();
+    private async Task RefreshListDataAsync(bool isFirstLoad = false)
     {
-        var actionResult = await _apiClient.GetMstItemsAsync();
-        if (actionResult.ActionIsSuccess)
+        try
         {
-            _items = (MstItem[])actionResult.ActionResult;
+            await _gFunctions.RefreshItemDataAsync(false);
+            _items = _gFunctions.Items.ToArray();
             RefreshPreviewItems(null);
         }
-        else
+        catch (Exception ex)
         {
             await _contentDialogService.ShowAlertAsync(
                 string.Format(
                     TranslationSource.Instance["messageTitleLoadListData"] ?? string.Empty,
                     _title),
-                actionResult.ErrorMessage,
+                ex.Message,
                 TranslationSource.Instance["dialogButtonOK"] ?? string.Empty);
         }
     }
 
-    [RelayCommand]
-    private void RefreshPreviewItems(PageIndex? page)
-    {
-        _previewItems.Clear();
+    //[RelayCommand]
+    //private async Task RefreshPreviewItems(PageIndex? page)
+    //{
+    //    _previewItems.Clear();
 
-        int pageIndex = RefreshPageList(page, page?.ForceUpdatePageList ?? true)?.PageValue ?? 1;
-        _previewItems.AddRange(_items.Skip((pageIndex - 1) * _itemPerPage).Take(_itemPerPage));
+    //    if (page == null)
+    //    {
+    //        page = new PageIndex(_currentPage, (_pageList.Count > 0 ? false : true));
+    //    }
 
-    }
+    //    int pageIndex = (page.PageValue == 0 ? page.PageListStartFrom : page.PageValue);
+        
+    //    _previewItems.AddRange(_items.Skip((pageIndex - 1) * _pageFilter.RecordPerPage).Take(_pageFilter.RecordPerPage));
+        
+    //    SelectedItem = _previewItems.FirstOrDefault();
 
-    private PageIndex? RefreshPageList(PageIndex? currentPage, bool forceUpdateList)
-    {
-        if (currentPage == null)
-        {
-            currentPage = new PageIndex(1, false);
-            forceUpdateList = true;
-        }
+    //    PageIndex currentPageIndex = RefreshPageList(page, page.ForceUpdatePageList);
 
-        PageIndex returnPage = null;
-        bool updateList = forceUpdateList;
-        if (!forceUpdateList)
-        {
-            updateList = currentPage.IsPreviousPageList || currentPage.IsNextPageList;
-        }
+    //    // int pageIndex = currentPageIndex?.PageValue ?? 1;
+    //    _currentPage = pageIndex;
 
-        if (updateList)
-        {
-            int maxPage = (int)Math.Ceiling((decimal)_items.Length / _itemPerPage);
+    //}
 
-            int prevPageIndex = _pageList.FirstOrDefault(p => p.IsSelected)?.PageValue ?? 1;
-            int pageIndex = currentPage.PageValue;
+    //private PageIndex RefreshPageList(PageIndex? currentPage, bool forceUpdateList)
+    //{
+    //    if (currentPage == null)
+    //    {
+    //        currentPage = new PageIndex(1, false);
+    //        forceUpdateList = true;
+    //    }
 
-            int fromPageIndex = _pageList.Count > 0 ? _pageList.Where(p => p.PageValue > 0).Min(p => p.PageValue) : 1;
-            int toPageIndex = fromPageIndex - 1 + 10 > maxPage ? maxPage : fromPageIndex - 1 + 10;
+    //    PageIndex returnPage = null;
+    //    bool updateList = forceUpdateList;
+    //    if (!forceUpdateList)
+    //    {
+    //        updateList = currentPage.IsPreviousPageList || currentPage.IsNextPageList;
+    //    }
 
-            if (forceUpdateList)
-            {
-                fromPageIndex = pageIndex == 1 ?
-                    1 :
-                    pageIndex == maxPage ?
-                    (((int)Math.Ceiling((maxPage / 10.0)) - 1) * 10) + 1 :
-                    (((int)Math.Floor((maxPage / 10.0)) - 1) * 10) + 1;
-            }
-            else if (currentPage.IsPreviousPageList)
-            {
-                fromPageIndex = currentPage.PageListStartFrom;
-            }
-            else if (currentPage.IsNextPageList)
-            {
-                fromPageIndex = currentPage.PageListStartFrom;
-            }
+    //    if (updateList)
+    //    {
+    //        //int recordCount = 0;
+    //        //ServiceActionResult apiResult = await _apiClient.GetMstItemCountAsync();
+    //        //if (apiResult.ActionIsSuccess)
+    //        //{
+    //        //    recordCount = (int)apiResult.ActionResult;
+    //        //}
 
-            toPageIndex = (fromPageIndex + 10 - 1 > maxPage ? maxPage : fromPageIndex + 10 - 1);
+    //        int recordCount = _items.Count;
+    //        int maxPage = (int)Math.Ceiling((decimal)recordCount / _pageFilter.RecordPerPage);
 
-            _pageList.Clear();
+    //        int prevPageIndex = _pageList.FirstOrDefault(p => p.IsSelected)?.PageValue ?? 1;
+    //        int pageIndex = currentPage.PageValue;
 
-            bool dotPrevious = false;
-            bool dotNext = false;
-            for (int i = 1; i <= maxPage; i++)
-            {
-                if (i == 1)
-                    _pageList.Add(new PageIndex(i, !(i >= fromPageIndex && i <= toPageIndex)));
+    //        int fromPageIndex = _pageList.Count > 0 ? _pageList.Where(p => p.PageValue > 0).Min(p => p.PageValue) : 1;
+    //        int toPageIndex = fromPageIndex - 1 + 10 > maxPage ? maxPage : fromPageIndex - 1 + 10;
 
-                else if (i >= fromPageIndex - 10 && i < fromPageIndex)
-                {
-                    if (dotPrevious) continue;
+    //        if (forceUpdateList)
+    //        {
+    //            fromPageIndex = pageIndex == 1 ?
+    //                1 :
+    //                pageIndex == maxPage ?
+    //                (((int)Math.Ceiling((maxPage / 10.0)) - 1) * 10) + 1 :
+    //                (((int)Math.Floor((maxPage / 10.0)) - 1) * 10) + 1;
+    //        }
+    //        else if (currentPage.IsPreviousPageList)
+    //        {
+    //            fromPageIndex = currentPage.PageListStartFrom;
+    //        }
+    //        else if (currentPage.IsNextPageList)
+    //        {
+    //            fromPageIndex = currentPage.PageListStartFrom;
+    //        }
 
-                    _pageList.Add(new PageIndex(true, false, fromPageIndex - 10));
-                    dotPrevious = true;
-                }
+    //        toPageIndex = (fromPageIndex + 10 - 1 > maxPage ? maxPage : fromPageIndex + 10 - 1);
 
-                else if (i >= fromPageIndex && i <= toPageIndex)
-                    _pageList.Add(new PageIndex(i, false));
+    //        _pageList.Clear();
 
-                else if (i > toPageIndex && i < maxPage)
-                {
-                    if (dotNext) continue;
+    //        bool dotPrevious = false;
+    //        bool dotNext = false;
+    //        for (int i = 1; i <= maxPage; i++)
+    //        {
+    //            if (i == 1)
+    //                _pageList.Add(new PageIndex(i, !(i >= fromPageIndex && i <= toPageIndex)));
 
-                    _pageList.Add(new PageIndex(false, true, i));
-                    dotNext = true;
-                }
+    //            else if (i >= fromPageIndex - 10 && i < fromPageIndex)
+    //            {
+    //                if (dotPrevious) continue;
 
-                else if (i == maxPage)
-                    _pageList.Add(new PageIndex(i, !(i >= fromPageIndex && i <= toPageIndex)));
+    //                _pageList.Add(new PageIndex(true, false, fromPageIndex - 10));
+    //                dotPrevious = true;
+    //            }
 
-                if (i == fromPageIndex)
-                {
-                    returnPage = _pageList.Last();
-                    returnPage.IsSelected = true;
-                }
-            }
+    //            else if (i >= fromPageIndex && i <= toPageIndex)
+    //                _pageList.Add(new PageIndex(i, false));
 
-        }
-        else
-        {
-            int currentPageIndex = currentPage.PageValue;
-            foreach (var pageItem in PageList)
-            {
-                pageItem.IsSelected = (pageItem.PageValue == currentPageIndex);
-            }
+    //            else if (i > toPageIndex && i < maxPage)
+    //            {
+    //                if (dotNext) continue;
 
-            returnPage = _pageList.First(p => p.IsSelected);
-        }
+    //                _pageList.Add(new PageIndex(false, true, i));
+    //                dotNext = true;
+    //            }
 
-        return returnPage;
-    }
+    //            else if (i == maxPage)
+    //                _pageList.Add(new PageIndex(i, !(i >= fromPageIndex && i <= toPageIndex)));
+
+    //            if (i == fromPageIndex)
+    //            {
+    //                returnPage = _pageList.Last();
+    //                returnPage.IsSelected = true;
+    //            }
+    //        }
+
+    //    }
+    //    else
+    //    {
+    //        int currentPageIndex = currentPage.PageValue;
+    //        foreach (var pageItem in PageList)
+    //        {
+    //            pageItem.IsSelected = (pageItem.PageValue == currentPageIndex);
+    //        }
+
+    //        returnPage = _pageList.First(p => p.IsSelected);
+    //    }
+
+    //    return returnPage;
+    //}
 
     #endregion
 
@@ -373,6 +495,12 @@ public partial class MstItemViewModel : ViewModel
                     CloseButtonText = TranslationSource.Instance["dialogButtonOK"] ?? string.Empty
                 });
         }
+    }
+
+    [RelayCommand]
+    private async Task Refresh()
+    {
+        await RefreshListDataAsync(false);
     }
 
 }

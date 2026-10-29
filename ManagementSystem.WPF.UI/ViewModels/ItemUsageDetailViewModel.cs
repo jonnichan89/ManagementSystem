@@ -1,5 +1,6 @@
 ﻿
 using ManagementSystem.WPF.UI.Services.ServiceInterfaces;
+using ManagementSystem.WPF.UI.ViewModels.ToInherit;
 
 namespace ManagementSystem.WPF.UI.ViewModels;
 
@@ -139,9 +140,14 @@ public partial class ItemUsageDetailViewModel : DetailViewModel
         }
     }
 
-    private async Task LoadSearchItemAsync()
+    private async Task LoadSearchItemAsync(bool isFirstLoad = false)
     {
         await _gFunctions.RefreshItemDataAsync(false);
+        //if (!isFirstLoad && !hasNewData)
+        //{
+        //    return;
+        //}
+
         _items.Clear();
         _items.AddRange(_gFunctions.Items.ToArray());
 
@@ -241,7 +247,7 @@ public partial class ItemUsageDetailViewModel : DetailViewModel
 
         if (loadSearchItems)
         {
-            await LoadSearchItemAsync();
+            await LoadSearchItemAsync(true);
         }
 
         if (Data?.ItemUsageDetails.Count > 0)

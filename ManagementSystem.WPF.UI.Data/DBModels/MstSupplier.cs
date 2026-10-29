@@ -126,4 +126,52 @@ public partial class MstSupplier : INotifyPropertyChanged
             OnPropertyChanged("ModifiedBy");
         }
     }
+
+    private bool _UsedInPO;
+    
+    public bool UsedInPO {
+        get {
+            return _UsedInPO;
+        }
+        set {
+            _UsedInPO = value;
+            OnPropertyChanged("UsedInPO");
+        }
+    }
+
+    private bool _UsedInSO;
+    
+    public bool UsedInSO {
+        get {
+            return _UsedInSO;
+        }
+        set {
+            _UsedInSO = value;
+            OnPropertyChanged("UsedInSO");
+        }
+    }
+
+    private bool _UsedInPPO;
+    
+    public bool UsedInPPO {
+        get {
+            return _UsedInPPO;
+        }
+        set {
+            _UsedInPPO = value;
+            OnPropertyChanged("UsedInPPO");
+        }
+    }
+
+    private bool _UsedInPSO;
+    
+    public bool UsedInPSO {
+        get {
+            return _UsedInPSO;
+        }
+        set {
+            _UsedInPSO = value;
+            OnPropertyChanged("UsedInPSO");
+        }
+    }
 }

@@ -90,6 +90,7 @@ namespace ManagementSystem.WPF.UI.Services
                     actionResult.ActionResult = JsonSerializer.Deserialize<PSOrder>(
                         (actionResult.ActionResult ?? string.Empty).
                         ToString() ?? string.Empty) ?? null;
+
                 }
             }
             catch (Exception ex)

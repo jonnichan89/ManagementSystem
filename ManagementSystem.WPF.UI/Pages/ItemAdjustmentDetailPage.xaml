@@ -1,0 +1,195 @@
+﻿<Page x:Class="ManagementSystem.WPF.UI.Pages.ItemAdjustmentDetailPage"
+      xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+      xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+      xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+      xmlns:resx="clr-namespace:ManagementSystem.WPF.UI.Resources"
+      xmlns:local="clr-namespace:ManagementSystem.WPF.UI"
+      xmlns:conv="clr-namespace:ManagementSystem.WPF.UI.Converters"
+      xmlns:C="clr-namespace:ManagementSystem.WPF.UI.Controls"
+      xmlns:pages="clr-namespace:ManagementSystem.WPF.UI.Pages"
+      xmlns:vm="clr-namespace:ManagementSystem.WPF.UI.ViewModels"
+      xmlns:data="clr-namespace:ManagementSystem.WPF.UI.Data.DBModels;assembly=ManagementSystem.WPF.UI.Data"
+      xmlns:ui="http://schemas.lepo.co/wpfui/2022/xaml"
+      mc:Ignorable="d"
+      d:DataContext="{d:DesignInstance pages:ItemAdjustmentDetailPage, IsDesignTimeCreatable=False}"
+      d:DesignHeight="450"
+      d:DesignWidth="800"
+      Title="{Binding VM.Title, Mode=OneTime}"
+      Margin="10">
+
+    <Page.Resources>
+        <conv:FileToImageConverter x:Key="FileToImageConverter" />
+    </Page.Resources>
+
+    <Grid x:Name="MainGrid">
+        <!--<Grid.ColumnDefinitions>
+            <ColumnDefinition Width="*" />
+            <ColumnDefinition Width="200" />
+        </Grid.ColumnDefinitions>-->
+
+        <StackPanel x:Name="InputContainer">
+            <TextBlock Text="{resx:Localization propIADate}"
+                       Margin="0,5,0,5" />
+            <WrapPanel>
+                <ui:TextBox Text="{Binding VM.Data.IADate, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, StringFormat='dd MMM yyyy'}"
+                            IsReadOnly="True"
+                            Width="150"
+                            Margin="0,0,5,0" />
+
+                <ui:CalendarDatePicker Date="{Binding VM.Data.IADate, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                       IsEnabled="{Binding VM.CanEditIADate}" />
+
+            </WrapPanel>
+
+            <TextBlock Text="{resx:Localization propItemDetail}"
+                       Margin="0,5,0,5"/>
+            <Border BorderThickness="1"
+                    BorderBrush="Gray"
+                    CornerRadius="10"
+                    Width="600"
+                    Height="200"
+                    HorizontalAlignment="Left">
+                <StackPanel>
+                    <DataGrid x:Name="ItemDetailDataGrid"
+                              CanUserAddRows="False"
+                              AutoGenerateColumns="False"
+                              SelectedItem="{Binding VM.SelectedItemAdjustmentDetail, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                              ItemsSource="{Binding VM.Data.ItemAdjustmentDetails, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                              Height="200">
+                        <DataGrid.Columns>
+                            <DataGridTextColumn Header="{resx:Localization propItemCode}"
+                                                Binding="{Binding ItemCode, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                                IsReadOnly="True"
+                                                Width="200" />
+
+                            <DataGridTextColumn Header="{resx:Localization propItemName}"
+                                                Binding="{Binding ItemName, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                                IsReadOnly="True"
+                                                Width="300"/>
+
+                            <DataGridTextColumn Header="{resx:Localization propIAQty}"
+                                                Binding="{Binding Qty, StringFormat=N2, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                                IsReadOnly="False" />
+
+                            <DataGridTextColumn Header="{resx:Localization propCreatedAt}"
+                                                Binding="{Binding CreatedAt, StringFormat='dd MMM yyyy HH:mm'}"
+                                                IsReadOnly="True" />
+
+                            <DataGridTextColumn Header="{resx:Localization propModifiedAt}"
+                                                Binding="{Binding ModifiedAt, StringFormat='dd MMM yyyy HH:mm'}"
+                                                IsReadOnly="True" />
+
+                        </DataGrid.Columns>
+
+                    </DataGrid>
+
+                </StackPanel>
+
+            </Border>
+
+            <WrapPanel Margin="0,5,0,5">
+                <Border BorderThickness="1"
+                        BorderBrush="Gray"
+                        CornerRadius="10"
+                        Padding="10"
+                        Width="400">
+                    <StackPanel>
+                        <Menu Height="50"
+                              BorderThickness="0,1,0,1"
+                              BorderBrush="Gray"
+                              Margin="0,5,0,5">
+                            <MenuItem Header="{resx:Localization btnAdd}"
+                                      Icon="{ui:SymbolIcon Add24}"
+                                      Command="{Binding VM.AddItemAdjustmentDetailCommand, Mode=OneWay}"
+                                      IsCheckable="True"
+                                      IsChecked="{Binding VM.AddCommandChecked, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                      Width="100" />
+
+                            <MenuItem Header="{resx:Localization btnDelete}"
+                                      Icon="{ui:SymbolIcon Delete24}"
+                                      Command="{Binding VM.DeleteItemAdjustmentDetailCommand, Mode=OneWay}"
+                                      Width="100" />
+
+                        </Menu>
+
+                        <TextBlock Text="{resx:Localization propItemCode}" />
+                        <ui:TextBox Text="{Binding VM.SelectedItemAdjustmentDetail.ItemCode}"
+                                    IsEnabled="False" />
+
+                        <TextBlock Text="{resx:Localization propItemName}" />
+                        <ComboBox x:Name="ItemComboBox"
+                                  ItemsSource="{Binding VM.FilteredView}"
+                                  SelectedItem="{Binding VM.SelectedItem, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                  IsTextSearchEnabled="False"
+                                  IsTextSearchCaseSensitive="False"
+                                  IsEditable="True"
+                                  IsReadOnly="False"
+                                  ScrollViewer.CanContentScroll="True"
+                                  TextSearch.TextPath="ItemName"
+                                  PreviewKeyDown="ItemComboBox_PreviewKeyDown"
+                                  KeyUp="ItemComboBox_QtyNUD_KeyUp"
+                                  SelectedIndex="{Binding VM.ItemSelectedIndex, Mode=OneWay}">
+
+                            <ComboBox.ItemContainerStyle>
+                                <Style TargetType="ComboBoxItem">
+                                    <EventSetter Event="PreviewMouseMove"
+                                                 Handler="ItemComboBox_OnPreviewMouseMove" />
+                                    <EventSetter Event="MouseLeave"
+                                                 Handler="ItemComboBox_OnItemHoverExit" />
+                                </Style>
+                            </ComboBox.ItemContainerStyle>
+
+                            <ComboBox.ItemsPanel>
+                                <ItemsPanelTemplate>
+                                    <VirtualizingStackPanel VirtualizationMode="Recycling" />
+                                </ItemsPanelTemplate>
+                            </ComboBox.ItemsPanel>
+                            <ComboBox.ItemTemplate>
+                                <DataTemplate DataType="data:MstItem">
+                                    <StackPanel Width="300">
+                                        <WrapPanel>
+                                            <ui:TextBlock Text="{Binding Askterisk}"
+                                                          Width="10" />
+                                            <ui:TextBlock Text="{Binding ItemName}" />
+                                        </WrapPanel>
+                                        <ui:TextBlock Text="{Binding ItemCode}"
+                                                      Margin="10,0,0,0" />
+                                    </StackPanel>
+                                </DataTemplate>
+                            </ComboBox.ItemTemplate>
+                        </ComboBox>
+
+                        <TextBlock Text="{resx:Localization propIAQty}" />
+                        <ui:NumberBox x:Name="QtyNUD"
+                                      Value="{Binding VM.SelectedItemAdjustmentDetail.Qty, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                      LargeChange="0"
+                                      SmallChange="0"
+                                      KeyUp="ItemComboBox_QtyNUD_KeyUp" />
+
+                    </StackPanel>
+                </Border>
+
+                <Border BorderThickness="1"
+                        BorderBrush="Gray"
+                        CornerRadius="10"
+                        Margin="5,0,0,0">
+                    <Image Source="{Binding VM.PreviewImagePath, Mode=OneWay, Converter={StaticResource FileToImageConverter}}"
+                           Width="195" />
+                </Border>
+
+            </WrapPanel>
+
+        </StackPanel>
+
+        <Viewbox x:Name="MessageBox"
+                 Stretch="None"
+                 VerticalAlignment="Top"
+                 Margin="0,10,0,0"
+                 MaxWidth="{Binding ActualWidth, ElementName=MainGrid}">
+            <Frame x:Name="MessageFrame"
+                   Visibility="Collapsed"
+                   MaxWidth="{Binding ActualWidth, ElementName=MainGrid}" />
+        </Viewbox>
+    </Grid>
+</Page>

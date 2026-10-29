@@ -5,6 +5,7 @@
       xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
       xmlns:resx="clr-namespace:ManagementSystem.WPF.UI.Resources"
       xmlns:local="clr-namespace:ManagementSystem.WPF.UI"
+      xmlns:conv="clr-namespace:ManagementSystem.WPF.UI.Converters"
       xmlns:pages="clr-namespace:ManagementSystem.WPF.UI.Pages"
       xmlns:ui="http://schemas.lepo.co/wpfui/2022/xaml"
       mc:Ignorable="d"
@@ -14,6 +15,12 @@
       Title="MstItemPage"
       Margin="10,0,10,10"
       ScrollViewer.CanContentScroll="False">
+
+    <Page.Resources>
+        <conv:FileToImageConverter x:Key="FileToImageConverter" />
+        <conv:RadioButtonConverter x:Key="RadioButtonConverter" />
+        <conv:StringToVisibilityConverter x:Key="StringToVisibilityConverter" />
+    </Page.Resources>
 
     <Border CornerRadius="5"
             BorderBrush="Gray"
@@ -42,6 +49,11 @@
                           Command="{Binding VM.DeleteCommand, Mode=OneWay}"
                           Width="100" />
 
+                <MenuItem Header="{resx:Localization btnRefresh}"
+                          Icon="{ui:SymbolIcon ArrowClockwise24}"
+                          Command="{Binding VM.RefreshCommand, Mode=OneWay}"
+                          Width="100" />
+                <!--Command="{Binding VM.RefreshPreviewItemsCommand, Mode=OneWay}"-->
             </Menu>
 
             <Expander Header="{resx:Localization Filter}"
@@ -53,81 +65,294 @@
                                Margin="0,0,5,0" />
                     <TextBox Width="200"
                              Margin="0,0,10,0" />
+
+                    <GroupBox Header="{resx:Localization PreviewMode}"
+                              Margin="0,10,0,0">
+                        <WrapPanel Orientation="Horizontal"
+                                   Margin="10">
+                            <RadioButton Content="{resx:Localization PreviewModeList}"
+                                         IsChecked="{Binding VM.PreviewMode, Mode=TwoWay, Converter={StaticResource RadioButtonConverter}, ConverterParameter=List}" />
+                            <RadioButton Content="{resx:Localization PreviewModeImage}"
+                                         IsChecked="{Binding VM.PreviewMode, Mode=TwoWay, Converter={StaticResource RadioButtonConverter}, ConverterParameter=Image}" />
+                        </WrapPanel>
+                    </GroupBox>
+                    
+                    <GroupBox Header="{resx:Localization PreviewModeListImageMode}"
+                              Margin="0,10,0,0">
+                        <WrapPanel Orientation="Horizontal"
+                                   Margin="10">
+                            <RadioButton Content="{resx:Localization PreviewModeListImageCollapsed}"
+                                         IsChecked="{Binding VM.PreviewModeListImageMode, Mode=TwoWay, Converter={StaticResource RadioButtonConverter}, ConverterParameter=Collapsed}" />
+                            <RadioButton Content="{resx:Localization PreviewModeListImageVisible}"
+                                         IsChecked="{Binding VM.PreviewModeListImageMode, Mode=TwoWay, Converter={StaticResource RadioButtonConverter}, ConverterParameter=Visible}" />
+                            <RadioButton Content="{resx:Localization PreviewModeListImageVisibleWhenSelected}"
+                                         IsChecked="{Binding VM.PreviewModeListImageMode, Mode=TwoWay, Converter={StaticResource RadioButtonConverter}, ConverterParameter=VisibleWhenSelected}" />
+                        </WrapPanel>
+                    </GroupBox>
+                    
                 </StackPanel>
 
             </Expander>
 
-            <DataGrid Grid.Row="2"
-                      AutoGenerateColumns="False"
-                      IsReadOnly="True"
-                      SelectedItem="{Binding VM.SelectedItem, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
-                      ItemsSource="{Binding VM.PreviewItems, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">
-                <DataGrid.Resources>
-                    <SolidColorBrush x:Key="{x:Static SystemColors.HighlightBrushKey}"
-                                     Color="LightGray" />
-                    <SolidColorBrush x:Key="{x:Static SystemColors.HighlightTextBrushKey}"
-                                     Color="Black" />
-                </DataGrid.Resources>
+            <!--<Grid Margin="2,0"
+                  Grid.Row="2"
+                  Visibility="{Binding VM.PreviewMode, Mode=OneWay, Converter={StaticResource StringToVisibilityConverter}, ConverterParameter=Image}"
+                  >
 
-                <DataGrid.CellStyle>
-                    <Style TargetType="DataGridCell">
-                        <Setter Property="Padding"
-                                Value="3,3,3,3" />
-                    </Style>
-                </DataGrid.CellStyle>
-                <DataGrid.Columns>
-                    <DataGridTemplateColumn>
-                        <DataGridTemplateColumn.CellTemplate>
+                <ScrollViewer>
+                    <ListBox ItemsSource="{Binding VM.PreviewItems, UpdateSourceTrigger=PropertyChanged}"
+                             SelectedItem="{Binding VM.SelectedItem, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                             ScrollViewer.HorizontalScrollBarVisibility="Disabled">
+
+                        --><!-- Arrange items left-to-right, wrapping downward --><!--
+                        <ListBox.ItemsPanel>
+                            <ItemsPanelTemplate>
+                                <WrapPanel />
+                            </ItemsPanelTemplate>
+                        </ListBox.ItemsPanel>
+
+                        --><!-- Display ONLY the image for each item in the list --><!--
+                        <ListBox.ItemTemplate>
                             <DataTemplate>
-                                <Image Source="{Binding ImagePath}"
-                                       Width="100"
-                                       Height="30"/>
+                                <StackPanel Margin="10">
+                                    <Border Background="#F4F4F4"
+                                            Padding="50"
+                                            BorderBrush="#DDD"
+                                            BorderThickness="0,1,0,1"
+                                            Height="200"
+                                            HorizontalAlignment="Left"
+                                            CornerRadius="10">
+                                        <Image Source="{Binding ImagePath, 
+                                                        Mode=OneWay,
+                                                        Converter={StaticResource FileToImageConverter}}" />
+                                    </Border>
+                                    <TextBlock Text="{Binding ItemName}"
+                                               Width="200"
+                                               TextWrapping="Wrap"
+                                               TextAlignment="Center" />
+                                </StackPanel>
                             </DataTemplate>
-                        </DataGridTemplateColumn.CellTemplate>
-                    </DataGridTemplateColumn>
+                        </ListBox.ItemTemplate>
+                    </ListBox>
+                </ScrollViewer>
+            </Grid>-->
+
+            <Grid Margin="2,0"
+                  Grid.Row="2">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*" />
+                    <!-- Column for the splitter (Width="Auto" sizes it to fit the splitter's width) -->
+                    <ColumnDefinition Width="Auto" />
+                    <ColumnDefinition Width="0.5*" />
+                </Grid.ColumnDefinitions>
+
+                <ScrollViewer Grid.Column="0"
+                              Visibility="{Binding VM.PreviewMode, Mode=OneWay, Converter={StaticResource StringToVisibilityConverter}, ConverterParameter=Image}">
                     
-                    <DataGridTextColumn Header="{resx:Localization propItemCode}"
-                                        Binding="{Binding ItemCode}" />
+                    <ListBox ItemsSource="{Binding VM.PreviewItems, UpdateSourceTrigger=PropertyChanged}"
+                             SelectedItem="{Binding VM.SelectedItem, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                             ScrollViewer.HorizontalScrollBarVisibility="Disabled">
 
-                    <DataGridTextColumn Header="{resx:Localization propItemName}"
-                                        Binding="{Binding ItemName}" />
+                        <!-- Arrange items left-to-right, wrapping downward -->
+                        <ListBox.ItemsPanel>
+                            <ItemsPanelTemplate>
+                                <WrapPanel />
+                            </ItemsPanelTemplate>
+                        </ListBox.ItemsPanel>
 
-                    <DataGridTemplateColumn Header="{resx:Localization propIsStockControl}">
-                        <DataGridTemplateColumn.CellTemplate>
+                        <!-- Display ONLY the image for each item in the list -->
+                        <ListBox.ItemTemplate>
                             <DataTemplate>
-                                <CheckBox IsChecked="{Binding IsStockControl}"
-                                          IsEnabled="False"
-                                          HorizontalAlignment="Center"
-                                          VerticalAlignment="Center"
-                                          Margin="0" />
+                                <StackPanel Margin="10">
+                                    <Border Background="#F4F4F4"
+                                            Padding="50"
+                                            BorderBrush="#DDD"
+                                            BorderThickness="0,1,0,1"
+                                            Height="200"
+                                            HorizontalAlignment="Left"
+                                            CornerRadius="10">
+                                        <Image Source="{Binding ImagePath, 
+                                                        Mode=OneWay,
+                                                        Converter={StaticResource FileToImageConverter}}" />
+                                    </Border>
+                                    <TextBlock Text="{Binding ItemName}"
+                                               Width="200"
+                                               TextWrapping="Wrap"
+                                               TextAlignment="Center" />
+                                </StackPanel>
                             </DataTemplate>
-                        </DataGridTemplateColumn.CellTemplate>
-                    </DataGridTemplateColumn>
+                        </ListBox.ItemTemplate>
+                    </ListBox>
+                
+                </ScrollViewer>
+                
+                <DataGrid Grid.Column="0"
+                          AutoGenerateColumns="False"
+                          IsReadOnly="True"
+                          SelectedItem="{Binding VM.SelectedItem, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                          ItemsSource="{Binding VM.PreviewItems, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                          RowDetailsVisibilityMode="{Binding VM.RowDetailsVisibilityMode, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                          Visibility="{Binding VM.PreviewMode, Mode=OneWay, Converter={StaticResource StringToVisibilityConverter}, ConverterParameter=List}">
+                   
+                    <DataGrid.Resources>
+                        <SolidColorBrush x:Key="{x:Static SystemColors.HighlightBrushKey}"
+                                         Color="LightGray" />
+                        <SolidColorBrush x:Key="{x:Static SystemColors.HighlightTextBrushKey}"
+                                         Color="Black" />
+                    </DataGrid.Resources>
 
-                    <DataGridTextColumn Header="{resx:Localization propMinimumStock}"
-                                        Binding="{Binding MinimumStock, StringFormat=N0}" />
+                    <DataGrid.CellStyle>
+                        <Style TargetType="DataGridCell">
+                            <Setter Property="Padding"
+                                    Value="3,3,3,3" />
+                        </Style>
+                    </DataGrid.CellStyle>
+                    
+                    <DataGrid.Columns>
+                        <DataGridTextColumn Header="{resx:Localization propItemCode}"
+                                            Binding="{Binding ItemCode}" />
 
-                    <DataGridTemplateColumn Header="{resx:Localization propIsBlacklist}">
-                        <DataGridTemplateColumn.CellTemplate>
-                            <DataTemplate>
-                                <CheckBox IsChecked="{Binding IsBlacklist}"
-                                          IsEnabled="False"
-                                          HorizontalAlignment="Center"
-                                          VerticalAlignment="Center"
-                                          Margin="0" />
-                            </DataTemplate>
-                        </DataGridTemplateColumn.CellTemplate>
-                    </DataGridTemplateColumn>
+                        <DataGridTextColumn Header="{resx:Localization propItemName}"
+                                            Binding="{Binding ItemName}" />
 
-                    <DataGridTextColumn Header="{resx:Localization propCreatedAt}"
-                                        Binding="{Binding CreatedAt, StringFormat='dd MMM yyyy HH:mm'}" />
+                        <DataGridTextColumn Header="{resx:Localization propItemUnit}"
+                                            Binding="{Binding ItemUnit}" />
 
-                    <DataGridTextColumn Header="{resx:Localization propModifiedAt}"
-                                        Binding="{Binding ModifiedAt, StringFormat='dd MMM yyyy HH:mm'}" />
+                        <DataGridTextColumn Header="{resx:Localization propItemColour}"
+                                            Binding="{Binding Colour}" />
 
-                </DataGrid.Columns>
+                        <DataGridTemplateColumn Header="{resx:Localization propIsStockControl}">
+                            <DataGridTemplateColumn.CellTemplate>
+                                <DataTemplate>
+                                    <CheckBox IsChecked="{Binding IsStockControl}"
+                                              IsEnabled="False"
+                                              HorizontalAlignment="Center"
+                                              VerticalAlignment="Center"
+                                              Margin="0" />
+                                </DataTemplate>
+                            </DataGridTemplateColumn.CellTemplate>
+                        </DataGridTemplateColumn>
 
-            </DataGrid>
+                        <DataGridTextColumn Header="{resx:Localization propMinimumStock}"
+                                            Binding="{Binding MinimumStock, StringFormat=N0}" />
+
+                        <DataGridTemplateColumn Header="{resx:Localization propIsBlacklist}">
+                            <DataGridTemplateColumn.CellTemplate>
+                                <DataTemplate>
+                                    <CheckBox IsChecked="{Binding IsBlacklist}"
+                                              IsEnabled="False"
+                                              HorizontalAlignment="Center"
+                                              VerticalAlignment="Center"
+                                              Margin="0" />
+                                </DataTemplate>
+                            </DataGridTemplateColumn.CellTemplate>
+                        </DataGridTemplateColumn>
+
+                        <DataGridTextColumn Header="{resx:Localization propCreatedAt}"
+                                            Binding="{Binding CreatedAt, StringFormat='dd MMM yyyy HH:mm'}" />
+
+                        <DataGridTextColumn Header="{resx:Localization propModifiedAt}"
+                                            Binding="{Binding ModifiedAt, StringFormat='dd MMM yyyy HH:mm'}" />
+
+                    </DataGrid.Columns>
+
+                    <!-- Collapsible Accordion Content Pannel -->
+                    <DataGrid.RowDetailsTemplate>
+                        <DataTemplate>
+                            <Border Background="#F4F4F4"
+                                    Padding="15"
+                                    BorderBrush="#DDD"
+                                    BorderThickness="0,1,0,1"
+                                    Height="200"
+                                    HorizontalAlignment="Left">
+                                <Image Source="{Binding ImagePath, 
+                                                Mode=OneWay,
+                                                Converter={StaticResource FileToImageConverter}}" />
+                            </Border>
+                        </DataTemplate>
+                    </DataGrid.RowDetailsTemplate>
+
+                </DataGrid>
+
+                <!-- Vertical GridSplitter -->
+                <GridSplitter Grid.Column="1"
+                              Width="3"
+                              HorizontalAlignment="Center"
+                              VerticalAlignment="Stretch"
+                              Background="Gray"
+                              ShowsPreview="True"
+                              Margin="2,0" />
+
+                <TabControl Grid.Column="2">
+                    <TabItem Header="Item Stock History">
+                        <ScrollViewer HorizontalScrollBarVisibility="Visible">
+                            
+                            <DataGrid AutoGenerateColumns="False"
+                                      IsReadOnly="True"
+                                      ItemsSource="{Binding VM.PreviewItemCalcs, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                      >
+                                <DataGrid.Resources>
+                                    <SolidColorBrush x:Key="{x:Static SystemColors.HighlightBrushKey}"
+                                                     Color="LightGray" />
+                                    <SolidColorBrush x:Key="{x:Static SystemColors.HighlightTextBrushKey}"
+                                                     Color="Black" />
+                                </DataGrid.Resources>
+
+                                <DataGrid.CellStyle>
+                                    <Style TargetType="DataGridCell">
+                                        <Setter Property="BorderThickness"
+                                                Value="0" />
+                                        <Setter Property="BorderBrush"
+                                                Value="DimGray" />
+                                        <Setter Property="TextBlock.TextAlignment"
+                                                Value="Right" />
+                                    </Style>
+                                </DataGrid.CellStyle>
+                            
+                                <DataGrid.Columns>
+                                    <DataGridTextColumn Header="{resx:Localization propItemCalcDate}"
+                                                        Binding="{Binding CalcDate, StringFormat='dd/MM/yyyy'}" />
+
+                                    <DataGridTextColumn Header="{resx:Localization propItemCalcAfterQty}"
+                                                        Binding="{Binding AfterQty,StringFormat=N0}"/>
+
+                                    <DataGridTextColumn Header="{resx:Localization propItemCalcInQty}"
+                                                        Binding="{Binding InQty,StringFormat=N0}" />
+
+                                    <DataGridTextColumn Header="{resx:Localization propItemCalcOutQty}"
+                                                        Binding="{Binding OutQty,StringFormat=N0}" />
+
+                                    <DataGridTextColumn Header="{resx:Localization propItemCalcPOQty}"
+                                                        Binding="{Binding POQty,StringFormat=N0}" />
+
+                                    <DataGridTextColumn Header="{resx:Localization propItemCalcSOQty}"
+                                                        Binding="{Binding SOQty,StringFormat=N0}" />
+
+                                    <DataGridTextColumn Header="{resx:Localization propItemCalcIUQty}"
+                                                        Binding="{Binding IUQty,StringFormat=N0}" />
+
+                                    <DataGridTextColumn Header="{resx:Localization propItemCalcIAQty}"
+                                                        Binding="{Binding IAQty,StringFormat=N0}" />
+
+                                </DataGrid.Columns>
+                            
+                            </DataGrid>
+                            
+                        </ScrollViewer>
+                        
+                    </TabItem>
+                    
+                    <TabItem Header="Image">
+                        <Image Source="{Binding
+                                        VM.SelectedItem.ImagePath, 
+                                        Mode=OneWay,
+                                        Converter={StaticResource FileToImageConverter}}" />
+
+                    </TabItem>
+                    
+                </TabControl>
+                
+            </Grid>
 
             <ItemsControl ItemsSource="{Binding VM.PageList}"
                           Grid.Row="3">
@@ -145,7 +370,8 @@
                                    Height="40"
                                    Margin="5,5,0,5">
                             <ui:Button.Style>
-                                <Style TargetType="ui:Button" BasedOn="{StaticResource {x:Type ui:Button}}">
+                                <Style TargetType="ui:Button"
+                                       BasedOn="{StaticResource {x:Type ui:Button}}">
                                     <Style.Triggers>
                                         <DataTrigger Binding="{Binding IsSelected}"
                                                      Value="True">

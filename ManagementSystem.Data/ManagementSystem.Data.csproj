@@ -18,10 +18,10 @@
 	<ItemGroup>
 	  <Compile Remove="ModelExtensions\ItemUsage.extend.cs" />
 	  <Compile Remove="ModelExtensions\ItemUsageDetail.extend.cs" />
-	  <Compile Remove="ModelExtensions\MstItem.extend.cs" />
 	</ItemGroup>
 
 	<ItemGroup>
+		<PackageReference Include="Microsoft.AspNetCore.Http.Features" Version="5.0.17" />
 		<PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="9.0.10">
 			<IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
 			<PrivateAssets>all</PrivateAssets>

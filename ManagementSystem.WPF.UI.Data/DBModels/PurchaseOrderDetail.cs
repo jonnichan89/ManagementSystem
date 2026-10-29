@@ -152,6 +152,7 @@ public partial class PurchaseOrderDetail : INotifyPropertyChanged
 
     private PurchaseOrder _PurchaseOrder = null!;
     
+    [System.Text.Json.Serialization.JsonIgnore]
     public virtual PurchaseOrder PurchaseOrder {
         get {
             return _PurchaseOrder;

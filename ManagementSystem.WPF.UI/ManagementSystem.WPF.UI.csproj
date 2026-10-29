@@ -21,6 +21,10 @@
 	</ItemGroup>
 
 	<ItemGroup>
+	  <None Remove="Images\error.png" />
+	</ItemGroup>
+
+	<ItemGroup>
 		<Page Remove="Forms\DetailWindow.xaml" />
 	</ItemGroup>
 
@@ -49,6 +53,12 @@
 	</ItemGroup>
 
 	<ItemGroup>
+		<Compile Update="Pages\ItemAdjustmentPage.xaml.cs">
+		  <SubType>Code</SubType>
+		</Compile>
+		<Compile Update="Pages\ItemAdjustmentDetailPage.xaml.cs">
+		  <SubType>Code</SubType>
+		</Compile>
 		<Compile Update="Pages\MstAccountPage.xaml.cs">
 		  <SubType>Code</SubType>
 		</Compile>
@@ -56,6 +66,24 @@
 		  <SubType>Code</SubType>
 		</Compile>
 		<Compile Update="Pages\FinanceDetailPage.xaml.cs">
+		  <SubType>Code</SubType>
+		</Compile>
+		<Compile Update="Pages\ProjectSalesOrderDetailPage.xaml.cs">
+		  <SubType>Code</SubType>
+		</Compile>
+		<Compile Update="Pages\ProjectSalesOrderPage.xaml.cs">
+		  <SubType>Code</SubType>
+		</Compile>
+		<Compile Update="Pages\ProjectTemplatePage.xaml.cs">
+		  <SubType>Code</SubType>
+		</Compile>
+		<Compile Update="Pages\ProjectTemplateDetailPage.xaml.cs">
+		  <SubType>Code</SubType>
+		</Compile>
+		<Compile Update="Pages\ProjectPurchaseOrderPage.xaml.cs">
+		  <SubType>Code</SubType>
+		</Compile>
+		<Compile Update="Pages\ProjectPurchaseOrderDetailPage.xaml.cs">
 		  <SubType>Code</SubType>
 		</Compile>
 		<Compile Update="Pages\SalesOrderDetailPage.xaml.cs">
@@ -126,6 +154,12 @@
 
 	<ItemGroup>
 		<Folder Include="Forms\" />
+	</ItemGroup>
+
+	<ItemGroup>
+	  <Resource Include="Images\error.png">
+	    <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+	  </Resource>
 	</ItemGroup>
 
 </Project>

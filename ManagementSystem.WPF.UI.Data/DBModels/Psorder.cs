@@ -331,5 +331,31 @@ public partial class PSOrder : INotifyPropertyChanged
         }
     }
 
+    private DateTime? _DispatchDate;
+    
+    public DateTime? DispatchDate {
+        get {
+            return _DispatchDate;
+        }
+        set {
+            _DispatchDate = value;
+            OnPropertyChanged("DispatchDate");
+        }
+    }
+
+    private DateTime? _IncomingDate;
+    
+    public DateTime? IncomingDate {
+        get {
+            return _IncomingDate;
+        }
+        set {
+            _IncomingDate = value;
+            OnPropertyChanged("IncomingDate");
+        }
+    }
+
     public virtual ObservableCollection<PSOrderDetail> PSOrderDetails { get; set; } = new ObservableCollection<PSOrderDetail>();
+
+    public virtual ObservableCollection<PSOrderPT> PSOrderPTs { get; set; } = new ObservableCollection<PSOrderPT>();
 }

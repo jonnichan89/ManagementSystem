@@ -153,6 +153,7 @@ public partial class FinanceDetail : INotifyPropertyChanged
 
     private Finance _Finance = null!;
     
+    [System.Text.Json.Serialization.JsonIgnore]
     public virtual Finance Finance {
         get {
             return _Finance;

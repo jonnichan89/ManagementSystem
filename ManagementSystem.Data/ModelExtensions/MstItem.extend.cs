@@ -9,17 +9,6 @@ namespace ManagementSystem.Data.Models;
 public partial class MstItem
 {
     [NotMapped]
-    public string SearchKey { get { return ItemCode + ItemName; } }
-
-    [NotMapped]
-    public bool PutSearchToTop
-    {
-        set
-        {
-            Askterisk = (value ? "*" : "");
-        }
-    }
-
-    [NotMapped]
-    public string Askterisk { get; private set; } = "";
+    public bool HasImageUpload { get; set; }
+    
 }

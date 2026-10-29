@@ -1,5 +1,6 @@
 ﻿using ManagementSystem.WPF.UI.Pages.ToInherit;
 using ManagementSystem.WPF.UI.Services.ServiceInterfaces;
+using ManagementSystem.WPF.UI.ViewModels.ToInherit;
 using Microsoft.SqlServer.Server;
 using System.Diagnostics.Metrics;
 using Wpf.Ui.Controls;
@@ -111,7 +112,7 @@ namespace ManagementSystem.WPF.UI.Pages
         public SalesOrderDetailViewModel VM { get; }
 
         private DetailAction _action;
-        private int _PSOId;
+        private int _SOId;
         public SalesOrderDetailPage(IManagementApiClient apiClient, IContentDialogService contentDialogService, JsonSerializerOptions jsonSerializerOptions, GlobalFunctions gFunctions)
         {
             InitializeComponent();
@@ -126,12 +127,12 @@ namespace ManagementSystem.WPF.UI.Pages
             MessageFrame.Navigate(_promptPage);
         }
 
-        public async Task InitializeAsync(DetailAction action, int PSOId)
+        public async Task InitializeAsync(DetailAction action, int SOId)
         {
             _action = action;
-            _PSOId = PSOId;
+            _SOId = SOId;
 
-            await VM.InitializeAsync(_action, _PSOId);
+            await VM.InitializeAsync(_action, _SOId);
             SupplierCB_Initialize();
         }
 
@@ -231,11 +232,15 @@ namespace ManagementSystem.WPF.UI.Pages
                 formatter = new ValidateNumberFormatter1(VM.Data.CurrencyId);
             }
             formatter.CurrencyId = VM.Data.CurrencyId;
-            DPPNUD.NumberFormatter = formatter;
             HeaderTotalDPPNUD.NumberFormatter = formatter;
             HeaderDPPDiscountNUD.NumberFormatter = formatter;
-            HeaderTotalDPPNUD.InvalidateProperty(NumberBox.ValueProperty);
-            HeaderTotalDPPNUD.InvalidateProperty(NumberBox.TextProperty);
+            HeaderTotalAmountNUD.NumberFormatter = formatter;
+            UnitPriceNUD.NumberFormatter = formatter;
+            UnitPriceDiscountNUD.NumberFormatter = formatter;
+            DPPNUD.NumberFormatter = formatter;
+            TotalAmountNUD.NumberFormatter = formatter;
+            //HeaderTotalDPPNUD.InvalidateProperty(NumberBox.ValueProperty);
+            //HeaderTotalDPPNUD.InvalidateProperty(NumberBox.TextProperty);
         }
         private void CurrencyRadioButton_Checked(object sender, RoutedEventArgs e)
         {

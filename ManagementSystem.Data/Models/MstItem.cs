@@ -28,6 +28,8 @@ public partial class MstItem
     [Unicode(false)]
     public string ImagePath { get; set; } = string.Empty;
 
+    public int ImageFileSize { get; set; }
+
     public bool IsStockControl { get; set; }
 
     public bool IsBlacklist { get; set; }
@@ -51,4 +53,8 @@ public partial class MstItem
     [StringLength(50)]
     [Unicode(false)]
     public string SupplierCode { get; set; } = string.Empty;
+
+    [StringLength(50)]
+    [Unicode(false)]
+    public string Colour { get; set; } = string.Empty;
 }

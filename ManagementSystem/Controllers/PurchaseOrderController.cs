@@ -90,7 +90,17 @@ namespace ManagementSystem.Controllers
         {
             try
             {
+                model.PSType = "PO";
                 model.SetDefault();
+
+                int id = 0;
+                foreach (PSOrderDetail childModel in model.PSOrderDetails)
+                {
+                    id++;
+                    childModel.PSDId = id;
+                    childModel.SetDefault();
+                    childModel.PSOrder = model;
+                }
 
                 ServiceActionResult result = new ServiceActionResult();
                 result.ModelValidations = _PurchaseOrderService.CanContinueAction(ServiceAction.Add, model);
@@ -124,9 +134,15 @@ namespace ManagementSystem.Controllers
         {
             try
             {
-                foreach (var item in model.PSOrderDetails)
+                model.SetDefault();
+
+                int id = 0;
+                foreach (PSOrderDetail childModel in model.PSOrderDetails)
                 {
-                    item.PSOrder = model;
+                    id++;
+                    childModel.PSDId = id;
+                    childModel.SetDefault();
+                    childModel.PSOrder = model;
                 }
 
                 ServiceActionResult result = new ServiceActionResult();

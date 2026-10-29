@@ -28,6 +28,33 @@ namespace ManagementSystem.Controllers
             _supplierService = supplierService;
         }
 
+        [Route("LastModified")]
+        [HttpGet]
+        public async Task<ActionResult<ServiceActionResult>> GetLastModified()
+        {
+            ServiceActionResult result = new ServiceActionResult();
+            try
+            {
+                DateTime? lastModified = await _supplierService.GetLastModifiedAsync();
+                if (lastModified.HasValue)
+                {
+                    result.ActionResult = lastModified.Value.ToString("yyyy/MM/dd HH:mm");
+                }
+                else
+                {
+                    result.ActionResult = string.Empty;
+                }
+
+                result.ActionIsSuccess = true;
+            }
+            catch (Exception ex)
+            {
+                result.ActionIsSuccess = false;
+                result.ErrorMessage = ExceptionHelper.GetErrorMessage(ex, true);
+            }
+            return Ok(result);
+        }
+
         [HttpGet]
         public ActionResult<ServiceActionResult> Get()
         {

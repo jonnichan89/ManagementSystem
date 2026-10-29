@@ -2,7 +2,7 @@
 
 namespace ManagementSystem.DataServices.Service
 {
-    public class SalesOrderService
+    public class SalesOrderService : BaseService
     {
         //SharedResources _resShared;
         //public SalesOrderService(SharedResources resShared) { }
@@ -56,9 +56,10 @@ namespace ManagementSystem.DataServices.Service
                 SearchOptionResultPSOrder[] item = context.
                     PSOrders.
                     Include(p => p.PSOrderDetails).
-                    Where(p => p.PSType == "SO" && 
+                    Where(p => p.PSType == "SO" &&
                         p.PSCode.Contains(searchPS.PSCode)).
-                    Select(p => new SearchOptionResultPSOrder() {
+                    Select(p => new SearchOptionResultPSOrder()
+                    {
                         PSCode = p.PSCode,
                         SupplierCode = p.SupplierCode,
                         SupplierName = p.SupplierName,
@@ -119,7 +120,7 @@ namespace ManagementSystem.DataServices.Service
                 item.ModifiedAt = now;
 
                 // Get Last SO Code
-                string prePSCode = $@"SO-{item.PSDate.ToString("ddMMyyyy")}-001";
+                string prePSCode = $@"SO-{item.PSDate.ToString("ddMMyyyy")}-";
                 string newPSCode = "";
                 string lastPSCode = context.
                     PSOrders.
@@ -154,7 +155,15 @@ namespace ManagementSystem.DataServices.Service
 
                 // Insert
                 context.PSOrders.Add(item);
-                return context.SaveChanges();
+
+                int rowsAffected = context.SaveChanges();
+                if (rowsAffected > 0)
+                {
+                    ExecuteRecalItemCalc(context, item.PSDate);
+                }
+
+                return rowsAffected;
+
             }
         }
 
@@ -190,10 +199,7 @@ namespace ManagementSystem.DataServices.Service
                     if (existingDetail != null)
                     {
                         // update allowed fields
-                        existingDetail.ItemCode = detail.ItemCode;
-                        existingDetail.Qty = detail.Qty;
-                        //existingDetail.ModifiedAt = DateTime.Now;
-                        //existingDetail.ModifiedBy = detail.ModifiedBy;
+                        existingDetail.CopyFrom(detail);
                     }
                     else
                     {
@@ -207,7 +213,14 @@ namespace ManagementSystem.DataServices.Service
 
                 context.PSOrders.Update(existing);
 
-                return context.SaveChanges();
+                int rowsAffected = context.SaveChanges();
+                if (rowsAffected > 0)
+                {
+                    ExecuteRecalItemCalc(context, existing.PSDate);
+                }
+
+                return rowsAffected;
+
             }
         }
 
@@ -226,8 +239,10 @@ namespace ManagementSystem.DataServices.Service
                 context.PSOrders.Remove(existing);
                 if (context.SaveChanges() > 0)
                 {
-                    return existing;
+                    ExecuteRecalItemCalc(context, existing.PSDate);
                 }
+
+                return existing;
             }
 
         ReturnResult:

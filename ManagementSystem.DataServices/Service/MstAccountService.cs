@@ -40,6 +40,25 @@ namespace ManagementSystem.DataServices.Service
             }
         }
 
+        public async Task<IEnumerable<MstAccount>> GetAllMstAccounts()
+        {
+            using (var context = new ManagementSystemContext())
+            {
+                return await context.MstAccounts.ToListAsync();
+            }
+        }
+
+        public async Task<DateTime?> GetLastModifiedAsync()
+        {
+            using (var context = new ManagementSystemContext())
+            {
+                if (await context.MstAccounts.CountAsync() > 0)
+                    return await context.MstAccounts.MaxAsync(p => p.ModifiedAt);
+                else
+                    return null;
+            }
+        }
+
         public bool IsExists(ServiceAction action, MstAccount model)
         {
             if (action == ServiceAction.Add || action == ServiceAction.Get)

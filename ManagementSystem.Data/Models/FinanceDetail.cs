@@ -45,5 +45,6 @@ public partial class FinanceDetail
 
     [ForeignKey("FinanceId")]
     [InverseProperty("FinanceDetails")]
+    [System.Text.Json.Serialization.JsonIgnore]
     public virtual Finance? Finance { get; set; } = null;
 }

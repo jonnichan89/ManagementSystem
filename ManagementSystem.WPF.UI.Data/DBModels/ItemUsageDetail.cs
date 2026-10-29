@@ -117,6 +117,7 @@ public partial class ItemUsageDetail : INotifyPropertyChanged
 
     private ItemUsage _ItemUsage = null!;
     
+    [System.Text.Json.Serialization.JsonIgnore]
     public virtual ItemUsage ItemUsage {
         get {
             return _ItemUsage;

@@ -11,5 +11,17 @@
     <Setting Name="APIUrl" Type="System.String" Scope="Application">
       <Value Profile="(Default)">http://localhost/ManagementSystem/</Value>
     </Setting>
+    <Setting Name="MstItemPreviewMode" Type="System.String" Scope="User">
+      <Value Profile="(Default)">List</Value>
+    </Setting>
+    <Setting Name="MstItemPreviewListImageMode" Type="System.String" Scope="User">
+      <Value Profile="(Default)">AlwaysVisible</Value>
+    </Setting>
+    <Setting Name="PTPreviewMode" Type="System.String" Scope="User">
+      <Value Profile="(Default)">List</Value>
+    </Setting>
+    <Setting Name="PTPreviewListImageMode" Type="System.String" Scope="User">
+      <Value Profile="(Default)">AlwaysVisible</Value>
+    </Setting>
   </Settings>
 </SettingsFile>

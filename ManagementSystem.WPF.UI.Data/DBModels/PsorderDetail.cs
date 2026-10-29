@@ -152,6 +152,7 @@ public partial class PSOrderDetail : INotifyPropertyChanged
 
     private PSOrder _PSOrder = null!;
     
+    [System.Text.Json.Serialization.JsonIgnore]
     public virtual PSOrder PSOrder {
         get {
             return _PSOrder;

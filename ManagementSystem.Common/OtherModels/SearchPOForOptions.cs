@@ -25,4 +25,8 @@ namespace ManagementSystem.Common.OtherModels
         public string SupplierCode { get; set; }
         public string SupplierName { get; set; }
     }
+    public class SearchOptionResultProjectTemplate
+    {
+        public string PTName { get; set; }
+    }
 }

@@ -1,7 +1,9 @@
 ﻿
+using ManagementSystem.WPF.UI.ViewModels.ToInherit;
+
 namespace ManagementSystem.WPF.UI.ViewModels;
 
-public partial class MainWindowViewModel() : ViewModel
+public partial class MainWindowViewModel() : BaseViewModel
 {
     [ObservableProperty]
     private ObservableCollection<Control> _trayMenuItems =

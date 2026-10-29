@@ -66,6 +66,37 @@ namespace ManagementSystem.WPF.UI.Services
             return actionResult;
         }
 
+        public async Task<ServiceActionResult> GetMstAccountLastModifiedAsync(CancellationToken cancellationToken = default)
+        {
+            SetHttpClientLanguage();
+
+            ServiceActionResult actionResult;
+            try
+            {
+                actionResult = await _http.GetFromJsonAsync<ServiceActionResult>($"MstAccount/LastModified", cancellationToken) ?? new ServiceActionResult();
+                if (actionResult.ActionIsSuccess)
+                {
+                    actionResult.ActionResult = actionResult.ActionResult.ToString();
+                    //actionResult.ActionResult = JsonSerializer.Deserialize<MstAccount>(
+                    //    (actionResult.ActionResult ?? string.Empty).
+                    //    ToString() ?? string.Empty) ?? null;
+                }
+            }
+            catch (Exception ex)
+            {
+                actionResult = new ServiceActionResult()
+                {
+                    ActionIsSuccess = false,
+                    ErrorMessage =
+                        string.Format(
+                            TranslationSource.Instance["HttpClientFailedToReadResponse"] ?? "{0}",
+                            Environment.NewLine +
+                            ExceptionHelper.GetErrorMessage(ex, true))
+                };
+            }
+            return actionResult;
+        }
+
         public async Task<ServiceActionResult> CreateMstAccountAsync(MstAccount account, CancellationToken cancellationToken = default)
         {
             if (account is null) throw new ArgumentNullException(nameof(account));

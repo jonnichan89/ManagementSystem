@@ -29,6 +29,21 @@
                          Margin="10,0,0,0"
                          Command="{Binding VM.IsBahasaSelectedCommand, Mode=OneWay}"
                          CommandParameter="{Binding IsChecked, RelativeSource={RelativeSource Self}}" />
+            
+            <TextBlock Text="{resx:Localization spTheme}"
+                       FontSize="24"
+                       FontWeight="Bold"
+                       Margin="10" />
+            <RadioButton Content="{resx:Localization spThemeLight}"
+                         GroupName="Language"
+                         Margin="10,0,0,0"
+                         Command="{Binding VM.IsThemeLightSelectedCommand, Mode=OneWay}"
+                         CommandParameter="{Binding IsChecked, RelativeSource={RelativeSource Self}}" />
+            <RadioButton Content="{resx:Localization spThemeDark}"
+                         GroupName="Language"
+                         Margin="10,0,0,0"
+                         Command="{Binding VM.IsThemeDarkSelectedCommand, Mode=OneWay}"
+                         CommandParameter="{Binding IsChecked, RelativeSource={RelativeSource Self}}" />
         </StackPanel>
     </Border>
     
